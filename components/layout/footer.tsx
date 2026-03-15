@@ -28,7 +28,7 @@ export function Footer() {
             <address className="mt-2 not-italic text-sm text-primary-foreground/90">
               {footer.address}
             </address>
-            {footer.postAddress && footer.postAddress !== footer.address && (
+            {footer.postAddress && (footer.postAddress as string) !== (footer.address as string) && (
               <p className="mt-1 text-sm text-primary-foreground/80">
                 Post: {footer.postAddress}
               </p>
@@ -44,7 +44,7 @@ export function Footer() {
               {footer.phone ? (
                 <p>
                   <a
-                    href={`tel:${footer.phone.replace(/\s/g, "")}`}
+                    href={`tel:${String(footer.phone).replace(/\s/g, "")}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
                   >
                     {footer.phone}
