@@ -1,0 +1,27 @@
+// JJ Bygg & Entreprenad AB – Offert-modell
+// Databas: Neon (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Offert {
+  id               String    @id @default(cuid())
+  namn             String
+  epost            String
+  telefon          String?
+  typ              String    // typ av jobb
+  beskrivning      String    @db.Text
+  budget           String?
+  rot              Boolean
+  bildUrler        String[]
+  postnummer       String?
+  onskatStartdatum DateTime?
+  kundtyp          String?   // privat / företag
+  skapadAt         DateTime @default(now())
+}
