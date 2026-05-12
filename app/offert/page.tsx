@@ -85,7 +85,9 @@ export default function OffertPage() {
         <div className="mx-auto max-w-lg">
           <Card>
             <CardHeader>
-              <CardTitle>Tack för din förfrågan</CardTitle>
+              <h1 className="text-2xl font-semibold leading-none tracking-tight">
+                Tack för din förfrågan
+              </h1>
               <CardDescription>
                 Vi har tagit emot din offertförfrågan och återkommer till dig så snart vi kan.
                 Du har fått en bekräftelse till din e-post.

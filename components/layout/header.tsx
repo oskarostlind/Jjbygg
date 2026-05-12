@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
 
@@ -10,20 +11,23 @@ export function Header() {
           href="/"
           className="inline-flex max-w-full shrink-0 items-center bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- PNG med ljus drop-shadow för läsbar mörk text mot primary */}
-          <img
-            src={siteContent.logo.primary}
-            alt={siteContent.footer.companyName}
-            width={1792}
-            height={1487}
-            className="block h-20 w-auto object-contain object-left md:h-24"
+          <span
+            className="block h-20 w-auto md:h-24"
             style={{
               filter:
                 "drop-shadow(0 0 0.75px rgba(255,255,255,0.95)) drop-shadow(0 0 3px rgba(255,255,255,0.45))",
             }}
-            fetchPriority="high"
-            decoding="async"
-          />
+          >
+            <Image
+              src={siteContent.logo.primary}
+              alt={siteContent.logo.imageAlt}
+              width={1792}
+              height={1487}
+              className="block h-full w-auto max-w-[min(100%,280px)] object-contain object-left md:max-w-[min(100%,320px)]"
+              sizes="(max-width: 768px) 200px, 280px"
+              priority
+            />
+          </span>
         </Link>
         <nav className="flex items-center gap-4" aria-label="Huvudnavigation">
           <Link

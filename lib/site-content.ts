@@ -7,26 +7,31 @@ export const siteContent = {
   logo: {
     /** Officiell logotyp (header + favicon). */
     primary: "/logo.png",
-    alt: "/logo.png",
     favicon: "/logo.png",
+    /** Alt-text för logotyp (SEO / tillgänglighet). */
+    imageAlt: "Logotyp JJ Bygg & Entreprenad AB – byggfirma i Boden",
   },
   images: {
     /** Hero-/bannerbild på startsidan eller offertsidan. */
     hero: "/hero-placeholder.svg",
+    /** Alt-text för hero (SEO). */
+    heroAlt:
+      "Nybyggnad, renovering och tillbyggnad i Boden – JJ Bygg & Entreprenad AB",
     /** Ev. bilder för footer eller info-sektioner. */
     footer: "/footer-placeholder.jpg",
   },
   meta: {
-    title: "JJ Bygg & Entreprenad AB – Offertförfrågan",
+    title: "JJ Bygg & Entreprenad AB | Professionell byggfirma i Boden",
     description:
-      "Skicka din offertförfrågan till JJ Bygg & Entreprenad AB. Vi återkommer så snart vi kan.",
-    keywords: "bygg, entreprenad, offert, renovering, ROT, byggföretag",
+      "JJ Bygg & Entreprenad AB hjälper dig med nybyggnad, renovering och tillbyggnad i Boden med omnejd. Kvalitet, transparens och lokalt engagemang.",
+    keywords:
+      "JJ Bygg & Entreprenad AB, byggfirma Boden, Boden, Luleå, Älvsbyn, nybyggnad, renovering, ROT, entreprenad",
   },
   hero: {
     title: "Begär en offert",
     subtitle: "Fyll i formuläret nedan så återkommer vi till dig.",
-    /** Rubrik för hero på startsidan */
-    headline: "Bygg & renovering du kan lita på",
+    /** Rubrik för hero på startsidan (enda h1; innehåller nyckelfras för SEO). */
+    headline: "Bygg & Entreprenad i Boden – kvalitet och trygghet för ditt projekt",
     /** Underrubrik / förklarande text i hero */
     subline: "Vi hjälper dig med nybyggnad, renovering och tillbyggnad – professionellt, transparent och med snabb återkoppling.",
     /** Text på CTA-knapp i hero */

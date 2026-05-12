@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { defaultMetadata, SITE_URL } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  ...defaultMetadata,
+  openGraph: {
+    ...defaultMetadata.openGraph,
+    url: SITE_URL,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
 
 export default function HomePage() {
   const { homePage, images, hero } = siteContent;
@@ -28,7 +41,7 @@ export default function HomePage() {
           <div className="relative mt-10 aspect-[16/10] overflow-hidden rounded-lg lg:mt-0">
             <Image
               src={images.hero}
-              alt=""
+              alt={images.heroAlt}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
