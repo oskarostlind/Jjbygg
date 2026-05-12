@@ -22,10 +22,11 @@ export const siteContent = {
   },
   meta: {
     title: "JJ Bygg & Entreprenad AB | Professionell byggfirma i Boden",
+    /** Primär meta description (~150–220 tecken); återanvänds i lib/seo.ts. */
     description:
-      "JJ Bygg & Entreprenad AB hjälper dig med nybyggnad, renovering och tillbyggnad i Boden med omnejd. Kvalitet, transparens och lokalt engagemang.",
+      "JJ Bygg & Entreprenad AB hjälper dig med nybyggnad, renovering och tillbyggnad i Boden med omnejd. Vi tar ansvar för totalentreprenad i Boden och närområdet med fokus på kvalitet och transparens. Begär kostnadsfri offert – vi återkommer normalt inom 1–2 vardagar.",
     keywords:
-      "JJ Bygg & Entreprenad AB, byggfirma Boden, Boden, Luleå, Älvsbyn, nybyggnad, renovering, ROT, entreprenad",
+      "JJ Bygg & Entreprenad AB, byggfirma Boden, totalentreprenad, kostnadsfri offert, Boden, Luleå, Älvsbyn, nybyggnad, renovering, ROT, entreprenad",
   },
   hero: {
     title: "Begär en offert",
@@ -68,6 +69,24 @@ export const siteContent = {
     ctaTitle: "Redo att komma igång?",
     ctaSubline: "Skicka in din förfrågan så återkommer vi så snart vi kan.",
     ctaButtonText: "Begär en offert",
+    faqTitle: "Vanliga frågor",
+    faq: [
+      {
+        question: "Hur snabbt får jag svar på min offertförfrågan?",
+        answer:
+          "Vi strävar efter att återkomma inom 1–2 vardagar efter att du skickat in formuläret. Vid hög belastning kan det ibland ta lite längre tid; du får alltid en bekräftelse till din e-post när förfrågan har tagits emot.",
+      },
+      {
+        question: "Är offerten kostnadsfri?",
+        answer:
+          "Ja – att begära offert via vår webbplats är kostnadsfri och förbindande. Vi går igenom dina önskemål och återkommer med förslag eller kompletterande frågor innan eventuell upphandling.",
+      },
+      {
+        question: "Hur fungerar ROT-avdrag?",
+        answer:
+          "ROT-avdrag är en skattereduktion för godkända reparations-, underhålls- och ombyggnadsarbeten hos privatpersoner. Regler och belopp beslutas av riksdagen och administreras av Skatteverket. Vi informerar om vad som gäller för ditt projekt; kontrollera alltid aktuella villkor på skatteverket.se.",
+      },
+    ],
   },
 } as const;
 

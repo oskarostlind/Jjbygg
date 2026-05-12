@@ -6,8 +6,8 @@ export const SITE_URL =
 
 export const SEO_TITLE = "JJ Bygg & Entreprenad AB | Professionell byggfirma i Boden";
 
-export const SEO_DESCRIPTION =
-  "JJ Bygg & Entreprenad AB hjälper dig med nybyggnad, renovering och tillbyggnad i Boden med omnejd. Kvalitet, transparens och lokalt engagemang.";
+/** Samma som siteContent.meta.description (single source of truth). */
+export const SEO_DESCRIPTION = siteContent.meta.description;
 
 const SEO_KEYWORDS: string[] = [
   "JJ Bygg & Entreprenad AB",
@@ -23,6 +23,8 @@ const SEO_KEYWORDS: string[] = [
   "köksrenovering",
   "ROT-avdrag",
   "entreprenad",
+  "totalentreprenad",
+  "kostnadsfri offert",
   "bygg",
 ];
 

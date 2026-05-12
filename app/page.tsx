@@ -6,6 +6,23 @@ import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+type FaqEntry = { readonly question: string; readonly answer: string };
+
+function faqPageJsonLd(entries: readonly FaqEntry[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: entries.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 export const metadata: Metadata = {
   ...defaultMetadata,
   openGraph: {
@@ -19,9 +36,11 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   const { homePage, images, hero } = siteContent;
+  const faqJson = JSON.stringify(faqPageJsonLd(homePage.faq));
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />
       {/* Hero */}
       <section className="relative bg-primary">
         <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
@@ -44,7 +63,7 @@ export default function HomePage() {
               alt={images.heroAlt}
               fill
               className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, min(560px, 50vw)"
               priority
             />
           </div>
@@ -67,6 +86,35 @@ export default function HomePage() {
                   <p className="font-medium text-foreground">{service}</p>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-primary/10 bg-background py-16" aria-labelledby="faq-heading">
+        <div className="mx-auto max-w-3xl px-4">
+          <h2 id="faq-heading" className="text-center text-2xl font-semibold text-primary md:text-3xl">
+            {homePage.faqTitle}
+          </h2>
+          <div className="mt-8 space-y-3">
+            {homePage.faq.map((item, i) => (
+              <details
+                key={i}
+                className="group rounded-lg border border-primary/20 bg-card px-4 py-3 shadow-sm open:shadow-md"
+              >
+                <summary className="cursor-pointer list-none font-medium text-foreground outline-none marker:content-none [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-center justify-between gap-2">
+                    {item.question}
+                    <span className="text-primary/60 transition group-open:rotate-180" aria-hidden>
+                      ▼
+                    </span>
+                  </span>
+                </summary>
+                <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
+                  {item.answer}
+                </p>
+              </details>
             ))}
           </div>
         </div>

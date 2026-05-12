@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { siteContent } from "@/lib/site-content";
 import { defaultMetadata } from "@/lib/seo";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { GoogleTagManager } from "@/components/layout/google-tag-manager";
 import { LocalBusinessJsonLd } from "@/components/layout/local-business-json-ld";
 import "./globals.css";
 
@@ -34,9 +36,11 @@ export default function RootLayout({
         <LocalBusinessJsonLd />
       </head>
       <body className={`${inter.className} flex min-h-screen flex-col`}>
+        <GoogleTagManager />
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

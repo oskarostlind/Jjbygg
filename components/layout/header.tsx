@@ -24,7 +24,7 @@ export function Header() {
               width={1792}
               height={1487}
               className="block h-full w-auto max-w-[min(100%,280px)] object-contain object-left md:max-w-[min(100%,320px)]"
-              sizes="(max-width: 768px) 200px, 280px"
+              sizes="(max-width: 480px) 160px, (max-width: 768px) 200px, 240px"
               priority
             />
           </span>
