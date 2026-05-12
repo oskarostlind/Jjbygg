@@ -1,26 +1,28 @@
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
+import { resolveContactPhoneFromEnv } from "@/lib/contact";
 
 const { footer } = siteContent;
 
 export function Footer() {
+  noStore();
+  const phone = resolveContactPhoneFromEnv();
+  const contactEmail = process.env.JESPER_EMAIL?.trim();
+
   return (
     <footer className="w-full border-t border-primary/20 bg-primary py-12 text-primary-foreground">
       <div className="mx-auto max-w-6xl px-4">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Företag */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
               Företag
             </h3>
             <p className="mt-2 font-semibold">{footer.companyName}</p>
             <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
-            <p className="mt-1 text-sm text-primary-foreground/80">
-              Org.nr {footer.orgNumber}
-            </p>
+            <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {footer.orgNumber}</p>
           </div>
 
-          {/* Adress */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
               Adress
@@ -29,46 +31,39 @@ export function Footer() {
               {footer.address}
             </address>
             {footer.postAddress && (footer.postAddress as string) !== (footer.address as string) && (
-              <p className="mt-1 text-sm text-primary-foreground/80">
-                Post: {footer.postAddress}
-              </p>
+              <p className="mt-1 text-sm text-primary-foreground/80">Post: {footer.postAddress}</p>
             )}
           </div>
 
-          {/* Kontakt */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
               Kontakt
             </h3>
-            <div className="mt-2 space-y-1 text-sm">
-              {footer.phone ? (
+            <div className="mt-2 space-y-2 text-sm">
+              {phone && (
                 <p>
+                  <span className="block text-xs text-primary-foreground/70">Jesper Johansson</span>
                   <a
-                    href={`tel:${String(footer.phone).replace(/\s/g, "")}`}
+                    href={`tel:${phone.telDigits}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
                   >
-                    {footer.phone}
+                    {phone.display}
                   </a>
                 </p>
-              ) : (
-                <p className="text-primary-foreground/70">Telefon – uppdateras snart</p>
               )}
-              {footer.email ? (
+              {contactEmail ? (
                 <p>
                   <a
-                    href={`mailto:${footer.email}`}
+                    href={`mailto:${contactEmail}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
                   >
-                    {footer.email}
+                    {contactEmail}
                   </a>
                 </p>
-              ) : (
-                <p className="text-primary-foreground/70">Skicka förfrågan via formuläret nedan</p>
-              )}
+              ) : null}
             </div>
           </div>
 
-          {/* CTA */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
               Offert

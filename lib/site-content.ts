@@ -5,12 +5,10 @@
 
 export const siteContent = {
   logo: {
-    /** Sökväg till huvudlogotyp (t.ex. i header). Byt fil i public/ eller uppdatera sökväg. */
-    primary: "/logo.svg",
-    /** Alternativ logotyp (t.ex. ljus variant). */
-    alt: "/logo-light.svg",
-    /** Favicon. */
-    favicon: "/favicon.ico",
+    /** Officiell logotyp (header + favicon). */
+    primary: "/logo.png",
+    alt: "/logo.png",
+    favicon: "/logo.png",
   },
   images: {
     /** Hero-/bannerbild på startsidan eller offertsidan. */
@@ -45,10 +43,6 @@ export const siteContent = {
     address: "Kallkällvägen 16 c, 961 96 Boden",
     /** Postadress (om avvikande från besöksadress) */
     postAddress: "c/o Jesper Johansson, Kallkällvägen 16 c, 961 96 Boden",
-    /** Telefon (lämna tom tills nummer ska visas) */
-    phone: "",
-    /** E-post för allmän kontakt (lämna tom om ni bara vill använda offertformuläret) */
-    email: "",
   },
   homePage: {
     servicesTitle: "Vad vi erbjuder",
