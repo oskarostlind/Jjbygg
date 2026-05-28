@@ -1,9 +1,17 @@
 import { Resend } from "resend";
+import { siteContent } from "@/lib/site-content";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "onboarding@resend.dev";
-const JESPER_EMAIL = process.env.JESPER_EMAIL ?? "jesper@placeholder-jj-entreprenad.se";
+const CONTACT_EMAIL = siteContent.contact.email;
+
+/** Avsändare för Resend (domän måste vara verifierad i Resend för produktion). */
+const FROM_EMAIL =
+  process.env.FROM_EMAIL ?? `JJ Bygg & Entreprenad <${CONTACT_EMAIL}>`;
+
+/** Mottagare för administrations-/notifieringsmail. */
+const ADMIN_EMAIL = process.env.JESPER_EMAIL ?? CONTACT_EMAIL;
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://placeholder-jj-entreprenad.se";
 
 export type OffertEmailData = {
@@ -20,7 +28,9 @@ export type OffertEmailData = {
   bildUrler: string[];
 };
 
-export async function sendOffertBekraftelseToCustomer(data: OffertEmailData): Promise<{ ok: boolean; error?: string }> {
+export async function sendOffertBekraftelseToCustomer(
+  data: OffertEmailData
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -41,15 +51,18 @@ export async function sendOffertBekraftelseToCustomer(data: OffertEmailData): Pr
   }
 }
 
-export async function sendOffertNotifieringToJesper(data: OffertEmailData): Promise<{ ok: boolean; error?: string }> {
-  const bildLista = data.bildUrler.length > 0
-    ? data.bildUrler.map((url) => `<li><a href="${url}">Bild</a></li>`).join("")
-    : "<li>Inga bilder bifogade</li>";
+export async function sendOffertNotifieringToJesper(
+  data: OffertEmailData
+): Promise<{ ok: boolean; error?: string }> {
+  const bildLista =
+    data.bildUrler.length > 0
+      ? data.bildUrler.map((url) => `<li><a href="${url}">Bild</a></li>`).join("")
+      : "<li>Inga bilder bifogade</li>";
 
   try {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
-      to: JESPER_EMAIL,
+      to: ADMIN_EMAIL,
       subject: `Ny offertförfrågan från ${data.namn} – ${data.typ}`,
       html: `
         <h2>Ny offertförfrågan</h2>

@@ -4,6 +4,7 @@ import { put } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
 import { offertSchema } from "@/lib/validations/offert";
 import { sendOffertBekraftelseToCustomer, sendOffertNotifieringToJesper } from "@/lib/email";
+import { MAX_IMAGE_BYTES } from "@/lib/offert-upload";
 
 export type SubmitOffertResult = { success: true } | { success: false; error: string };
 
@@ -36,6 +37,22 @@ function parseFormDataToPayload(formData: FormData): {
   };
 }
 
+function sanitizeBlobFilename(name: string): string {
+  const base = name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return base.length > 0 ? base.slice(0, 120) : "bild";
+}
+
+async function uploadImageToBlob(file: File, index: number): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const pathname = `offert/${Date.now()}-${index}-${sanitizeBlobFilename(file.name)}`;
+  const result = await put(pathname, buffer, {
+    access: "public",
+    contentType: file.type || "application/octet-stream",
+  });
+  return result.url;
+}
+
 export async function submitOffert(formData: FormData): Promise<SubmitOffertResult> {
   const raw = parseFormDataToPayload(formData);
 
@@ -48,7 +65,10 @@ export async function submitOffert(formData: FormData): Promise<SubmitOffertResu
     namn: raw.namn,
     epost: raw.epost,
     telefon: raw.telefon || undefined,
-    kundtyp: (raw.kundtyp === "privat" || raw.kundtyp === "foretag" ? raw.kundtyp : undefined) as "privat" | "foretag" | undefined,
+    kundtyp: (raw.kundtyp === "privat" || raw.kundtyp === "foretag" ? raw.kundtyp : undefined) as
+      | "privat"
+      | "foretag"
+      | undefined,
     budget: raw.budget || undefined,
   });
 
@@ -64,17 +84,29 @@ export async function submitOffert(formData: FormData): Promise<SubmitOffertResu
   for (let i = 0; i < raw.bilder.length; i++) {
     const file = raw.bilder[i];
     if (!file || file.size === 0) continue;
+
+    if (file.size > MAX_IMAGE_BYTES) {
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      return {
+        success: false,
+        error: `Bilden "${file.name}" är för stor (${sizeMb} MB). Max storlek är 4 MB per fil – komprimera bilden och försök igen.`,
+      };
+    }
+
     try {
-      const blob = await put(`offert/${Date.now()}-${i}-${file.name}`, file, { access: "public" });
-      bildUrler.push(blob.url);
-    } catch {
-      return { success: false, error: "Kunde inte ladda upp en eller flera bilder." };
+      const url = await uploadImageToBlob(file, i);
+      bildUrler.push(url);
+    } catch (error) {
+      console.error("Vercel Blob upload failed:", error);
+      return {
+        success: false,
+        error:
+          "Kunde inte ladda upp en eller flera bilder. Komprimera bilderna (max 4 MB per fil) och försök igen.",
+      };
     }
   }
 
-  const onskatStartdatumDate = data.onskatStartdatum
-    ? new Date(data.onskatStartdatum)
-    : null;
+  const onskatStartdatumDate = data.onskatStartdatum ? new Date(data.onskatStartdatum) : null;
 
   try {
     await prisma.offert.create({
@@ -92,7 +124,8 @@ export async function submitOffert(formData: FormData): Promise<SubmitOffertResu
         kundtyp: data.kundtyp ?? null,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error("Prisma offert.create failed:", error);
     return { success: false, error: "Kunde inte spara förfrågan. Försök igen." };
   }
 

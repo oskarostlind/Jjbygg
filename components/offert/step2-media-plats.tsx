@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/select";
 import type { OffertFormData } from "@/lib/validations/offert";
 
+import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "@/lib/offert-upload";
+
 const MAX_FILES = 10;
-const MAX_FILE_SIZE_MB = 5;
 const ACCEPTED = "image/jpeg,image/png,image/webp,image/gif";
 
 interface Step2Props {
@@ -39,9 +40,9 @@ export function Step2MediaPlats({
     const chosen = Array.from(e.target.files ?? []);
     const valid: File[] = [];
     for (const file of chosen) {
-      if (file.size <= MAX_FILE_SIZE_MB * 1024 * 1024 && file.type.startsWith("image/")) {
-        valid.push(file);
-      }
+      if (!file.type.startsWith("image/")) continue;
+      if (file.size > MAX_IMAGE_BYTES) continue;
+      valid.push(file);
     }
     onImageFilesChange([...imageFiles, ...valid].slice(0, MAX_FILES));
     e.target.value = "";
@@ -54,7 +55,7 @@ export function Step2MediaPlats({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="bilder">Bilder av projektet (valfritt, max {MAX_FILES} st, {MAX_FILE_SIZE_MB} MB per fil)</Label>
+        <Label htmlFor="bilder">Bilder av projektet (valfritt, max {MAX_FILES} st, {MAX_IMAGE_MB} MB per fil)</Label>
         <Input
           id="bilder"
           type="file"
