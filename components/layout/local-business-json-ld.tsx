@@ -4,7 +4,7 @@ import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL } from "@/lib/seo";
 
 /** Visningsnummer om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
-const TELEPHONE_FALLBACK = "070-535 71 94";
+const TELEPHONE_FALLBACK = siteContent.contact.phoneDisplay;
 
 /**
  * Ungefärlig punkt i Boden (närområde centrum) – inte mätvärde för navigation.
@@ -15,6 +15,8 @@ const BODEN_APPROX_GEO = {
   latitude: 65.8251,
   longitude: 21.6889,
 };
+
+const SERVICE_AREAS = ["Boden", "Luleå"] as const;
 
 type PostalAddressLd = {
   "@type": "PostalAddress";
@@ -54,7 +56,7 @@ type LocalBusinessLd = {
   telephone: string;
   address: PostalAddressLd;
   geo: typeof BODEN_APPROX_GEO;
-  areaServed: string[];
+  areaServed: readonly string[];
 };
 
 export function LocalBusinessJsonLd() {
@@ -72,7 +74,7 @@ export function LocalBusinessJsonLd() {
     telephone: phone?.display ?? TELEPHONE_FALLBACK,
     address: postalAddressFromFooterLine(siteContent.footer.address),
     geo: BODEN_APPROX_GEO,
-    areaServed: ["Boden", "Luleå", "Älvsbyn"],
+    areaServed: [...SERVICE_AREAS],
   };
 
   return (

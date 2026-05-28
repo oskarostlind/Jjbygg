@@ -9,57 +9,82 @@ export const siteContent = {
     primary: "/logo.png",
     favicon: "/logo.png",
     /** Alt-text för logotyp (SEO / tillgänglighet). */
-    imageAlt: "Logotyp JJ Bygg & Entreprenad AB – byggfirma i Boden",
+    imageAlt: "Logotyp JJ Bygg & Entreprenad AB – byggfirma i Boden och Luleå",
   },
   images: {
     /** Hero-/bannerbild på startsidan eller offertsidan. */
     hero: "/hero-placeholder.svg",
     /** Alt-text för hero (SEO). */
     heroAlt:
-      "Nybyggnad, renovering och tillbyggnad i Boden – JJ Bygg & Entreprenad AB",
+      "Nybyggnation, renovering, altaner och takbyte i Boden och Luleå – JJ Bygg & Entreprenad AB",
     /** Ev. bilder för footer eller info-sektioner. */
     footer: "/footer-placeholder.jpg",
   },
   meta: {
-    title: "JJ Bygg & Entreprenad AB | Professionell byggfirma i Boden",
-    /** Primär meta description (~150–220 tecken); återanvänds i lib/seo.ts. */
+    title: "JJ Bygg & Entreprenad AB | Byggfirma i Boden & Luleå",
     description:
-      "JJ Bygg & Entreprenad AB hjälper dig med nybyggnad, renovering och tillbyggnad i Boden med omnejd. Vi tar ansvar för totalentreprenad i Boden och närområdet med fokus på kvalitet och transparens. Begär kostnadsfri offert – vi återkommer normalt inom 1–2 vardagar.",
+      "JJ Bygg & Entreprenad AB utför nybyggnad, renovering, altaner och takbyte i Boden och Luleå. Kontakta oss för en kostnadsfri offert!",
     keywords:
-      "JJ Bygg & Entreprenad AB, byggfirma Boden, totalentreprenad, kostnadsfri offert, Boden, Luleå, Älvsbyn, nybyggnad, renovering, ROT, entreprenad",
+      "JJ Bygg & Entreprenad AB, byggfirma Boden, byggfirma Luleå, nybyggnation, renovering, altan, takbyte, ROT, entreprenad, Norrbotten",
+  },
+  contact: {
+    personName: "Jesper Johansson",
+    phoneDisplay: "070-535 71 94",
+    /** Endast siffror för tel:-länk (fallback om CONTACT_NUMBER saknas). */
+    phoneTelDigits: "0705357194",
+    email: "info@jjbyggboden.se",
+    address: "Kallkällvägen 16 c, 961 96 Boden",
   },
   hero: {
     title: "Begär en offert",
     subtitle: "Fyll i formuläret nedan så återkommer vi till dig.",
-    /** Rubrik för hero på startsidan (enda h1; innehåller nyckelfras för SEO). */
-    headline: "Bygg & Entreprenad i Boden – kvalitet och trygghet för ditt projekt",
-    /** Underrubrik / förklarande text i hero */
-    subline: "Vi hjälper dig med nybyggnad, renovering och tillbyggnad – professionellt, transparent och med snabb återkoppling.",
-    /** Text på CTA-knapp i hero */
+    headline: "Professionell bygg & entreprenad i Boden och Luleå",
+    subline:
+      "JJ Bygg & Entreprenad AB hjälper dig med allt från nybyggnation och tillbyggnad till altaner och takbyten. Kvalitet, transparens och lokalt engagemang i hela Norrbotten.",
     ctaText: "Begär en offert",
   },
   footer: {
     companyName: "JJ Bygg & Entreprenad AB",
-    tagline: "Professionella bygg- och entreprenadtjänster",
-    /** Valfri kontakttext (t.ex. "Kontakta oss för en kostnadsfri offert") */
+    tagline: "Professionella bygg- och entreprenadtjänster i Boden och Luleå",
     contactPrompt: "",
-    /** Organisationsnummer (från Allabolag/Bolagsverket) */
     orgNumber: "556832-8362",
-    /** Besöksadress */
     address: "Kallkällvägen 16 c, 961 96 Boden",
-    /** Postadress (om avvikande från besöksadress) */
     postAddress: "c/o Jesper Johansson, Kallkällvägen 16 c, 961 96 Boden",
   },
   homePage: {
     servicesTitle: "Vad vi erbjuder",
     services: [
-      "Nybyggnad",
-      "Renovering",
-      "Tillbyggnad",
-      "Badrumsrenovering",
-      "Köksrenovering",
-      "ROT-avdrag",
-    ],
+      {
+        title: "Nybyggnation & Tillbyggnad",
+        description: "Hus, garage, utbyggnader",
+        iconKey: "nybyggnation",
+      },
+      {
+        title: "Renovering & Interiör",
+        description: "Kök, ytskikt, totalrenoveringar",
+        iconKey: "renovering",
+      },
+      {
+        title: "Badrum & Våtrum",
+        description: "Med fokus på certifiering och kvalitet",
+        iconKey: "badrum",
+      },
+      {
+        title: "Altaner & Uteplatser",
+        description: "Skräddarsydda trädäck, uterum och staket",
+        iconKey: "altan",
+      },
+      {
+        title: "Takbyten & Plåtarbeten",
+        description: "Hållbara takbyten anpassade för det norrländska klimatet",
+        iconKey: "tak",
+      },
+      {
+        title: "Entreprenad & Planering",
+        description: "Helhetsansvar, projektledning och lokala samarbetspartners",
+        iconKey: "entreprenad",
+      },
+    ] as const,
     trustTitle: "Varför välja oss",
     trust: [
       "Professionella hantverkare",
@@ -88,6 +113,14 @@ export const siteContent = {
       },
     ],
   },
+  contactSection: {
+    title: "Frågor eller funderingar? Hör av dig till Jesper!",
+    rotTitle: "ROT-avdrag och kostnadsfria hembesök",
+    rotBody:
+      "Som privatperson kan du få ROT-avdrag på arbetskostnaden – vi drar av 30 % direkt på fakturan enligt gällande regler. Vi erbjuder kostnadsfria hembesök och rådgivning i både Boden och Luleå med omnejd, så att du får ett tydligt underlag innan projektet startar.",
+  },
 } as const;
 
 export type SiteContent = typeof siteContent;
+
+export type ServiceIconKey = (typeof siteContent.homePage.services)[number]["iconKey"];

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const OFFERT_TITLE = "Begär offert | JJ Bygg & Entreprenad AB";
 const OFFERT_DESCRIPTION =
-  "Skicka en offertförfrågan till JJ Bygg & Entreprenad AB för nybyggnad, renovering eller tillbyggnad i Boden med omnejd. Vi återkommer snabbt.";
+  "Skicka en offertförfrågan till JJ Bygg & Entreprenad AB för nybyggnad, renovering, altaner eller takbyte i Boden och Luleå. Vi återkommer snabbt.";
 
 export const metadata: Metadata = {
   title: OFFERT_TITLE,

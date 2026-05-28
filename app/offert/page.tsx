@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Step1Projektdetaljer } from "@/components/offert/step1-projektdetaljer";
 import { Step2MediaPlats } from "@/components/offert/step2-media-plats";
 import { Step3Kontakt } from "@/components/offert/step3-kontakt";
+import { ContactInfo } from "@/components/contact-info";
 
 const STEPS: StepId[] = [1, 2, 3];
 
@@ -101,11 +102,13 @@ export default function OffertPage() {
 
   return (
     <main className="min-h-screen bg-background py-12 px-4">
-      <div className="mx-auto max-w-xl space-y-8">
+      <div className="mx-auto max-w-3xl space-y-8">
         <header className="text-center">
           <h1 className="text-3xl font-bold text-primary">{siteContent.hero.title}</h1>
           <p className="mt-2 text-muted-foreground">{siteContent.hero.subtitle}</p>
         </header>
+
+        <ContactInfo />
 
         <Stepper currentStep={currentStep} />
 

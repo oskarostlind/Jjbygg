@@ -4,7 +4,7 @@ import { siteContent } from "@/lib/site-content";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://placeholder-jj-entreprenad.se";
 
-export const SEO_TITLE = "JJ Bygg & Entreprenad AB | Professionell byggfirma i Boden";
+export const SEO_TITLE = siteContent.meta.title;
 
 /** Samma som siteContent.meta.description (single source of truth). */
 export const SEO_DESCRIPTION = siteContent.meta.description;
@@ -12,13 +12,18 @@ export const SEO_DESCRIPTION = siteContent.meta.description;
 const SEO_KEYWORDS: string[] = [
   "JJ Bygg & Entreprenad AB",
   "byggfirma Boden",
+  "byggfirma Luleå",
   "byggföretag Boden",
+  "byggföretag Luleå",
   "Boden",
   "Luleå",
-  "Älvsbyn",
+  "Norrbotten",
+  "nybyggnation",
   "nybyggnad",
   "renovering",
   "tillbyggnad",
+  "altan",
+  "takbyte",
   "badrumsrenovering",
   "köksrenovering",
   "ROT-avdrag",
