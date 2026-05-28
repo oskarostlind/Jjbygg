@@ -47,7 +47,7 @@ async function uploadImageToBlob(file: File, index: number): Promise<string> {
   const buffer = Buffer.from(arrayBuffer);
   const pathname = `offert/${Date.now()}-${index}-${sanitizeBlobFilename(file.name)}`;
   const result = await put(pathname, buffer, {
-    access: "public",
+    access: "private",
     contentType: file.type || "application/octet-stream",
   });
   return result.url;
