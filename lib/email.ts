@@ -63,6 +63,7 @@ export async function sendOffertNotifieringToJesper(
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: ADMIN_EMAIL,
+      replyTo: data.epost,
       subject: `Ny offertförfrågan från ${data.namn} – ${data.typ}`,
       html: `
         <h2>Ny offertförfrågan</h2>
