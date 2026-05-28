@@ -21,3 +21,15 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+@layer utilities {
+  .offert-page-bg {
+    @apply bg-slate-50;
+    background-image: radial-gradient(
+      circle at center,
+      rgb(148 163 184 / 0.22) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+}

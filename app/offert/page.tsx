@@ -8,13 +8,21 @@ import { offertSchema, type OffertFormData } from "@/lib/validations/offert";
 import { submitOffert } from "@/app/actions/submit-offert";
 import { Stepper, type StepId } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Step1Projektdetaljer } from "@/components/offert/step1-projektdetaljer";
 import { Step2MediaPlats } from "@/components/offert/step2-media-plats";
 import { Step3Kontakt } from "@/components/offert/step3-kontakt";
 import { ContactInfo } from "@/components/contact-info";
+import { OffertPageLayout } from "@/components/offert/offert-page-layout";
+import { OffertPremiumCard } from "@/components/offert/offert-premium-card";
+import { OffertSuccessView } from "@/components/offert/offert-success-view";
 
 const STEPS: StepId[] = [1, 2, 3];
+
+function stepTitle(step: StepId): string {
+  if (step === 1) return "Projektdetaljer";
+  if (step === 2) return "Media & plats";
+  return "Kontaktuppgifter";
+}
 
 export default function OffertPage() {
   const [currentStep, setCurrentStep] = useState<StepId>(1);
@@ -42,11 +50,12 @@ export default function OffertPage() {
   const { register, handleSubmit, setValue, watch, trigger, formState: { errors } } = form;
 
   const goNext = async () => {
-    const fieldsToValidate = STEPS[currentStep - 1] === 1
-      ? (["typ", "beskrivning"] as const)
-      : STEPS[currentStep - 1] === 2
-        ? (["postnummer", "rot"] as const)
-        : (["namn", "epost"] as const);
+    const fieldsToValidate =
+      STEPS[currentStep - 1] === 1
+        ? (["typ", "beskrivning"] as const)
+        : STEPS[currentStep - 1] === 2
+          ? (["postnummer", "rot"] as const)
+          : (["namn", "epost"] as const);
     const ok = await trigger(fieldsToValidate);
     if (ok && currentStep < 3) setCurrentStep((s) => (s + 1) as StepId);
   };
@@ -81,49 +90,36 @@ export default function OffertPage() {
   };
 
   if (success) {
-    return (
-      <main className="min-h-screen bg-background py-12 px-4">
-        <div className="mx-auto max-w-lg">
-          <Card>
-            <CardHeader>
-              <h1 className="text-2xl font-semibold leading-none tracking-tight">
-                Tack för din förfrågan
-              </h1>
-              <CardDescription>
-                Vi har tagit emot din offertförfrågan och återkommer till dig så snart vi kan.
-                Du har fått en bekräftelse till din e-post.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </main>
-    );
+    return <OffertSuccessView />;
   }
 
   return (
-    <main className="min-h-screen bg-background py-12 px-4">
-      <div className="mx-auto max-w-3xl space-y-8">
+    <OffertPageLayout>
+      <div className="mx-auto w-full max-w-3xl space-y-8 pb-8">
         <header className="text-center">
-          <h1 className="text-3xl font-bold text-primary">{siteContent.hero.title}</h1>
-          <p className="mt-2 text-muted-foreground">{siteContent.hero.subtitle}</p>
+          <p className="text-sm font-semibold uppercase tracking-wider text-accent">
+            Offertförfrågan
+          </p>
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
+            {siteContent.hero.title}
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
+            {siteContent.hero.subtitle}
+          </p>
         </header>
 
         <ContactInfo />
 
         <Stepper currentStep={currentStep} />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {currentStep === 1 && "Projektdetaljer"}
-              {currentStep === 2 && "Media & plats"}
-              {currentStep === 3 && "Kontaktuppgifter"}
-            </CardTitle>
-            <CardDescription>
-              Steg {currentStep} av 3
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <OffertPremiumCard showAccentTop={false}>
+          <div className="border-b border-slate-100 px-6 py-5 md:px-8">
+            <h2 className="text-xl font-bold text-slate-900">{stepTitle(currentStep)}</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Steg {currentStep} av 3 – fyll i uppgifterna nedan
+            </p>
+          </div>
+          <div className="px-6 py-6 md:px-8 md:py-8">
             <form onSubmit={handleSubmit(onFinalSubmit)} className="space-y-6">
               {currentStep === 1 && (
                 <Step1Projektdetaljer
@@ -153,38 +149,50 @@ export default function OffertPage() {
               )}
 
               {submitError && (
-                <p className="text-sm text-red-600" role="alert">
+                <p
+                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                  role="alert"
+                >
                   {submitError}
                 </p>
               )}
 
-              <div className="flex justify-between gap-4 pt-4">
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:justify-between">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={goPrev}
                   disabled={currentStep === 1}
+                  className="border-slate-200 bg-white hover:bg-slate-50"
                 >
                   Föregående
                 </Button>
                 {currentStep < 3 ? (
-                  <Button type="button" onClick={goNext}>
-                    Nästa
+                  <Button
+                    type="button"
+                    onClick={goNext}
+                    className="bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg"
+                  >
+                    Nästa steg
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={isPending}>
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg"
+                  >
                     {isPending ? "Skickar..." : "Skicka offertförfrågan"}
                   </Button>
                 )}
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </OffertPremiumCard>
 
-        <footer className="text-center text-sm text-muted-foreground">
+        <footer className="text-center text-sm text-slate-500">
           {siteContent.footer.companyName} – {siteContent.footer.tagline}
         </footer>
       </div>
-    </main>
+    </OffertPageLayout>
   );
 }
