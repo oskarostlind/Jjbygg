@@ -6,6 +6,10 @@ import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { Button } from "@/components/ui/button";
 
+/** Intrinsic logo ratio (public/logo.png) – undvik fel proportioner i layout. */
+const LOGO_WIDTH = 320;
+const LOGO_HEIGHT = Math.round((LOGO_WIDTH * 1487) / 1792);
+
 export async function Header() {
   noStore();
   const phoneFromEnv = resolveContactPhoneFromEnv();
@@ -29,10 +33,10 @@ export async function Header() {
             <Image
               src={siteContent.logo.primary}
               alt={siteContent.logo.imageAlt}
-              width={1792}
-              height={1487}
-              className="block h-full w-auto max-w-[min(100%,280px)] object-contain object-left md:max-w-[min(100%,320px)]"
-              sizes="(max-width: 480px) 160px, (max-width: 768px) 200px, 240px"
+              width={LOGO_WIDTH}
+              height={LOGO_HEIGHT}
+              className="h-20 w-auto max-w-[min(100%,280px)] object-contain object-left md:h-24 md:max-w-[min(100%,320px)]"
+              sizes="(max-width: 768px) 120px, 160px"
               priority
             />
           </span>

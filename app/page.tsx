@@ -25,9 +25,17 @@ function faqPageJsonLd(entries: readonly FaqEntry[]) {
 
 export const metadata: Metadata = {
   ...defaultMetadata,
+  title: {
+    absolute: siteContent.meta.title,
+  },
   openGraph: {
     ...defaultMetadata.openGraph,
+    title: siteContent.meta.title,
     url: SITE_URL,
+  },
+  twitter: {
+    ...defaultMetadata.twitter,
+    title: siteContent.meta.title,
   },
   alternates: {
     canonical: SITE_URL,

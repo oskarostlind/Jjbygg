@@ -15,7 +15,7 @@ export const siteContent = {
     footer: "/footer-placeholder.jpg",
   },
   meta: {
-    title: "JJ Bygg & Entreprenad AB | Byggfirma i Boden & Luleå",
+    title: "Professionell bygg & entreprenad i Boden och Luleå | JJ Bygg & Entreprenad AB",
     description:
       "JJ Bygg & Entreprenad AB utför nybyggnad, renovering, altaner och takbyte i Boden och Luleå. Kontakta oss för en kostnadsfri offert!",
     keywords:
