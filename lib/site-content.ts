@@ -12,12 +12,6 @@ export const siteContent = {
     imageAlt: "Logotyp JJ Bygg & Entreprenad AB – byggfirma i Boden och Luleå",
   },
   images: {
-    /** Hero-/bannerbild på startsidan eller offertsidan. */
-    hero: "/hero-placeholder.svg",
-    /** Alt-text för hero (SEO). */
-    heroAlt:
-      "Nybyggnation, renovering, altaner och takbyte i Boden och Luleå – JJ Bygg & Entreprenad AB",
-    /** Ev. bilder för footer eller info-sektioner. */
     footer: "/footer-placeholder.jpg",
   },
   meta: {

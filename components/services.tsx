@@ -33,7 +33,10 @@ export function Services() {
           {services.map((service) => {
             const Icon = SERVICE_ICONS[service.iconKey];
             return (
-              <Card key={service.iconKey} className="border-primary/20 bg-card">
+              <Card
+                key={service.iconKey}
+                className="border-primary/20 bg-card shadow-sm transition-shadow hover:shadow-md"
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <span
