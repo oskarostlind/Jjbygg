@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { HERO_SLIDE_INTERVAL_MS, type HeroSlide } from "@/lib/hero-slides";
 
 /** Visningsstorlek för hero – styr Next.js srcset (undvik onödigt stora nedladdningar). */
@@ -35,35 +34,19 @@ export function HeroSlideshow({ slides }: HeroSlideshowProps) {
     return () => window.clearInterval(timer);
   }, [motionEnabled, slides.length]);
 
-  const previousIndex = (activeIndex - 1 + slides.length) % slides.length;
-  const indicesToRender =
-    slides.length <= 1
-      ? [0]
-      : [activeIndex, previousIndex].filter(
-          (value, index, array) => array.indexOf(value) === index
-        );
+  const slide = slides[activeIndex];
 
   return (
-    <div className="absolute inset-0" aria-hidden>
-      {indicesToRender.map((index) => {
-        const slide = slides[index];
-        const isActive = index === activeIndex;
-        return (
-          <Image
-            key={slide.src}
-            src={slide.src}
-            alt={isActive ? slide.alt : ""}
-            fill
-            priority={index === 0}
-            loading={index === 0 ? undefined : "lazy"}
-            className={cn(
-              "object-cover object-center transition-opacity duration-1000 ease-in-out",
-              isActive ? "opacity-100" : "opacity-0"
-            )}
-            sizes={HERO_IMAGE_SIZES}
-          />
-        );
-      })}
+    <div className="absolute inset-0">
+      <Image
+        key={slide.src}
+        src={slide.src}
+        alt={slide.alt}
+        fill
+        priority={activeIndex === 0}
+        className="object-cover object-center transition-opacity duration-1000 ease-in-out"
+        sizes={HERO_IMAGE_SIZES}
+      />
     </div>
   );
 }

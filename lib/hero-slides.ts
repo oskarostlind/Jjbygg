@@ -2,23 +2,23 @@
 export const HERO_SLIDES = [
   {
     src: "/hero/benjamin-lehman-EJU7A__krX0-unsplash.jpg",
-    alt: "Byggfirma i Boden och Luleå – entreprenad och nybyggnation i Norrbotten",
+    alt: "Byggfirma i Boden och Luleå – nybyggnation och entreprenad i Norrbotten",
   },
   {
     src: "/hero/quilia-j86QX1TMNaw-unsplash.jpg",
-    alt: "Byggprojekt i Boden och Luleå – JJ Bygg & Entreprenad AB",
+    alt: "Byggprojekt och tillbyggnad i Boden – JJ Bygg & Entreprenad AB",
   },
   {
     src: "/hero/callum-hill-NGGkGzslIaM-unsplash.jpg",
-    alt: "Altanbygge och uteplats i Norrbotten – professionell byggfirma",
+    alt: "Altanbygge och uteplats i Boden och Luleå – trädäck och uterum",
   },
   {
     src: "/hero/yves-cedric-schulze-o-ANXY28n_w-unsplash.jpg",
-    alt: "Takbyte och plåtarbeten i Boden och Luleå – hållbart för norrländskt klimat",
+    alt: "Takbyte och plåtarbeten i Norrbotten – byggfirma JJ Bygg",
   },
   {
     src: "/hero/scandinavian home renovation.jpg",
-    alt: "Renovering och interiör i Boden och Luleå – skandinavisk hemrenovering",
+    alt: "Renovering och interiör i Boden – kök och totalrenovering",
   },
 ] as const;
 
