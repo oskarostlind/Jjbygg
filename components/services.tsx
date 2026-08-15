@@ -10,6 +10,7 @@ import {
 import { siteContent } from "@/lib/site-content";
 import type { ServiceIconKey } from "@/lib/site-content";
 import { Card, CardContent } from "@/components/ui/card";
+import { getCmsContent, cmsServices } from "@/lib/cms";
 
 const SERVICE_ICONS: Record<ServiceIconKey, LucideIcon> = {
   nybyggnation: Building2,
@@ -20,8 +21,10 @@ const SERVICE_ICONS: Record<ServiceIconKey, LucideIcon> = {
   entreprenad: ClipboardList,
 };
 
-export function Services() {
-  const { servicesTitle, services } = siteContent.homePage;
+export async function Services() {
+  const { servicesTitle, services: fallbackServices } = siteContent.homePage;
+  const content = await getCmsContent();
+  const services = cmsServices(content, fallbackServices);
 
   return (
     <section className="border-t border-primary/10 bg-background py-16">

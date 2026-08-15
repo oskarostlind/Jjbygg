@@ -1,5 +1,11 @@
+/** En hero-slide: bildkälla (lokal path eller extern URL, t.ex. CMS/blob) och alt-text. */
+export type HeroSlide = {
+  src: string;
+  alt: string;
+};
+
 /** Alla hero-bilder i /public/hero – används i karusellen på startsidan. */
-export const HERO_SLIDES = [
+export const HERO_SLIDES: readonly HeroSlide[] = [
   {
     src: "/hero/benjamin-lehman-EJU7A__krX0-unsplash.jpg",
     alt: "Byggfirma i Boden och Luleå – nybyggnation och entreprenad i Norrbotten",
@@ -20,8 +26,6 @@ export const HERO_SLIDES = [
     src: "/hero/scandinavian home renovation.jpg",
     alt: "Renovering och interiör i Boden – kök och totalrenovering",
   },
-] as const;
-
-export type HeroSlide = (typeof HERO_SLIDES)[number];
+];
 
 export const HERO_SLIDE_INTERVAL_MS = 10_000;
