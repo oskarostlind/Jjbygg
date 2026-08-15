@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   revalidateTag("cms");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 
   return NextResponse.json({ revalidated: true });
 }
