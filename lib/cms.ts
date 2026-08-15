@@ -308,7 +308,10 @@ export async function getCmsPost(slug: string): Promise<CmsPost | null> {
   try {
     const res = await fetch(`${base}${CMS_POSTS_PATH}/${encodeURIComponent(cleanSlug)}`, {
       headers,
-      next: { revalidate: 60, tags: ["cms"] },
+      // no-store: the detail page is force-dynamic and low-traffic; Next's
+      // data cache serves stale entries indefinitely when revalidation hits
+      // a 404, which kept deleted posts alive. Always fetch fresh.
+      cache: "no-store",
     });
 
     if (!res.ok) {
