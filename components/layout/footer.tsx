@@ -1,14 +1,34 @@
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
-import { resolveContactPhoneFromEnv } from "@/lib/contact";
+import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
+import { getCmsContent, blockValue } from "@/lib/cms";
 
 const { footer } = siteContent;
+const FALLBACK_CONTACT_NAME = "Jesper Johansson";
 
-export function Footer() {
+export async function Footer() {
   noStore();
-  const phone = resolveContactPhoneFromEnv();
-  const contactEmail = process.env.JESPER_EMAIL?.trim();
+  const content = await getCmsContent();
+
+  const companyName = blockValue(content, "footer.company", footer.companyName);
+  const orgNumber = blockValue(content, "footer.orgnr", footer.orgNumber);
+  const address = blockValue(content, "footer.address", footer.address);
+  const contactName = blockValue(content, "footer.contactName", FALLBACK_CONTACT_NAME);
+
+  // Telefon: om CMS levererar ett giltigt svenskt mobilnummer används det
+  // (både visning och tel:-länk härleds från samma värde). Annars behålls
+  // den befintliga env-baserade upplösningen oförändrad.
+  const envPhone = resolveContactPhoneFromEnv();
+  const cmsPhoneRaw = blockValue(content, "footer.phone", "");
+  const cmsPhoneDigits = cmsPhoneRaw ? parseSwedishMobileTenDigits(cmsPhoneRaw) : null;
+  const phone = cmsPhoneDigits
+    ? { display: formatSwedishMobileDisplay(cmsPhoneDigits), telDigits: cmsPhoneDigits }
+    : envPhone;
+
+  const envEmail = process.env.JESPER_EMAIL?.trim();
+  const cmsEmail = blockValue(content, "footer.email", "");
+  const contactEmail = cmsEmail || envEmail;
 
   return (
     <footer className="w-full border-t border-primary/20 bg-primary py-12 text-primary-foreground">
@@ -18,9 +38,9 @@ export function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
               Företag
             </h3>
-            <p className="mt-2 font-semibold">{footer.companyName}</p>
+            <p className="mt-2 font-semibold">{companyName}</p>
             <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
-            <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {footer.orgNumber}</p>
+            <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {orgNumber}</p>
           </div>
 
           <div>
@@ -28,7 +48,7 @@ export function Footer() {
               Adress
             </h3>
             <address className="mt-2 not-italic text-sm text-primary-foreground/90">
-              {footer.address}
+              {address}
             </address>
             {footer.postAddress && (footer.postAddress as string) !== (footer.address as string) && (
               <p className="mt-1 text-sm text-primary-foreground/80">Post: {footer.postAddress}</p>
@@ -42,7 +62,7 @@ export function Footer() {
             <div className="mt-2 space-y-2 text-sm">
               {phone && (
                 <p>
-                  <span className="block text-xs text-primary-foreground/70">Jesper Johansson</span>
+                  <span className="block text-xs text-primary-foreground/70">{contactName}</span>
                   <a
                     href={`tel:${phone.telDigits}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"

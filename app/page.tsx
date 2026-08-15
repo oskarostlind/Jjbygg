@@ -5,6 +5,7 @@ import { siteContent } from "@/lib/site-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
 import { Button } from "@/components/ui/button";
+import { getCmsContent, blockValue, cmsSeo } from "@/lib/cms";
 
 type FaqEntry = { readonly question: string; readonly answer: string };
 
@@ -23,28 +24,52 @@ function faqPageJsonLd(entries: readonly FaqEntry[]) {
   };
 }
 
-export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: {
-    absolute: siteContent.meta.title,
-  },
-  openGraph: {
-    ...defaultMetadata.openGraph,
-    title: siteContent.meta.title,
-    url: SITE_URL,
-  },
-  twitter: {
-    ...defaultMetadata.twitter,
-    title: siteContent.meta.title,
-  },
-  alternates: {
-    canonical: SITE_URL,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getCmsContent();
+  const seo = cmsSeo(content, "home");
+  const title = seo?.title?.trim() || siteContent.meta.title;
+  const description = seo?.description?.trim() || siteContent.meta.description;
 
-export default function HomePage() {
+  return {
+    ...defaultMetadata,
+    title: {
+      absolute: title,
+    },
+    description,
+    openGraph: {
+      ...defaultMetadata.openGraph,
+      title,
+      description,
+      url: SITE_URL,
+    },
+    twitter: {
+      ...defaultMetadata.twitter,
+      title,
+      description,
+    },
+    alternates: {
+      canonical: SITE_URL,
+    },
+  };
+}
+
+export default async function HomePage() {
   const { homePage } = siteContent;
-  const faqJson = JSON.stringify(faqPageJsonLd(homePage.faq));
+  const content = await getCmsContent();
+
+  const faq: FaqEntry[] = homePage.faq.map((item, i) => ({
+    question: blockValue(content, `faq.q${i + 1}`, item.question),
+    answer: blockValue(content, `faq.a${i + 1}`, item.answer),
+  }));
+
+  const trust: string[] = homePage.trust.map((item, i) =>
+    blockValue(content, `why.item${i + 1}`, item)
+  );
+
+  const ctaTitle = blockValue(content, "cta.title", homePage.ctaTitle);
+  const ctaSubline = blockValue(content, "cta.subtitle", homePage.ctaSubline);
+
+  const faqJson = JSON.stringify(faqPageJsonLd(faq));
 
   return (
     <main>
@@ -58,7 +83,7 @@ export default function HomePage() {
             {homePage.faqTitle}
           </h2>
           <div className="mt-8 space-y-3">
-            {homePage.faq.map((item, i) => (
+            {faq.map((item, i) => (
               <details
                 key={i}
                 className="group rounded-lg border border-primary/20 bg-card px-4 py-3 shadow-sm open:shadow-md"
@@ -86,7 +111,7 @@ export default function HomePage() {
             {homePage.trustTitle}
           </h2>
           <ul className="mt-10 flex flex-col gap-6 sm:flex-row sm:justify-center sm:gap-12">
-            {homePage.trust.map((item, i) => (
+            {trust.map((item, i) => (
               <li key={i} className="flex items-center justify-center gap-3 text-center sm:flex-col">
                 <span
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"
@@ -104,9 +129,9 @@ export default function HomePage() {
       <section className="border-t border-primary/10 bg-primary py-16">
         <div className="mx-auto max-w-2xl px-4 text-center">
           <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl">
-            {homePage.ctaTitle}
+            {ctaTitle}
           </h2>
-          <p className="mt-3 text-primary-foreground/90">{homePage.ctaSubline}</p>
+          <p className="mt-3 text-primary-foreground/90">{ctaSubline}</p>
           <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
             <Link href="/offert">{homePage.ctaButtonText}</Link>
           </Button>
