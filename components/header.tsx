@@ -5,6 +5,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { Button } from "@/components/ui/button";
+import { hasPublishedPosts } from "@/lib/cms";
 
 /** Intrinsic logo ratio (public/logo.png) – undvik fel proportioner i layout. */
 const LOGO_WIDTH = 320;
@@ -15,6 +16,10 @@ export async function Header() {
   const phoneFromEnv = resolveContactPhoneFromEnv();
   const phoneDisplay = phoneFromEnv?.display ?? siteContent.contact.phoneDisplay;
   const phoneTel = phoneFromEnv?.telDigits ?? siteContent.contact.phoneTelDigits;
+  // Feature-flagga via innehåll: nav-länken visas endast om det finns minst
+  // ett publicerat nyhetsinlägg i CMS:et. Inga inlägg → länken syns inte
+  // och sajten ser ut exakt som idag.
+  const showNews = await hasPublishedPosts();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary">
@@ -48,6 +53,14 @@ export async function Header() {
           >
             Hem
           </Link>
+          {showNews ? (
+            <Link
+              href="/nyheter"
+              className="hidden text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded px-2 py-1 sm:inline"
+            >
+              Nyheter
+            </Link>
+          ) : null}
           <a
             href={`tel:${phoneTel}`}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary-foreground transition hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"

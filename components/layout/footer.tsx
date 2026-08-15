@@ -2,7 +2,7 @@ import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
-import { getCmsContent, blockValue } from "@/lib/cms";
+import { getCmsContent, blockValue, hasPublishedPosts } from "@/lib/cms";
 
 const { footer } = siteContent;
 const FALLBACK_CONTACT_NAME = "Jesper Johansson";
@@ -10,6 +10,9 @@ const FALLBACK_CONTACT_NAME = "Jesper Johansson";
 export async function Footer() {
   noStore();
   const content = await getCmsContent();
+  // Feature-flagga via innehåll: samma regel som i Header – länken visas
+  // bara om det finns minst ett publicerat nyhetsinlägg.
+  const showNews = await hasPublishedPosts();
 
   const companyName = blockValue(content, "footer.company", footer.companyName);
   const orgNumber = blockValue(content, "footer.orgnr", footer.orgNumber);
@@ -41,6 +44,14 @@ export async function Footer() {
             <p className="mt-2 font-semibold">{companyName}</p>
             <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
             <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {orgNumber}</p>
+            {showNews ? (
+              <Link
+                href="/nyheter"
+                className="mt-3 inline-block text-sm font-medium text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
+              >
+                Nyheter
+              </Link>
+            ) : null}
           </div>
 
           <div>
