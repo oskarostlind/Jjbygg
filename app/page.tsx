@@ -5,9 +5,15 @@ import { siteContent } from "@/lib/site-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
 import { Button } from "@/components/ui/button";
-import { getCmsContent, blockValue, cmsSeo } from "@/lib/cms";
+import { getCmsContent, blockValue, blockHtml, cmsSeo, plainText } from "@/lib/cms";
 
-type FaqEntry = { readonly question: string; readonly answer: string };
+type FaqEntry = {
+  readonly question: string;
+  /** Svaret som markdown — visas när CMS:et inte levererar färdig HTML. */
+  readonly answer: string;
+  /** Svaret renderat av CMS:et, med kundens formatering. */
+  readonly answerHtml: string | null;
+};
 
 function faqPageJsonLd(entries: readonly FaqEntry[]) {
   return {
@@ -15,10 +21,11 @@ function faqPageJsonLd(entries: readonly FaqEntry[]) {
     "@type": "FAQPage",
     mainEntity: entries.map((item) => ({
       "@type": "Question",
-      name: item.question,
+      name: plainText(item.question),
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer,
+        // Strukturerad data ska vara ren text — aldrig markdown eller taggar.
+        text: plainText(item.answer),
       },
     })),
   };
@@ -60,6 +67,7 @@ export default async function HomePage() {
   const faq: FaqEntry[] = homePage.faq.map((item, i) => ({
     question: blockValue(content, `faq.q${i + 1}`, item.question),
     answer: blockValue(content, `faq.a${i + 1}`, item.answer),
+    answerHtml: blockHtml(content, `faq.a${i + 1}`),
   }));
 
   const trust: string[] = homePage.trust.map((item, i) =>
@@ -96,9 +104,16 @@ export default async function HomePage() {
                     </span>
                   </span>
                 </summary>
-                <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
-                  {item.answer}
-                </p>
+                {item.answerHtml ? (
+                  <div
+                    className="cms-rich-inherit mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: item.answerHtml }}
+                  />
+                ) : (
+                  <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
+                    {item.answer}
+                  </p>
+                )}
               </details>
             ))}
           </div>

@@ -93,7 +93,7 @@ export default async function NyhetPage({ params }: Props) {
           <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
             <Image
               src={post.coverImage}
-              alt={post.title}
+              alt={post.coverImageAlt ?? post.title}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 768px"
@@ -102,7 +102,16 @@ export default async function NyhetPage({ params }: Props) {
           </div>
         ) : null}
 
-        <div className="mt-8">{renderMarkdownLite(post.content)}</div>
+        {/* CMS:et renderar brödtexten åt oss (med kundens formatering);
+            renderMarkdownLite är kvar som fallback för äldre CMS-svar. */}
+        {post.contentHtml ? (
+          <div
+            className="cms-rich mt-8"
+            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+          />
+        ) : (
+          <div className="mt-8">{renderMarkdownLite(post.content)}</div>
+        )}
       </article>
     </main>
   );

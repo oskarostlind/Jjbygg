@@ -3,7 +3,7 @@ import { siteContent } from "@/lib/site-content";
 import { HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides";
 import { HeroSlideshow } from "@/components/hero-slideshow";
 import { Button } from "@/components/ui/button";
-import { getCmsContent, blockValue } from "@/lib/cms";
+import { getCmsContent, blockValue, blockHtml, blockAlt } from "@/lib/cms";
 
 /**
  * Väljer vilka bilder som ska visas i hero-bildspelet.
@@ -25,8 +25,12 @@ export async function Hero() {
 
   const headline = blockValue(content, "hero.title", hero.headline);
   const subline = blockValue(content, "hero.subtitle", hero.subline);
+  const sublineHtml = blockHtml(content, "hero.subtitle");
   const cmsImage = blockValue(content, "hero.image", "");
-  const slides = resolveHeroSlides(cmsImage, HERO_SLIDES[0].alt);
+  // Kundens egen bildbeskrivning när bilden kommer från CMS:et; annars den
+  // beskrivning som hör till den lokala bilden.
+  const cmsImageAlt = blockAlt(content, "hero.image", HERO_SLIDES[0].alt);
+  const slides = resolveHeroSlides(cmsImage, cmsImageAlt);
 
   return (
     <section
@@ -40,9 +44,16 @@ export async function Hero() {
           <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl">
             {headline}
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-white/95 md:text-xl">
-            {subline}
-          </p>
+          {sublineHtml ? (
+            <div
+              className="cms-rich-inherit mt-4 text-lg leading-relaxed text-white/95 md:text-xl"
+              dangerouslySetInnerHTML={{ __html: sublineHtml }}
+            />
+          ) : (
+            <p className="mt-4 text-lg leading-relaxed text-white/95 md:text-xl">
+              {subline}
+            </p>
+          )}
           <div className="mt-8 flex justify-center lg:justify-start">
             <Button
               asChild

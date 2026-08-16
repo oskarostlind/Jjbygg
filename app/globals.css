@@ -22,6 +22,98 @@
   }
 }
 
+@layer components {
+  /* --------------------------------------------------------------------
+     Innehåll som kunden formaterat i CMS:et (richtext-block och brödtext i
+     nyheter). CMS:et levererar färdig HTML; Tailwinds preflight nollställer
+     all typografi, så rubriker, listor och länkar behöver egna regler här.
+
+     .cms-rich          fristående brödtext (nyhetsartikel)
+     .cms-rich-inherit  formatering inuti befintlig typografi (FAQ-svar,
+                        hero-underrubrik) — ärver färg och storlek från
+                        omgivningen så designen ser likadan ut som idag när
+                        kunden inte lagt till någon formatering
+     -------------------------------------------------------------------- */
+  .cms-rich > :first-child,
+  .cms-rich-inherit > :first-child {
+    @apply mt-0;
+  }
+
+  .cms-rich p {
+    @apply mt-4 leading-relaxed text-foreground;
+  }
+
+  .cms-rich h2 {
+    @apply mt-8 text-2xl font-semibold text-primary;
+  }
+
+  .cms-rich h3 {
+    @apply mt-6 text-xl font-semibold text-primary;
+  }
+
+  .cms-rich ul,
+  .cms-rich ol {
+    @apply mt-4 space-y-1 pl-6 text-foreground;
+  }
+
+  .cms-rich blockquote {
+    @apply mt-4 border-l-4 border-primary/20 pl-4 italic text-muted-foreground;
+  }
+
+  .cms-rich hr {
+    @apply my-8 border-primary/15;
+  }
+
+  .cms-rich-inherit p {
+    @apply mt-3;
+  }
+
+  .cms-rich-inherit h2,
+  .cms-rich-inherit h3 {
+    @apply mt-4 font-semibold;
+  }
+
+  .cms-rich-inherit ul,
+  .cms-rich-inherit ol {
+    @apply mt-3 space-y-1 pl-5;
+  }
+
+  .cms-rich-inherit blockquote {
+    @apply mt-3 border-l-2 pl-3 italic;
+    /* Ärver textfärgen — fungerar både på ljus bakgrund och över hero-bilden. */
+    border-color: currentColor;
+  }
+
+  .cms-rich ul,
+  .cms-rich-inherit ul {
+    @apply list-disc;
+  }
+
+  .cms-rich ol,
+  .cms-rich-inherit ol {
+    @apply list-decimal;
+  }
+
+  .cms-rich li > p,
+  .cms-rich-inherit li > p {
+    @apply mt-0;
+  }
+
+  .cms-rich strong,
+  .cms-rich-inherit strong {
+    @apply font-semibold;
+  }
+
+  .cms-rich a,
+  .cms-rich-inherit a {
+    @apply underline underline-offset-2 transition-colors hover:opacity-80;
+  }
+
+  .cms-rich a {
+    @apply text-accent;
+  }
+}
+
 @layer utilities {
   .offert-page-bg {
     @apply bg-slate-50;

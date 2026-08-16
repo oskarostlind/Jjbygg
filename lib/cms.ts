@@ -13,6 +13,13 @@ export type CmsBlock = {
   key: string;
   type: CmsBlockType;
   value: string;
+  /** Bildblock: kundens beskrivning av bilden (alt-text). Saknas i äldre CMS-svar. */
+  alt?: string | null;
+  /**
+   * Richtext-block: `value` renderad från markdown av CMS:et. Finns bara i
+   * nyare CMS-svar; anropare måste falla tillbaka på `value` när den saknas.
+   */
+  html?: string | null;
 };
 
 export type CmsPage = {
@@ -109,6 +116,79 @@ export function blockValue(
   return value.length > 0 ? value : fallback;
 }
 
+/** Hämtar råblocket för en nyckel, eller null. */
+function findBlock(
+  content: CmsContent | null,
+  key: string,
+  pageSlug: string
+): CmsBlock | null {
+  if (!content) return null;
+  const page = content.pages.find((p) => p.slug === pageSlug);
+  if (!page) return null;
+  return page.blocks.find((b) => b.key === key) ?? null;
+}
+
+/**
+ * Färdig HTML för ett richtext-block, eller null om CMS:et inte levererar
+ * någon (äldre svar, tomt block, eller ett block av annan typ).
+ *
+ * HTML:en produceras av CMS:et ur markdown: all text är escapad och bara en
+ * fast taggmängd (p, h2, h3, strong, em, a, ul, ol, li, blockquote, br, hr)
+ * förekommer, med länkmål begränsade till http/https/mailto/tel/relativa.
+ * Därför är den säker att rendera med dangerouslySetInnerHTML. Anroparen ska
+ * ändå alltid ha en fallback till `blockValue()` — sajten får aldrig bli tom
+ * för att ett fält saknas i svaret.
+ */
+export function blockHtml(
+  content: CmsContent | null,
+  key: string,
+  pageSlug = "home"
+): string | null {
+  const block = findBlock(content, key, pageSlug);
+  if (!block || typeof block.html !== "string") {
+    return null;
+  }
+  const html = block.html.trim();
+  return html.length > 0 ? html : null;
+}
+
+/**
+ * Alt-texten kunden skrivit för ett bildblock, eller `fallback` när den
+ * saknas (äldre CMS-svar eller obeskriven bild).
+ */
+export function blockAlt(
+  content: CmsContent | null,
+  key: string,
+  fallback: string,
+  pageSlug = "home"
+): string {
+  const block = findBlock(content, key, pageSlug);
+  if (!block || typeof block.alt !== "string") {
+    return fallback;
+  }
+  const alt = block.alt.trim();
+  return alt.length > 0 ? alt : fallback;
+}
+
+/**
+ * Plockar bort markdown-tecken ur en text. Används där innehållet måste vara
+ * ren text och inte får innehålla vare sig markdown eller HTML — i praktiken
+ * strukturerad data för sökmotorer (JSON-LD) och metabeskrivningar.
+ */
+export function plainText(markdown: string): string {
+  return markdown
+    .replace(/\r\n?/g, "\n")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^>\s?/gm, "")
+    .replace(/^\s*([-*+]|\d+[.)])\s+/gm, "")
+    .replace(/\[([^\]\n]*)\]\([^)\s]+\)/g, "$1")
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    .replace(/\\([\\*[\]#>-])/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /**
  * Slår ihop CMS-tjänster med det statiska fallback-arrayet positionellt,
  * så att fält som inte finns i CMS-svaret (t.ex. iconKey) behålls från
@@ -157,7 +237,12 @@ export type CmsPost = {
   title: string;
   excerpt: string | null;
   coverImage: string | null;
+  /** Kundens beskrivning av omslagsbilden. Saknas i äldre CMS-svar. */
+  coverImageAlt: string | null;
+  /** Brödtexten som markdown — fortfarande källan när `contentHtml` saknas. */
   content: string;
+  /** Brödtexten renderad av CMS:et. Finns bara i nyare CMS-svar. */
+  contentHtml: string | null;
   publishedAt: string | null;
 };
 
@@ -229,7 +314,14 @@ function normalizeCmsPost(raw: unknown): CmsPost | null {
     r.imageUrl,
     r.ogImage
   );
+  const coverImageAlt = firstNonEmptyString(
+    r.coverImageAlt,
+    r.cover_image_alt,
+    r.imageAlt,
+    r.alt
+  );
   const content = firstNonEmptyString(r.content, r.body, r.markdown, r.text) ?? "";
+  const contentHtml = firstNonEmptyString(r.bodyHtml, r.body_html, r.contentHtml, r.html);
   const publishedAt = firstNonEmptyString(
     r.publishedAt,
     r.published_at,
@@ -238,7 +330,7 @@ function normalizeCmsPost(raw: unknown): CmsPost | null {
     r.date
   );
 
-  return { slug, title, excerpt, coverImage, content, publishedAt };
+  return { slug, title, excerpt, coverImage, coverImageAlt, content, contentHtml, publishedAt };
 }
 
 function sortPostsByDateDesc(posts: CmsPost[]): CmsPost[] {
