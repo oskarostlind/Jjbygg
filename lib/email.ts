@@ -12,7 +12,7 @@ const FROM_EMAIL =
 /** Mottagare för administrations-/notifieringsmail. */
 const ADMIN_EMAIL = process.env.JESPER_EMAIL ?? CONTACT_EMAIL;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://placeholder-jj-entreprenad.se";
+import { SITE_URL } from "@/lib/seo";
 
 export type OffertEmailData = {
   namn: string;
@@ -26,7 +26,17 @@ export type OffertEmailData = {
   onskatStartdatum?: string;
   kundtyp?: string;
   bildUrler: string[];
+  /** Varifrån besökaren kom (referrer/UTM) – bara i notifieringen till Jesper. */
+  kalla?: string;
 };
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 export async function sendOffertBekraftelseToCustomer(
   data: OffertEmailData
@@ -79,6 +89,7 @@ export async function sendOffertNotifieringToJesper(
         <p><strong>Önskat startdatum:</strong> ${data.onskatStartdatum ?? "–"}</p>
         <p><strong>Bilder:</strong></p>
         <ul>${bildLista}</ul>
+        <p style="color:#666;font-size:12px"><strong>Källa:</strong> ${escapeHtml(data.kalla ?? "okänd")}</p>
       `,
     });
     if (error) return { ok: false, error: error.message };

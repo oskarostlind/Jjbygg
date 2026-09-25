@@ -99,7 +99,7 @@ export const siteContent = {
       {
         question: "Är offerten kostnadsfri?",
         answer:
-          "Ja – att begära offert via vår webbplats är kostnadsfri och förbindande. Vi går igenom dina önskemål och återkommer med förslag eller kompletterande frågor innan eventuell upphandling.",
+          "Ja – att begära offert via vår webbplats är kostnadsfritt och helt utan förpliktelser. Vi går igenom dina önskemål och återkommer med förslag eller kompletterande frågor innan eventuell upphandling.",
       },
       {
         question: "Hur fungerar ROT-avdrag?",

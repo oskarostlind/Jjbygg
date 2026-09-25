@@ -19,6 +19,7 @@ function parseFormDataToPayload(formData: FormData): {
   telefon: string;
   kundtyp: string;
   budget: string;
+  kalla: string;
   bilder: File[];
 } {
   const rotVal = formData.get("rot");
@@ -33,6 +34,7 @@ function parseFormDataToPayload(formData: FormData): {
     telefon: (formData.get("telefon") as string) ?? "",
     kundtyp: (formData.get("kundtyp") as string) ?? "",
     budget: (formData.get("budget") as string) ?? "",
+    kalla: ((formData.get("kalla") as string) ?? "").slice(0, 500),
     bilder: (formData.getAll("bilder") as File[]).filter((f) => f && f.size > 0),
   };
 }
@@ -141,6 +143,7 @@ export async function submitOffert(formData: FormData): Promise<SubmitOffertResu
     onskatStartdatum: data.onskatStartdatum,
     kundtyp: data.kundtyp,
     bildUrler,
+    kalla: raw.kalla || undefined,
   };
 
   const [bekraftelse, notifiering] = await Promise.all([

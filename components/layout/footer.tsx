@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
 import { getCmsContent, blockValue, hasPublishedPosts } from "@/lib/cms";
+import { SERVICE_PAGES } from "@/lib/services-content";
 
 const { footer } = siteContent;
 const FALLBACK_CONTACT_NAME = "Jesper Johansson";
@@ -38,9 +39,7 @@ export async function Footer() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
-              Företag
-            </h3>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Företag</p>
             <p className="mt-2 font-semibold">{companyName}</p>
             <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
             <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {orgNumber}</p>
@@ -55,9 +54,20 @@ export async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
-              Adress
-            </h3>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Tjänster</p>
+            <ul className="mt-2 space-y-1 text-sm">
+              {SERVICE_PAGES.map((page) => (
+                <li key={page.slug}>
+                  <Link
+                    href={`/tjanster/${page.slug}`}
+                    className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
+                  >
+                    {page.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Adress</p>
             <address className="mt-2 not-italic text-sm text-primary-foreground/90">
               {address}
             </address>
@@ -67,9 +77,7 @@ export async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
-              Kontakt
-            </h3>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Kontakt</p>
             <div className="mt-2 space-y-2 text-sm">
               {phone && (
                 <p>
@@ -96,9 +104,7 @@ export async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">
-              Offert
-            </h3>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Offert</p>
             <p className="mt-2 text-sm text-primary-foreground/80">
               {footer.contactPrompt || "Begär en kostnadsfri offert – vi återkommer snabbt."}
             </p>

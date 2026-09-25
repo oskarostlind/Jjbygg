@@ -9,25 +9,30 @@ const PAGE_TITLE = "Nyheter";
 const PAGE_DESCRIPTION =
   "Senaste nyheterna och uppdateringarna från JJ Bygg & Entreprenad AB i Boden och Luleå.";
 
-export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: PAGE_TITLE,
-  description: PAGE_DESCRIPTION,
-  openGraph: {
-    ...defaultMetadata.openGraph,
+export async function generateMetadata(): Promise<Metadata> {
+  const posts = await getCmsPosts();
+  return {
+    ...defaultMetadata,
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
-    url: `${SITE_URL}/nyheter`,
-  },
-  twitter: {
-    ...defaultMetadata.twitter,
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-  },
-  alternates: {
-    canonical: `${SITE_URL}/nyheter`,
-  },
-};
+    openGraph: {
+      ...defaultMetadata.openGraph,
+      title: PAGE_TITLE,
+      description: PAGE_DESCRIPTION,
+      url: `${SITE_URL}/nyheter`,
+    },
+    twitter: {
+      ...defaultMetadata.twitter,
+      title: PAGE_TITLE,
+      description: PAGE_DESCRIPTION,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/nyheter`,
+    },
+    // Tom nyhetssida = tunt innehåll. Indexera först när det finns inlägg.
+    robots: posts.length > 0 ? { index: true, follow: true } : { index: false, follow: true },
+  };
+}
 
 function formatDate(iso: string | null): string | null {
   if (!iso) return null;

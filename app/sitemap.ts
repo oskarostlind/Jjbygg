@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
 import { getCmsPosts } from "@/lib/cms";
+import { SERVICE_PAGES } from "@/lib/services-content";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://placeholder-jj-entreprenad.se";
+import { SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // getCmsPosts() kraschar aldrig – returnerar tom array om CMS:et är nere,
@@ -18,22 +19,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
       url: SITE_URL,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 1,
     },
     {
       url: `${SITE_URL}/offert`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/nyheter`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
+      url: `${SITE_URL}/tjanster`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     },
+    ...SERVICE_PAGES.map((page) => ({
+      url: `${SITE_URL}/tjanster/${page.slug}`,
+      lastModified: new Date(page.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    // Nyhetssidan listas bara när det finns inlägg – en tom sida ska inte indexeras.
+    ...(posts.length > 0
+      ? [
+          {
+            url: `${SITE_URL}/nyheter`,
+            lastModified: new Date(),
+            changeFrequency: "weekly" as const,
+            priority: 0.6,
+          },
+        ]
+      : []),
     ...postEntries,
   ];
 }

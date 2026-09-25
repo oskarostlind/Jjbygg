@@ -53,6 +53,12 @@ export async function Header() {
           >
             Hem
           </Link>
+          <Link
+            href="/tjanster"
+            className="hidden text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded px-2 py-1 sm:inline"
+          >
+            Tjänster
+          </Link>
           {showNews ? (
             <Link
               href="/nyheter"

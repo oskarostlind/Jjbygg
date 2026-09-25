@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { siteContent } from "@/lib/site-content";
@@ -18,6 +18,25 @@ import { OffertSuccessView } from "@/components/offert/offert-success-view";
 
 const STEPS: StepId[] = [1, 2, 3];
 
+const LEAD_SOURCE_KEY = "jj_lead_source";
+
+/** Första landningen i sessionen: referrer, landningssida och ev. UTM-parametrar. */
+function readLeadSource(): string {
+  try {
+    const stored = window.sessionStorage.getItem(LEAD_SOURCE_KEY);
+    if (stored) return stored;
+  } catch {
+    /* sessionStorage kan vara blockerat – fall tillbaka på aktuell sida */
+  }
+  const params = new URLSearchParams(window.location.search);
+  const utm = ["utm_source", "utm_medium", "utm_campaign"]
+    .map((k) => (params.get(k) ? `${k}=${params.get(k)}` : null))
+    .filter(Boolean)
+    .join(" ");
+  const ref = document.referrer && !document.referrer.includes(window.location.host) ? document.referrer : "direkt";
+  return [`referrer=${ref}`, `sida=${window.location.pathname}`, utm].filter(Boolean).join(" ").slice(0, 500);
+}
+
 function stepTitle(step: StepId): string {
   if (step === 1) return "Projektdetaljer";
   if (step === 2) return "Media & plats";
@@ -30,6 +49,13 @@ export default function OffertPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [kalla, setKalla] = useState("");
+
+  // Varifrån kom besökaren? Skickas med i notifieringsmailet så att vi kan
+  // mäta vilken kanal (Google, Google-profil, Facebook, annons…) som ger förfrågningar.
+  useEffect(() => {
+    setKalla(readLeadSource());
+  }, []);
 
   const form = useForm<OffertFormData>({
     resolver: zodResolver(offertSchema),
@@ -78,6 +104,7 @@ export default function OffertPage() {
     if (values.kundtyp) formData.set("kundtyp", values.kundtyp);
     if (values.budget) formData.set("budget", values.budget);
     imageFiles.forEach((file) => formData.append("bilder", file));
+    if (kalla) formData.set("kalla", kalla);
 
     startTransition(async () => {
       const result = await submitOffert(formData);

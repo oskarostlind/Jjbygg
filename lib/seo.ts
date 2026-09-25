@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import { siteContent } from "@/lib/site-content";
 
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://placeholder-jj-entreprenad.se";
+/**
+ * Kanonisk adress. Hårdkodad med avsikt: apex (jjbyggboden.se) redirectar till www,
+ * och canonical/sitemap får aldrig peka på en adress som redirectar.
+ * Ändra bara här om primärdomänen i Vercel byts.
+ */
+export const SITE_URL = "https://www.jjbyggboden.se";
+
+/** Delningsbild 1200×630 för Open Graph / Twitter. */
+export const OG_IMAGE_PATH = "/og-image.jpg";
 
 export const SEO_TITLE = siteContent.meta.title;
 
@@ -33,11 +40,11 @@ const SEO_KEYWORDS: string[] = [
   "bygg",
 ];
 
-function absoluteUrl(path: string): string {
+export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
 
-const ogImageUrl = absoluteUrl(siteContent.logo.primary);
+export const ogImageUrl = absoluteUrl(OG_IMAGE_PATH);
 
 export const defaultMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -55,9 +62,9 @@ export const defaultMetadata: Metadata = {
     images: [
       {
         url: ogImageUrl,
-        width: 320,
-        height: 265,
-        alt: siteContent.logo.imageAlt,
+        width: 1200,
+        height: 630,
+        alt: "JJ Bygg & Entreprenad AB – bygg och entreprenad i Boden och Luleå",
       },
     ],
   },
