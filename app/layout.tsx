@@ -9,6 +9,7 @@ import { GoogleTagManager } from "@/components/layout/google-tag-manager";
 import { LocalBusinessJsonLd } from "@/components/layout/local-business-json-ld";
 import { LeadSourceTracker } from "@/components/layout/lead-source-tracker";
 import { SitecmsPreview } from "sitecms-next/preview";
+import { SitecmsAnalytics } from "sitecms-next/analytics";
 import "./globals.css";
 
 /**
@@ -71,6 +72,8 @@ export default function RootLayout({
         {preview ? null : <Analytics />}
         {/* Renderar ingenting utanför sitecms förhandsgranskning (draft mode). */}
         <SitecmsPreview />
+        {/* Cookiefri trafikmätning till sitecms – skickar inget i förhandsgranskning. */}
+        <SitecmsAnalytics />
       </body>
     </html>
   );
