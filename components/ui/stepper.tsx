@@ -7,7 +7,7 @@ export type StepId = 1 | 2 | 3;
 
 const STEP_LABELS: Record<StepId, string> = {
   1: "Projektet",
-  2: "Bilder & plats",
+  2: "Bilder",
   3: "Kontakt",
 };
 

@@ -38,7 +38,7 @@ export function CtaBand({ title, subline, buttonText = "Begär en offert", title
           </Button>
           <a
             href={`tel:${phoneTel}`}
-            className="inline-flex h-13 min-h-[3.25rem] items-center justify-center gap-2 rounded border-2 border-paper/60 px-6 font-display text-base font-bold text-paper transition-colors hover:border-paper hover:bg-paper/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-brand-strong"
+            className="inline-flex h-[3.25rem] items-center justify-center gap-2 rounded border-2 border-paper/60 px-6 font-display text-base font-bold text-paper transition-colors hover:border-paper hover:bg-paper/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-brand-strong"
             aria-label={`Ring ${phoneDisplay}`}
           >
             <Phone className="h-4 w-4" aria-hidden />

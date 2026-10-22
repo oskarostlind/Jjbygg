@@ -127,7 +127,7 @@ export default function ServicePage({ params }: Props) {
           <div className="max-w-prose space-y-12">
             {page.sections.map((section) => (
               <section key={section.heading}>
-                <h2 className="display text-display-md text-graphite">{section.heading}</h2>
+                <h2 className="display text-display-sm text-graphite">{section.heading}</h2>
                 {section.paragraphs.map((text, i) => (
                   <p key={i} className="mt-5 text-[1.0625rem] leading-[1.7] text-graphite">
                     {text}
@@ -146,7 +146,7 @@ export default function ServicePage({ params }: Props) {
             ))}
 
             <section aria-labelledby="faq-heading">
-              <h2 id="faq-heading" className="display text-display-md text-graphite">
+              <h2 id="faq-heading" className="display text-display-sm text-graphite">
                 Vanliga frågor om {page.name.toLowerCase()}
               </h2>
               <div className="mt-6">

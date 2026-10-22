@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { hasPublishedPosts } from "@/lib/cms";
 import { BrandLockup } from "@/components/layout/brand-lockup";
 import { MobileNav, type NavItem } from "@/components/layout/mobile-nav";
+import { SERVICE_PAGES } from "@/lib/services-content";
 
 export async function Header() {
   noStore();
@@ -18,19 +19,24 @@ export async function Header() {
   const showNews = await hasPublishedPosts();
 
   const items: NavItem[] = [
-    { href: "/tjanster", label: "Tjänster" },
+    { href: "/", label: "Start" },
+    {
+      href: "/tjanster",
+      label: "Tjänster",
+      children: SERVICE_PAGES.map((page) => ({ href: `/tjanster/${page.slug}`, label: page.name })),
+    },
     ...(showNews ? [{ href: "/nyheter", label: "Nyheter" }] : []),
     { href: "/offert", label: "Begär offert" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-line bg-sand/95 backdrop-blur supports-[backdrop-filter]:bg-sand/85">
+    <header className="sticky top-0 z-50 w-full border-b border-line bg-sand">
       <div className="wrap flex h-[var(--header-h)] items-center justify-between gap-4">
         <BrandLockup priority />
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Huvudnavigation">
           {items
-            .filter((item) => item.href !== "/offert")
+            .filter((item) => item.href !== "/offert" && item.href !== "/")
             .map((item) => (
               <Link
                 key={item.href}

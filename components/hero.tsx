@@ -53,7 +53,7 @@ export async function Hero() {
       />
 
       <div className="wrap pointer-events-none relative z-10 flex min-h-[34rem] flex-col justify-end pb-10 pt-24 sm:min-h-[38rem] md:min-h-[min(44rem,82svh)] md:pb-14 md:pt-32">
-        <div className="pointer-events-auto max-w-[44rem]">
+        <div className="pointer-events-auto max-w-[50rem]">
           <h1
             className="display text-display-xl text-paper [text-shadow:0_1px_2px_rgba(0,0,0,0.25)]"
             {...editable("home", "hero.title")}

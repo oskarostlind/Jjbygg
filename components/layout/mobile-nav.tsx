@@ -6,7 +6,12 @@ import { usePathname } from "next/navigation";
 import { Menu, Phone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type NavItem = { href: string; label: string };
+export type NavItem = {
+  href: string;
+  label: string;
+  /** Underlänkar (t.ex. tjänstesidorna) – visas som mindre lista under posten. */
+  children?: { href: string; label: string }[];
+};
 
 type MobileNavProps = {
   items: NavItem[];
@@ -58,10 +63,9 @@ export function MobileNav({ items, phoneDisplay, phoneTel }: MobileNavProps) {
 
       <div
         id={panelId}
-        hidden={!open}
         className={cn(
-          "fixed inset-x-0 bottom-0 top-[var(--header-h)] z-40 flex flex-col overflow-y-auto border-t border-line bg-sand",
-          open ? "animate-in fade-in-0 slide-in-from-top-2 duration-200" : ""
+          "fixed inset-x-0 bottom-0 top-[var(--header-h)] z-40 flex-col overflow-y-auto border-t border-line bg-sand",
+          open ? "flex animate-in fade-in-0 slide-in-from-top-2 duration-200" : "hidden"
         )}
       >
         <nav aria-label="Huvudnavigation" className="px-4 pt-2">
@@ -74,12 +78,30 @@ export function MobileNav({ items, phoneDisplay, phoneTel }: MobileNavProps) {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "display flex items-center justify-between py-5 text-2xl text-graphite",
+                      "display flex items-center justify-between py-4 text-2xl text-graphite",
                       active && "text-brand-strong"
                     )}
                   >
                     {item.label}
                   </Link>
+                  {item.children && item.children.length > 0 ? (
+                    <ul className="-mt-1 mb-3 grid grid-cols-1 gap-y-1 pl-4 min-[420px]:grid-cols-2">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            aria-current={pathname === child.href ? "page" : undefined}
+                            className={cn(
+                              "block py-1.5 text-[0.9375rem] font-medium text-ink-muted",
+                              pathname === child.href && "text-brand-strong"
+                            )}
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               );
             })}
@@ -89,14 +111,14 @@ export function MobileNav({ items, phoneDisplay, phoneTel }: MobileNavProps) {
         <div className="mt-auto space-y-3 border-t border-line bg-sand-deep/60 p-4 pb-8">
           <a
             href={`tel:${phoneTel}`}
-            className="flex h-13 min-h-[3.25rem] items-center justify-center gap-3 rounded border-2 border-graphite font-display text-lg font-bold text-graphite"
+            className="flex h-[3.25rem] items-center justify-center gap-3 rounded border-2 border-graphite font-display text-lg font-bold text-graphite"
           >
             <Phone className="h-5 w-5" aria-hidden />
             {phoneDisplay}
           </a>
           <Link
             href="/offert"
-            className="flex h-13 min-h-[3.25rem] items-center justify-center rounded bg-brand-strong font-display text-lg font-bold text-paper"
+            className="flex h-[3.25rem] items-center justify-center rounded bg-brand-strong font-display text-lg font-bold text-paper"
           >
             Begär kostnadsfri offert
           </Link>

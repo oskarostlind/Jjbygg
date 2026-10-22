@@ -40,7 +40,7 @@ export const siteContent = {
       "JJ Bygg & Entreprenad AB hjälper dig med allt från nybyggnation och tillbyggnad till altaner och takbyten. Kvalitet, transparens och lokalt engagemang i hela Norrbotten.",
     ctaText: "Begär en offert",
     /** Förtroendesignaler under knapparna i hero. */
-    badges: ["Kostnadsfri offert", "ROT-avdrag 30 %", "Boden & Luleå med omnejd"],
+    badges: ["Kostnadsfri offert", "ROT-avdrag 30 %", "Boden & Luleå"],
   },
   footer: {
     companyName: "JJ Bygg & Entreprenad AB",

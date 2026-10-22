@@ -57,7 +57,7 @@ export function HeroSlideshow({ slides, field }: HeroSlideshowProps) {
             fill
             priority={index === 0}
             className={cn(
-              "motion-safe-fade object-cover object-center transition-opacity duration-[1200ms] ease-in-out",
+              "motion-safe-fade object-cover object-center transition-opacity [transition-duration:1200ms] ease-in-out",
               index === activeIndex ? "opacity-100" : "opacity-0"
             )}
             sizes={HERO_IMAGE_SIZES}
