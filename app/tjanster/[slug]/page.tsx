@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
+import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,16 @@ export default function ServicePage({ params }: Props) {
   const related = page.related
     .map((slug) => SERVICE_PAGES.find((p) => p.slug === slug))
     .filter((p): p is (typeof SERVICE_PAGES)[number] => Boolean(p));
+
+  // Lokala varianter av tjänsten (/tjanster/[slug]/[ort]) + ortsidor utan egen variant.
+  const localVariants = serviceLocationPagesFor(page.slug).map((p) => {
+    const loc = getLocationPage(p.location);
+    return { href: `/tjanster/${p.service}/${p.location}`, label: `${page.name} ${loc?.inPhrase ?? p.location}` };
+  });
+  const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(
+    (loc) => ({ href: `/byggfirma/${loc.slug}`, label: `Byggfirma ${loc.inPhrase}` })
+  );
+  const areaLinks = [...localVariants, ...regionLinks];
 
   const jsonLd = [
     {
@@ -174,6 +186,26 @@ export default function ServicePage({ params }: Props) {
               ))}
             </div>
           </section>
+
+          {areaLinks.length > 0 ? (
+            <section aria-labelledby="areas-heading">
+              <h2 id="areas-heading" className="text-2xl font-semibold text-primary">
+                {page.name} där du bor
+              </h2>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+                {areaLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="block rounded-lg border border-primary/20 bg-card px-4 py-3 font-medium text-foreground shadow-sm transition hover:border-accent hover:text-primary"
+                    >
+                      {link.label} →
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           {related.length > 0 ? (
             <section aria-labelledby="related-heading">
