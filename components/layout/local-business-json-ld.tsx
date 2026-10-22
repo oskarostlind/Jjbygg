@@ -3,6 +3,7 @@ import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL, ogImageUrl } from "@/lib/seo";
 import { SERVICE_PAGES } from "@/lib/services-content";
+import { LOCATION_PAGES } from "@/lib/locations-content";
 
 /** Visningsnummer om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
 const TELEPHONE_FALLBACK = siteContent.contact.phoneDisplay;
@@ -17,7 +18,16 @@ const BODEN_APPROX_GEO = {
   longitude: 21.6889,
 };
 
-const SERVICE_AREAS = ["Boden", "Luleå"] as const;
+/**
+ * Sociala profiler / kataloger (Google Business Profile, Facebook, Instagram, Hitta, Eniro…).
+ * Tom tills Jesper bekräftat adresserna – utelämnas då ur JSON-LD (tomma värden är ogiltiga).
+ */
+const SAME_AS: string[] = [];
+
+/**
+ * Öppettider läggs bara till om de finns i site-content/CMS. Finns inte i dag,
+ * därför ingen openingHoursSpecification (påhittade tider är värre än inga).
+ */
 
 type PostalAddressLd = {
   "@type": "PostalAddress";
@@ -62,7 +72,8 @@ type LocalBusinessLd = {
   vatID?: string;
   address: PostalAddressLd;
   geo: typeof BODEN_APPROX_GEO;
-  areaServed: { "@type": "City"; name: string }[];
+  areaServed: { "@type": "City" | "AdministrativeArea"; name: string }[];
+  sameAs?: string[];
   founder?: { "@type": "Person"; name: string };
   hasOfferCatalog: {
     "@type": "OfferCatalog";
@@ -90,7 +101,8 @@ export function LocalBusinessJsonLd() {
     email: siteContent.contact.email,
     address: postalAddressFromFooterLine(siteContent.footer.address),
     geo: BODEN_APPROX_GEO,
-    areaServed: SERVICE_AREAS.map((name) => ({ "@type": "City" as const, name })),
+    areaServed: LOCATION_PAGES.map((location) => ({ "@type": location.areaType, name: location.name })),
+    ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
     founder: { "@type": "Person", name: siteContent.contact.personName },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
