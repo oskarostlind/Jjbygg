@@ -149,6 +149,11 @@ export async function Footer() {
                   Begär offert
                 </Link>
               </li>
+              <li>
+                <Link href="/integritet" className={footerLink}>
+                  Integritetspolicy
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

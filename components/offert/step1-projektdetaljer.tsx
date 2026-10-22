@@ -11,18 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { OffertFormData } from "@/lib/validations/offert";
-
-const JOB_TYPES = [
-  { value: "nybyggnad", label: "Nybyggnad" },
-  { value: "renovering", label: "Renovering" },
-  { value: "tilbyggnad", label: "Tillbyggnad" },
-  { value: "badrum", label: "Badrumsrenovering" },
-  { value: "kök", label: "Köksrenovering" },
-  { value: "fasad", label: "Fasadarbete" },
-  { value: "tak", label: "Takarbete" },
-  { value: "annat", label: "Annat" },
-];
+import { type OffertFormData, todayInSweden } from "@/lib/validations/offert";
+import { JOB_TYPES } from "@/lib/offert-job-types";
 
 interface Step1Props {
   register: UseFormRegister<OffertFormData>;
@@ -75,13 +65,19 @@ export function Step1Projektdetaljer({ register, errors, setValue, watch }: Step
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="onskatStartdatum">Önskat startdatum</Label>
+        <Label htmlFor="onskatStartdatum">Önskat startdatum (valfritt)</Label>
         <Input
           id="onskatStartdatum"
           type="date"
+          min={todayInSweden()}
           {...register("onskatStartdatum")}
           aria-invalid={!!errors.onskatStartdatum}
         />
+        {errors.onskatStartdatum && (
+          <p className="text-sm text-red-700" role="alert">
+            {errors.onskatStartdatum.message}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -91,7 +87,13 @@ export function Step1Projektdetaljer({ register, errors, setValue, watch }: Step
           type="text"
           placeholder="T.ex. 100 000 – 200 000 kr"
           {...register("budget")}
+          aria-invalid={!!errors.budget}
         />
+        {errors.budget && (
+          <p className="text-sm text-red-700" role="alert">
+            {errors.budget.message}
+          </p>
+        )}
       </div>
     </div>
   );

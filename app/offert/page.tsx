@@ -17,6 +17,7 @@ import { OffertPageLayout } from "@/components/offert/offert-page-layout";
 import { OffertPremiumCard } from "@/components/offert/offert-premium-card";
 import { OffertSuccessView } from "@/components/offert/offert-success-view";
 import { OffertPreviewNotice, useOffertPreview } from "@/components/offert/offert-preview";
+import { HONEYPOT_FIELD, STARTED_FIELD } from "@/lib/offert-spam";
 
 const STEPS: StepId[] = [1, 2, 3];
 
@@ -52,6 +53,10 @@ export default function OffertPage() {
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [kalla, setKalla] = useState("");
+  // Spamskydd: honeypot (dolt fält som bara bottar fyller i) och tidsfälla
+  // (när formuläret renderades – server actionen avvisar för snabba svar).
+  const [honeypot, setHoneypot] = useState("");
+  const [started, setStarted] = useState(0);
   // sitecms förhandsgranskning: formuläret går att titta på men inte skicka.
   const preview = useOffertPreview();
 
@@ -59,6 +64,7 @@ export default function OffertPage() {
   // mäta vilken kanal (Google, Google-profil, Facebook, annons…) som ger förfrågningar.
   useEffect(() => {
     setKalla(readLeadSource());
+    setStarted(Date.now());
   }, []);
 
   const form = useForm<OffertFormData>({
@@ -73,6 +79,7 @@ export default function OffertPage() {
       epost: "",
       telefon: "",
       kundtyp: undefined,
+      consent: false,
       budget: "",
     },
   });
@@ -82,10 +89,10 @@ export default function OffertPage() {
   const goNext = async () => {
     const fieldsToValidate =
       STEPS[currentStep - 1] === 1
-        ? (["typ", "beskrivning"] as const)
+        ? (["typ", "beskrivning", "onskatStartdatum", "budget"] as const)
         : STEPS[currentStep - 1] === 2
           ? (["postnummer", "rot"] as const)
-          : (["namn", "epost"] as const);
+          : (["namn", "epost", "telefon", "consent"] as const);
     const ok = await trigger(fieldsToValidate);
     if (ok && currentStep < 3) setCurrentStep((s) => (s + 1) as StepId);
   };
@@ -105,11 +112,14 @@ export default function OffertPage() {
     formData.set("rot", values.rot ? "true" : "false");
     formData.set("namn", values.namn);
     formData.set("epost", values.epost);
-    if (values.telefon) formData.set("telefon", values.telefon);
+    formData.set("telefon", values.telefon);
     if (values.kundtyp) formData.set("kundtyp", values.kundtyp);
     if (values.budget) formData.set("budget", values.budget);
+    formData.set("consent", values.consent ? "true" : "false");
     imageFiles.forEach((file) => formData.append("bilder", file));
     if (kalla) formData.set("kalla", kalla);
+    formData.set(HONEYPOT_FIELD, honeypot);
+    formData.set(STARTED_FIELD, String(started));
 
     startTransition(async () => {
       const result = await submitOffert(formData);
@@ -160,6 +170,20 @@ export default function OffertPage() {
               </div>
               <form onSubmit={handleSubmit(onFinalSubmit)} className="space-y-6">
                 {preview ? <OffertPreviewNotice /> : null}
+                {/* Spamskydd – osynligt för människor (och skärmläsare), bottar fyller i det. */}
+                <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                  <label htmlFor={HONEYPOT_FIELD}>Webbplats (lämna tomt)</label>
+                  <input
+                    id={HONEYPOT_FIELD}
+                    name={HONEYPOT_FIELD}
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                  <input type="hidden" name={STARTED_FIELD} value={started} readOnly />
+                </div>
                 {currentStep === 1 && (
                   <Step1Projektdetaljer
                     register={register}

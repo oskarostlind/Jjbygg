@@ -23,5 +23,7 @@ model Offert {
   postnummer       String?
   onskatStartdatum DateTime?
   kundtyp          String?   // privat / företag
+  /** Förfrågans id i sitecms (null om CMS-anropet misslyckades eller CMS inte är konfigurerat). */
+  cmsQuoteId       String?
   skapadAt         DateTime @default(now())
 }

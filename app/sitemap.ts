@@ -52,6 +52,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    {
+      url: `${SITE_URL}/integritet`,
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
+    },
     // Nyhetssidan listas bara när det finns inlägg – en tom sida ska inte indexeras.
     ...(posts.length > 0
       ? [
