@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
+import { MapPin, Mail, Phone } from "lucide-react";
 import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
@@ -8,6 +10,9 @@ import { SERVICE_PAGES } from "@/lib/services-content";
 
 const { footer } = siteContent;
 const FALLBACK_CONTACT_NAME = "Jesper Johansson";
+
+const footerLink =
+  "rounded text-ink-onDark/80 transition-colors hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-graphite";
 
 export async function Footer() {
   noStore();
@@ -29,101 +34,135 @@ export async function Footer() {
   const cmsPhoneDigits = cmsPhoneRaw ? parseSwedishMobileTenDigits(cmsPhoneRaw) : null;
   const phone = cmsPhoneDigits
     ? { display: formatSwedishMobileDisplay(cmsPhoneDigits), telDigits: cmsPhoneDigits }
-    : envPhone;
+    : envPhone ?? {
+        display: siteContent.contact.phoneDisplay,
+        telDigits: siteContent.contact.phoneTelDigits,
+      };
 
   const envEmail = process.env.JESPER_EMAIL?.trim();
   const cmsEmail = blockValue(content, "footer.email", "");
-  const contactEmail = cmsEmail || envEmail;
+  const contactEmail = cmsEmail || envEmail || siteContent.contact.email;
+
+  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t border-primary/20 bg-primary py-12 text-primary-foreground">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Företag</p>
-            <p className="mt-2 font-semibold" {...editable("home", "footer.company")}>
-              {companyName}
-            </p>
-            <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
-            <p className="mt-1 text-sm text-primary-foreground/80">
+    <footer className="surface-dark border-t-4 border-brand">
+      <div className="wrap py-14 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Logga + företag */}
+          <div className="lg:col-span-4">
+            <Image
+              src={siteContent.logo.primaryWhite}
+              alt={siteContent.logo.imageAlt}
+              width={160}
+              height={203}
+              className="h-auto w-36 md:w-40"
+            />
+            <p className="mt-6 max-w-xs text-[0.9375rem] leading-relaxed text-ink-onDark/75">{footer.tagline}</p>
+            <p className="mt-4 text-sm text-ink-onDark/60">
+              <span {...editable("home", "footer.company")}>{companyName}</span>
+              <br />
               Org.nr <span {...editable("home", "footer.orgnr")}>{orgNumber}</span>
             </p>
-            {showNews ? (
-              <Link
-                href="/nyheter"
-                className="mt-3 inline-block text-sm font-medium text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
-              >
-                Nyheter
-              </Link>
-            ) : null}
           </div>
 
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Tjänster</p>
-            <ul className="mt-2 space-y-1 text-sm">
+          {/* Tjänster */}
+          <nav className="lg:col-span-3" aria-labelledby="footer-services">
+            <h2 id="footer-services" className="font-display text-base font-bold text-paper">
+              Tjänster
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               {SERVICE_PAGES.map((page) => (
                 <li key={page.slug}>
-                  <Link
-                    href={`/tjanster/${page.slug}`}
-                    className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
-                  >
+                  <Link href={`/tjanster/${page.slug}`} className={footerLink}>
                     {page.name}
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Adress</p>
-            <address className="mt-2 not-italic text-sm text-primary-foreground/90" {...editable("home", "footer.address")}>
-              {address}
-            </address>
+          </nav>
+
+          {/* Kontakt */}
+          <div className="lg:col-span-3">
+            <h2 className="font-display text-base font-bold text-paper">Kontakt</h2>
+            <p className="mt-4 text-[0.9375rem] font-semibold text-paper" {...editable("home", "footer.contactName")}>
+              {contactName}
+            </p>
+            <ul className="mt-3 space-y-3 text-[0.9375rem]">
+              <li>
+                <a href={`tel:${phone.telDigits}`} className={`${footerLink} inline-flex items-center gap-2.5`}>
+                  <Phone className="h-4 w-4 shrink-0 text-brand" aria-hidden />
+                  <span {...editable("home", "footer.phone")}>{phone.display}</span>
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${contactEmail}`} className={`${footerLink} inline-flex items-center gap-2.5`}>
+                  <Mail className="h-4 w-4 shrink-0 text-brand" aria-hidden />
+                  <span {...editable("home", "footer.email")}>{contactEmail}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={mapsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${footerLink} inline-flex items-start gap-2.5`}
+                >
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden />
+                  <address className="not-italic" {...editable("home", "footer.address")}>
+                    {address}
+                  </address>
+                </a>
+              </li>
+            </ul>
             {footer.postAddress && (footer.postAddress as string) !== (footer.address as string) && (
-              <p className="mt-1 text-sm text-primary-foreground/80">Post: {footer.postAddress}</p>
+              <p className="mt-3 text-sm text-ink-onDark/55">Post: {footer.postAddress}</p>
             )}
           </div>
 
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Kontakt</p>
-            <div className="mt-2 space-y-2 text-sm">
-              {phone && (
-                <p>
-                  <span className="block text-xs text-primary-foreground/70" {...editable("home", "footer.contactName")}>
-                    {contactName}
-                  </span>
-                  <a
-                    href={`tel:${phone.telDigits}`}
-                    className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
-                    {...editable("home", "footer.phone")}
-                  >
-                    {phone.display}
-                  </a>
-                </p>
-              )}
-              {contactEmail ? (
-                <p>
-                  <a
-                    href={`mailto:${contactEmail}`}
-                    className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
-                    {...editable("home", "footer.email")}
-                  >
-                    {contactEmail}
-                  </a>
-                </p>
+          {/* Genvägar */}
+          <nav className="lg:col-span-2" aria-labelledby="footer-shortcuts">
+            <h2 id="footer-shortcuts" className="font-display text-base font-bold text-paper">
+              Genvägar
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
+              <li>
+                <Link href="/" className={footerLink}>
+                  Start
+                </Link>
+              </li>
+              <li>
+                <Link href="/tjanster" className={footerLink}>
+                  Tjänster
+                </Link>
+              </li>
+              {showNews ? (
+                <li>
+                  <Link href="/nyheter" className={footerLink}>
+                    Nyheter
+                  </Link>
+                </li>
               ) : null}
-            </div>
-          </div>
+              <li>
+                <Link href="/offert" className={`${footerLink} font-semibold text-paper`}>
+                  Begär offert
+                </Link>
+              </li>
+              <li>
+                <Link href="/integritet" className={footerLink}>
+                  Integritetspolicy
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Offert</p>
-            <p className="mt-2 text-sm text-primary-foreground/80">
-              {footer.contactPrompt || "Begär en kostnadsfri offert – vi återkommer snabbt."}
-            </p>
-            <Link
-              href="/offert"
-              className="mt-3 inline-block rounded bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary"
-            >
-              Begär en offert
-            </Link>
-          </div>
+        <div className="mt-14 flex flex-col gap-2 border-t border-ink-onDark/15 pt-6 text-sm text-ink-onDark/55 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {companyName}
+          </p>
+          <p>{footer.contactPrompt || "Kostnadsfri offert och hembesök i Boden och Luleå."}</p>
         </div>
       </div>
     </footer>

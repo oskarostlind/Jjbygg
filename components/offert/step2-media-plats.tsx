@@ -65,14 +65,14 @@ export function Step2MediaPlats({
           className="cursor-pointer"
         />
         {imageFiles.length > 0 && (
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+          <ul className="mt-3 divide-y divide-line rounded border border-line bg-sand px-3 text-sm text-graphite">
             {imageFiles.map((file, i) => (
-              <li key={i} className="flex items-center justify-between gap-2">
+              <li key={i} className="flex items-center justify-between gap-3 py-2">
                 <span className="truncate">{file.name}</span>
                 <button
                   type="button"
                   onClick={() => removeFile(i)}
-                  className="text-accent hover:underline"
+                  className="rounded text-sm font-semibold text-brand-strong hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-strong"
                 >
                   Ta bort
                 </button>
@@ -92,7 +92,7 @@ export function Step2MediaPlats({
           aria-invalid={!!errors.postnummer}
         />
         {errors.postnummer && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.postnummer.message}
           </p>
         )}
@@ -113,7 +113,7 @@ export function Step2MediaPlats({
           </SelectContent>
         </Select>
         {errors.rot && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.rot.message}
           </p>
         )}

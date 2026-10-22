@@ -1,80 +1,65 @@
-import { Mail, MapPin, Phone, Percent } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { siteContent } from "@/lib/site-content";
-import { OffertPremiumCard } from "@/components/offert/offert-premium-card";
 
+/**
+ * Kontaktuppgifter bredvid offertformuläret: hellre ringa än fylla i? Här
+ * finns Jesper direkt. ROT-informationen ligger under.
+ */
 export function ContactInfo() {
   const { contact, contactSection } = siteContent;
   const telHref = `tel:${contact.phoneTelDigits}`;
   const mailHref = `mailto:${contact.email}`;
 
+  const row =
+    "group flex items-center gap-4 rounded py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-strong focus-visible:ring-offset-2 focus-visible:ring-offset-sand";
+  const iconBox =
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded bg-sand-deep text-brand-strong transition-colors group-hover:bg-brand-tint";
+
   return (
-    <OffertPremiumCard>
-      <section className="p-6 md:p-8" aria-labelledby="contact-info-heading">
-        <h2
-          id="contact-info-heading"
-          className="text-center text-xl font-bold text-slate-900 md:text-2xl"
-        >
-          {contactSection.title}
-        </h2>
-        <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-10">
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
-              Kontaktuppgifter
-            </h3>
-            <p className="text-lg font-semibold text-slate-900">{contact.personName}</p>
-            <ul className="space-y-3 text-sm text-slate-800">
-              <li>
-                <a
-                  href={telHref}
-                  className="inline-flex items-center gap-3 rounded-lg transition hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Phone className="h-4 w-4" aria-hidden />
-                  </span>
-                  <span>
-                    <span className="block text-xs text-slate-500">Telefon</span>
-                    <span className="font-medium">{contact.phoneDisplay}</span>
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={mailHref}
-                  className="inline-flex items-center gap-3 rounded-lg transition hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Mail className="h-4 w-4" aria-hidden />
-                  </span>
-                  <span>
-                    <span className="block text-xs text-slate-500">E-post</span>
-                    <span className="font-medium">{contact.email}</span>
-                  </span>
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <MapPin className="h-4 w-4" aria-hidden />
-                </span>
-                <span>
-                  <span className="block text-xs text-slate-500">Utgångspunkt</span>
-                  <address className="not-italic font-medium text-slate-900">
-                    {contact.address}
-                  </address>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div className="space-y-4 rounded-xl border border-slate-100 bg-slate-50/80 p-5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-accent">
-                <Percent className="h-5 w-5" aria-hidden />
+    <section aria-labelledby="contact-info-heading">
+      <h2 id="contact-info-heading" className="font-display text-xl font-bold text-graphite">
+        {contactSection.title}
+      </h2>
+      <ul className="mt-4 divide-y divide-line border-y border-line">
+        <li>
+          <a href={telHref} className={row}>
+            <span className={iconBox}>
+              <Phone className="h-5 w-5" aria-hidden />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm text-ink-muted">Ring {contact.personName.split(" ")[0]}</span>
+              <span className="font-display text-lg font-bold text-graphite group-hover:text-brand-strong">
+                {contact.phoneDisplay}
               </span>
-              <h3 className="font-semibold text-slate-900">{contactSection.rotTitle}</h3>
-            </div>
-            <p className="text-sm leading-relaxed text-slate-600">{contactSection.rotBody}</p>
-          </div>
-        </div>
-      </section>
-    </OffertPremiumCard>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href={mailHref} className={row}>
+            <span className={iconBox}>
+              <Mail className="h-5 w-5" aria-hidden />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm text-ink-muted">E-post</span>
+              <span className="break-all font-semibold text-graphite group-hover:text-brand-strong">{contact.email}</span>
+            </span>
+          </a>
+        </li>
+        <li className="flex items-center gap-4 py-3">
+          <span className={iconBox}>
+            <MapPin className="h-5 w-5" aria-hidden />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm text-ink-muted">Utgångspunkt</span>
+            <address className="font-semibold not-italic text-graphite">{contact.address}</address>
+          </span>
+        </li>
+      </ul>
+
+      <div className="mt-6 rounded-lg bg-sand-deep p-5">
+        <h3 className="font-display text-base font-bold text-graphite">{contactSection.rotTitle}</h3>
+        <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink-muted">{contactSection.rotBody}</p>
+      </div>
+    </section>
   );
 }

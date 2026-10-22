@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Newspaper } from "lucide-react";
 import { getCmsPosts } from "@/lib/cms";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
+import { PageHeader } from "@/components/page-header";
 
 const PAGE_TITLE = "Nyheter";
 const PAGE_DESCRIPTION =
@@ -46,72 +47,70 @@ export default async function NyheterPage() {
 
   return (
     <main>
-      <section className="border-b border-primary/10 bg-primary py-16">
-        <div className="mx-auto max-w-6xl px-4 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-primary-foreground md:text-4xl">
-            {PAGE_TITLE}
-          </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-primary-foreground/90">{PAGE_DESCRIPTION}</p>
-        </div>
-      </section>
+      <PageHeader
+        title={PAGE_TITLE}
+        lead={PAGE_DESCRIPTION}
+        crumbs={[{ href: "/", label: "Hem" }, { label: "Nyheter" }]}
+      />
 
-      <section className="bg-background py-16">
-        <div className="mx-auto max-w-6xl px-4">
+      <section className="bg-sand py-12 md:py-16">
+        <div className="wrap">
           {posts.length === 0 ? (
-            <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-lg border border-primary/20 bg-card px-6 py-16 text-center shadow-sm">
-              <span
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-accent"
-                aria-hidden
-              >
-                <Newspaper className="h-6 w-6" strokeWidth={1.75} />
+            <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-12 text-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded bg-sand-deep text-brand-strong" aria-hidden>
+                <Newspaper className="h-7 w-7" strokeWidth={1.75} />
               </span>
-              <h2 className="text-lg font-semibold text-foreground">Inga nyheter ännu</h2>
-              <p className="text-sm leading-relaxed text-muted-foreground">
+              <h2 className="font-display text-xl font-bold text-graphite">Inga nyheter ännu</h2>
+              <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                 Vi har inga nyheter publicerade just nu. Kom gärna tillbaka snart – eller följ oss för
                 uppdateringar om pågående projekt.
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => {
                 const dateLabel = formatDate(post.publishedAt);
                 return (
-                  <Link
-                    key={post.slug}
-                    href={`/nyheter/${post.slug}`}
-                    className="group flex flex-col overflow-hidden rounded-lg border border-primary/20 bg-card shadow-sm transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                  >
-                    {post.coverImage ? (
-                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+                  <li key={post.slug} className="group relative flex flex-col">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg bg-sand-deep">
+                      {post.coverImage ? (
                         <Image
                           src={post.coverImage}
-                          alt={post.coverImageAlt ?? post.title}
+                          alt={post.coverImageAlt ?? ""}
                           fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                      </div>
-                    ) : null}
-                    <div className="flex flex-1 flex-col p-6">
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-concrete" aria-hidden>
+                          <Newspaper className="h-10 w-10" strokeWidth={1.5} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-1 flex-col pt-5">
                       {dateLabel ? (
-                        <time dateTime={post.publishedAt ?? undefined} className="text-xs font-medium uppercase tracking-wider text-accent">
+                        <time dateTime={post.publishedAt ?? undefined} className="text-sm font-medium text-ink-muted">
                           {dateLabel}
                         </time>
                       ) : null}
-                      <h2 className="mt-2 text-lg font-semibold text-foreground group-hover:text-primary">
-                        {post.title}
+                      <h2 className="mt-2 font-display text-xl font-bold leading-tight text-graphite group-hover:text-brand-strong">
+                        <Link
+                          href={`/nyheter/${post.slug}`}
+                          className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:underline"
+                        >
+                          {post.title}
+                        </Link>
                       </h2>
                       {post.excerpt ? (
-                        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                        <p className="mt-2 line-clamp-3 text-[0.9375rem] leading-relaxed text-ink-muted">
                           {post.excerpt}
                         </p>
                       ) : null}
-                      <span className="mt-4 text-sm font-medium text-accent">Läs mer →</span>
                     </div>
-                  </Link>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
         </div>
       </section>

@@ -1,27 +1,10 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  Building2,
-  Paintbrush,
-  Droplets,
-  Fence,
-  Home,
-  ClipboardList,
-} from "lucide-react";
-import { siteContent } from "@/lib/site-content";
-import type { ServiceIconKey } from "@/lib/site-content";
-import { Card, CardContent } from "@/components/ui/card";
-import { getCmsContent, cmsServices } from "@/lib/cms";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { siteContent } from "@/lib/site-content";
+import { getCmsContent, cmsServices } from "@/lib/cms";
 import { servicePageByIconKey } from "@/lib/services-content";
-
-const SERVICE_ICONS: Record<ServiceIconKey, LucideIcon> = {
-  nybyggnation: Building2,
-  renovering: Paintbrush,
-  badrum: Droplets,
-  altan: Fence,
-  tak: Home,
-  entreprenad: ClipboardList,
-};
+import { SectionHeading } from "@/components/section-heading";
+import { ServiceIcon } from "@/components/service-icon";
 
 export async function Services() {
   const { servicesTitle, services: fallbackServices } = siteContent.homePage;
@@ -29,59 +12,64 @@ export async function Services() {
   const services = cmsServices(content, fallbackServices);
 
   return (
-    <section className="border-t border-primary/10 bg-background py-16">
-      <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold text-primary md:text-3xl">
-          {servicesTitle}
-        </h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="bg-sand py-16 md:py-24" aria-labelledby="tjanster-heading">
+      <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-4">
+          <SectionHeading
+            id="tjanster-heading"
+            title={servicesTitle}
+            intro="Allt från en ny altan till en hel tillbyggnad. Vi tar hand om projektet från första skiss till slutbesked."
+          />
+          <Link href="/tjanster" className="link mt-6 hidden lg:inline-flex lg:items-center lg:gap-1.5">
+            Alla tjänster
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+
+        <ul className="grid gap-x-8 sm:grid-cols-2 lg:col-span-8">
           {services.map((service) => {
-            const Icon = SERVICE_ICONS[service.iconKey];
             const page = servicePageByIconKey(service.iconKey);
             return (
-              <Card
+              <li
                 key={service.iconKey}
-                className="relative border-primary/20 bg-card shadow-sm transition-shadow hover:border-accent hover:shadow-md"
+                className="group relative flex gap-4 border-t border-line py-6 sm:py-7"
               >
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
+                <ServiceIcon iconKey={service.iconKey} size="sm" className="mt-0.5 transition-colors group-hover:bg-brand-tint" />
+                <div className="min-w-0">
+                  <h3 className="font-display text-xl font-bold leading-tight text-graphite">
+                    {page ? (
+                      <Link
+                        href={`/tjanster/${page.slug}`}
+                        className="after:absolute after:inset-0 after:content-[''] group-hover:text-brand-strong focus-visible:outline-none focus-visible:underline"
+                      >
+                        {service.title}
+                      </Link>
+                    ) : (
+                      service.title
+                    )}
+                  </h3>
+                  <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-ink-muted">
+                    {service.description}
+                  </p>
+                  {page ? (
                     <span
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+                      className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-strong"
                       aria-hidden
                     >
-                      <Icon className="h-6 w-6" strokeWidth={1.75} />
+                      Läs mer
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
-                    <div className="min-w-0">
-                      <h3 className="font-semibold text-foreground">
-                        {page ? (
-                          <Link
-                            href={`/tjanster/${page.slug}`}
-                            className="after:absolute after:inset-0 hover:text-primary focus:outline-none focus-visible:underline"
-                          >
-                            {service.title}
-                          </Link>
-                        ) : (
-                          service.title
-                        )}
-                      </h3>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                        {service.description}
-                      </p>
-                      {page ? (
-                        <span className="mt-3 inline-block text-sm font-medium text-accent" aria-hidden>
-                          Läs mer →
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  ) : null}
+                </div>
+              </li>
             );
           })}
-        </div>
-        <p className="mt-8 text-center">
-          <Link href="/tjanster" className="font-medium text-primary underline-offset-4 hover:text-accent hover:underline">
-            Se alla våra tjänster
+        </ul>
+
+        <p className="lg:hidden">
+          <Link href="/tjanster" className="link inline-flex items-center gap-1.5">
+            Alla tjänster
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </p>
       </div>

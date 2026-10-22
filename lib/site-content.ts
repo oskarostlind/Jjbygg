@@ -5,14 +5,16 @@
 
 export const siteContent = {
   logo: {
-    /** Officiell logotyp (header + favicon). */
-    primary: "/logo.png",
-    favicon: "/logo.png",
+    /** Hela dekalen (märke + ordbild) i loggans röda – används i strukturerad data och på ljus bakgrund. */
+    primary: "/logo.svg",
+    /** Hela dekalen i vitt – footer och andra mörka ytor. */
+    primaryWhite: "/logo-white.svg",
+    /** Bara märket (kvadratiskt) – header, favicon. */
+    mark: "/logo-mark.svg",
+    markWhite: "/logo-mark-white.svg",
+    favicon: "/logo-mark.svg",
     /** Alt-text för logotyp (SEO / tillgänglighet). */
     imageAlt: "JJ Bygg & Entreprenad AB – logotyp, byggfirma i Boden och Luleå",
-  },
-  images: {
-    footer: "/footer-placeholder.jpg",
   },
   meta: {
     /** Kort titel utan upprepning (SEO: max ~580 px bredd i SERP). */
@@ -37,6 +39,8 @@ export const siteContent = {
     subline:
       "JJ Bygg & Entreprenad AB hjälper dig med allt från nybyggnation och tillbyggnad till altaner och takbyten. Kvalitet, transparens och lokalt engagemang i hela Norrbotten.",
     ctaText: "Begär en offert",
+    /** Förtroendesignaler under knapparna i hero. */
+    badges: ["Kostnadsfri offert", "ROT-avdrag 30 %", "Boden & Luleå"],
   },
   footer: {
     companyName: "JJ Bygg & Entreprenad AB",
@@ -80,6 +84,27 @@ export const siteContent = {
         iconKey: "entreprenad",
       },
     ] as const,
+    processTitle: "Så går det till",
+    processIntro:
+      "Från första samtalet till färdigt bygge – du vet alltid vad som händer härnäst och vad det kostar.",
+    process: [
+      {
+        title: "Berätta om projektet",
+        body: "Fyll i offertformuläret eller ring Jesper direkt. Beskriv vad du vill göra, ungefär när och gärna med några bilder.",
+      },
+      {
+        title: "Kostnadsfritt hembesök",
+        body: "Vi kommer ut, tittar på platsen och går igenom dina önskemål. Här reder vi ut bygglov, material och vad som påverkar priset.",
+      },
+      {
+        title: "Tydlig offert",
+        body: "Du får en skriftlig offert med vad som ingår, tidplan och ROT-avdrag draget direkt på fakturan. Du vet vad det kostar innan vi börjar.",
+      },
+      {
+        title: "Vi bygger – du följer med",
+        body: "Arbetet planeras efter säsong och klimat. Du får löpande besked under hela bygget, och vi avslutar med en gemensam genomgång.",
+      },
+    ],
     trustTitle: "Varför välja oss",
     trust: [
       "Professionella hantverkare",

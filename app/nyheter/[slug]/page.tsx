@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { getCmsPost } from "@/lib/cms";
 import { renderMarkdownLite } from "@/lib/markdown-lite";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 type Props = {
   params: { slug: string };
@@ -67,51 +68,57 @@ export default async function NyhetPage({ params }: Props) {
   const dateLabel = formatDate(post.publishedAt);
 
   return (
-    <main className="bg-background py-12 md:py-16">
-      <article className="mx-auto max-w-3xl px-4">
-        <Link
-          href="/nyheter"
-          className="inline-flex items-center gap-2 text-sm font-medium text-primary/70 hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden />
-          Alla nyheter
-        </Link>
-
-        <header className="mt-6">
-          {dateLabel ? (
-            <time dateTime={post.publishedAt ?? undefined} className="text-xs font-medium uppercase tracking-wider text-accent">
-              {dateLabel}
-            </time>
-          ) : null}
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary md:text-4xl">{post.title}</h1>
-          {post.excerpt ? (
-            <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
-          ) : null}
+    <main className="bg-sand">
+      <article>
+        <header className="border-b border-line bg-sand-deep">
+          <div className="wrap py-10 md:py-14">
+            <Breadcrumbs
+              items={[{ href: "/", label: "Hem" }, { href: "/nyheter", label: "Nyheter" }, { label: post.title }]}
+              className="mb-6"
+            />
+            {dateLabel ? (
+              <time dateTime={post.publishedAt ?? undefined} className="block text-sm font-medium text-ink-muted">
+                {dateLabel}
+              </time>
+            ) : null}
+            <h1 className="display mt-3 max-w-4xl text-display-lg text-graphite">{post.title}</h1>
+            {post.excerpt ? (
+              <p className="mt-5 max-w-prose text-lg leading-relaxed text-ink-muted md:text-xl">{post.excerpt}</p>
+            ) : null}
+          </div>
         </header>
 
-        {post.coverImage ? (
-          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
-            <Image
-              src={post.coverImage}
-              alt={post.coverImageAlt ?? post.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 768px"
-              priority
-            />
-          </div>
-        ) : null}
+        <div className="wrap py-10 md:py-14">
+          <div className="mx-auto max-w-prose">
+            {post.coverImage ? (
+              <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-lg bg-sand-deep">
+                <Image
+                  src={post.coverImage}
+                  alt={post.coverImageAlt ?? ""}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  priority
+                />
+              </div>
+            ) : null}
 
-        {/* CMS:et renderar brödtexten åt oss (med kundens formatering);
-            renderMarkdownLite är kvar som fallback för äldre CMS-svar. */}
-        {post.contentHtml ? (
-          <div
-            className="cms-rich mt-8"
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-          />
-        ) : (
-          <div className="mt-8">{renderMarkdownLite(post.content)}</div>
-        )}
+            {/* CMS:et renderar brödtexten åt oss (med kundens formatering);
+                renderMarkdownLite är kvar som fallback för äldre CMS-svar. */}
+            {post.contentHtml ? (
+              <div className="cms-rich" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+            ) : (
+              <div className="cms-rich">{renderMarkdownLite(post.content)}</div>
+            )}
+
+            <p className="mt-12 border-t border-line pt-6">
+              <Link href="/nyheter" className="link inline-flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" aria-hidden />
+                Alla nyheter
+              </Link>
+            </p>
+          </div>
+        </div>
       </article>
     </main>
   );

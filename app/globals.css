@@ -2,27 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --------------------------------------------------------------------------
+   Designtokens (ljust tema – sajten har inget mörkt läge).
+
+   Bas: sand (varmvit) och papper (vitt) som ytor, varm grafit för text och
+   mörka sektioner. Loggans röda används för handlingar (knappar, länkar) och
+   för loggan själv – inte som dekoration.
+
+   Kontrast: brand-strong mot sand/papper ≥ 4.8:1 (AA för brödtext), vit text
+   på brand-strong ≥ 5.4:1. brand (loggans exakta ton) används bara för
+   stora element (logga, display-rubriker) där 3:1 räcker.
+   -------------------------------------------------------------------------- */
 @layer base {
   :root {
-    --primary: 217 44% 18%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 24 89% 57%;
-    --accent-foreground: 0 0% 100%;
-    --background: 0 0% 100%;
-    --foreground: 217 44% 18%;
-    --card: 0 0% 100%;
-    --card-foreground: 217 44% 18%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 217 44% 18%;
-    --muted: 217 20% 95%;
-    --muted-foreground: 217 20% 45%;
+    --sand: 36 36% 95%; /* #F6F2EC */
+    --sand-deep: 37 32% 89%; /* #ECE5DA */
+    --paper: 0 0% 100%; /* #FFFFFF */
+    --line: 35 24% 82%; /* #DDD4C7 */
+    --line-strong: 35 18% 74%; /* #C9BFB1 */
+    --concrete: 33 10% 62%; /* #A89F94 */
+
+    --graphite: 26 9% 15%; /* #292522 */
+    --graphite-soft: 27 8% 21%; /* #3A3531 */
+    --ink-muted: 32 8% 39%; /* #6A635B */
+    --ink-on-dark: 36 36% 95%; /* #F6F2EC */
+
+    --brand: 11 70% 51%; /* #D94A2B – loggans färg */
+    --brand-strong: 11 73% 43%; /* #BF3C1E – knappar, röd text */
+    --brand-deep: 11 76% 36%; /* #A33016 – hover */
+    --brand-tint: 14 68% 93%; /* #F9E6E0 */
+
+    /* Headerns höjd – används för scroll-margin och sticky-element. */
+    --header-h: 4rem;
   }
+
+  @media (min-width: 768px) {
+    :root {
+      --header-h: 4.5rem;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-sand font-sans text-base text-graphite antialiased;
+    font-feature-settings: "kern", "liga";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-bold;
+    text-wrap: balance;
+  }
+
+  /* Långa svenska sammansättningar ("renoveringstjänster") får inte spränga
+     smala skärmar: avstava, och bryt i nödfall mitt i ordet. */
+  @media (max-width: 639px) {
+    h1,
+    h2,
+    h3 {
+      hyphens: auto;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  /* Tydlig, enhetlig fokusring – samma röda som knapparna. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--brand-strong));
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: hsl(var(--brand-tint));
+    color: hsl(var(--graphite));
   }
 }
 
 @layer components {
+  /* Sidbredd och sidomarginal – 16 px på mobil, mer på större skärmar. */
+  .wrap {
+    @apply mx-auto w-full max-w-content px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Display-rubriker: bred variant av Archivo (wdth-axeln). */
+  .display {
+    @apply font-display font-extrabold;
+    font-stretch: 112%;
+  }
+
+  /* Smal skärm: normal bredd så att långa ord får plats. */
+  @media (max-width: 639px) {
+    .display {
+      font-stretch: 100%;
+    }
+  }
+
+  /* Ytor */
+  .surface-dark {
+    @apply bg-graphite text-ink-onDark;
+  }
+
+  /* Länkar i brödtext */
+  .link {
+    @apply font-medium text-brand-strong underline decoration-brand-strong/40 decoration-2 underline-offset-4 transition-colors hover:decoration-brand-strong;
+  }
+
   /* --------------------------------------------------------------------
      Innehåll som kunden formaterat i CMS:et (richtext-block och brödtext i
      nyheter). CMS:et levererar färdig HTML; Tailwinds preflight nollställer
@@ -31,37 +134,41 @@
      .cms-rich          fristående brödtext (nyhetsartikel)
      .cms-rich-inherit  formatering inuti befintlig typografi (FAQ-svar,
                         hero-underrubrik) — ärver färg och storlek från
-                        omgivningen så designen ser likadan ut som idag när
-                        kunden inte lagt till någon formatering
+                        omgivningen så designen ser likadan ut när kunden
+                        inte lagt till någon formatering
      -------------------------------------------------------------------- */
   .cms-rich > :first-child,
   .cms-rich-inherit > :first-child {
     @apply mt-0;
   }
 
+  .cms-rich {
+    @apply text-[1.0625rem] leading-[1.7] text-graphite;
+  }
+
   .cms-rich p {
-    @apply mt-4 leading-relaxed text-foreground;
+    @apply mt-5;
   }
 
   .cms-rich h2 {
-    @apply mt-8 text-2xl font-semibold text-primary;
+    @apply mt-12 text-display-sm text-graphite;
   }
 
   .cms-rich h3 {
-    @apply mt-6 text-xl font-semibold text-primary;
+    @apply mt-8 text-xl text-graphite;
   }
 
   .cms-rich ul,
   .cms-rich ol {
-    @apply mt-4 space-y-1 pl-6 text-foreground;
+    @apply mt-5 space-y-2 pl-6;
   }
 
   .cms-rich blockquote {
-    @apply mt-4 border-l-4 border-primary/20 pl-4 italic text-muted-foreground;
+    @apply mt-6 border-l-4 border-brand pl-5 text-xl leading-snug text-graphite-soft;
   }
 
   .cms-rich hr {
-    @apply my-8 border-primary/15;
+    @apply my-10 border-line;
   }
 
   .cms-rich-inherit p {
@@ -70,7 +177,7 @@
 
   .cms-rich-inherit h2,
   .cms-rich-inherit h3 {
-    @apply mt-4 font-semibold;
+    @apply mt-4 font-display font-bold;
   }
 
   .cms-rich-inherit ul,
@@ -86,12 +193,12 @@
 
   .cms-rich ul,
   .cms-rich-inherit ul {
-    @apply list-disc;
+    @apply list-disc marker:text-brand;
   }
 
   .cms-rich ol,
   .cms-rich-inherit ol {
-    @apply list-decimal;
+    @apply list-decimal marker:font-semibold marker:text-brand-strong;
   }
 
   .cms-rich li > p,
@@ -106,22 +213,19 @@
 
   .cms-rich a,
   .cms-rich-inherit a {
-    @apply underline underline-offset-2 transition-colors hover:opacity-80;
+    @apply underline decoration-2 underline-offset-4 transition-colors hover:opacity-80;
   }
 
   .cms-rich a {
-    @apply text-accent;
+    @apply text-brand-strong decoration-brand-strong/40 hover:decoration-brand-strong;
   }
 }
 
 @layer utilities {
-  .offert-page-bg {
-    @apply bg-slate-50;
-    background-image: radial-gradient(
-      circle at center,
-      rgb(148 163 184 / 0.22) 1px,
-      transparent 1px
-    );
-    background-size: 22px 22px;
+  /* Mjuk övergång för hero-bildspelet – stängs av vid reducerad rörelse. */
+  @media (prefers-reduced-motion: reduce) {
+    .motion-safe-fade {
+      transition: none !important;
+    }
   }
 }

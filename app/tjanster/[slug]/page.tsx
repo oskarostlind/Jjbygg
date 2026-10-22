@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
+import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
+import { Phone } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
+import { FaqList } from "@/components/faq-list";
+import { CtaBand } from "@/components/cta-band";
+import { OfferCard } from "@/components/offer-card";
+import { SidebarLinks } from "@/components/sidebar-links";
+import { SERVICE_IMAGES } from "@/components/service-icon";
 
 type Props = { params: { slug: string } };
 
@@ -53,6 +62,16 @@ export default function ServicePage({ params }: Props) {
     .map((slug) => SERVICE_PAGES.find((p) => p.slug === slug))
     .filter((p): p is (typeof SERVICE_PAGES)[number] => Boolean(p));
 
+  // Lokala varianter av tjänsten (/tjanster/[slug]/[ort]) + ortsidor utan egen variant.
+  const localVariants = serviceLocationPagesFor(page.slug).map((p) => {
+    const loc = getLocationPage(p.location);
+    return { href: `/tjanster/${p.service}/${p.location}`, label: `${page.name} ${loc?.inPhrase ?? p.location}` };
+  });
+  const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(
+    (loc) => ({ href: `/byggfirma/${loc.slug}`, label: `Byggfirma ${loc.inPhrase}` })
+  );
+  const areaLinks = [...localVariants, ...regionLinks].map((link) => ({ ...link, place: true }));
+
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -92,128 +111,88 @@ export default function ServicePage({ params }: Props) {
     },
   ];
 
+  const image = SERVICE_IMAGES[page.iconKey];
+
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-primary/10 bg-primary py-14 md:py-20">
-        <div className="mx-auto max-w-3xl px-4">
-          <nav aria-label="Brödsmulor" className="text-sm text-primary-foreground/70">
-            <ol className="flex flex-wrap items-center gap-1">
-              <li>
-                <Link href="/" className="hover:text-accent">
-                  Hem
-                </Link>
-              </li>
-              <li aria-hidden>›</li>
-              <li>
-                <Link href="/tjanster" className="hover:text-accent">
-                  Tjänster
-                </Link>
-              </li>
-              <li aria-hidden>›</li>
-              <li aria-current="page" className="text-primary-foreground/90">
-                {page.name}
-              </li>
-            </ol>
-          </nav>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-primary-foreground md:text-4xl">
-            {page.h1}
-          </h1>
-          <p className="mt-4 text-lg leading-relaxed text-primary-foreground/90">{page.lead}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link href="/offert">Begär kostnadsfri offert</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      <article className="bg-background py-12 md:py-16">
-        <div className="mx-auto max-w-3xl space-y-10 px-4">
-          {page.sections.map((section) => (
-            <section key={section.heading}>
-              <h2 className="text-2xl font-semibold text-primary">{section.heading}</h2>
-              {section.paragraphs.map((text, i) => (
-                <p key={i} className="mt-4 leading-relaxed text-foreground/90">
-                  {text}
-                </p>
-              ))}
-              {section.list ? (
-                <ul className="mt-4 list-disc space-y-2 pl-6 leading-relaxed text-foreground/90 marker:text-accent">
-                  {section.list.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </section>
-          ))}
-
-          <section aria-labelledby="faq-heading">
-            <h2 id="faq-heading" className="text-2xl font-semibold text-primary">
-              Vanliga frågor om {page.name.toLowerCase()}
-            </h2>
-            <div className="mt-6 space-y-3">
-              {page.faq.map((item) => (
-                <details
-                  key={item.question}
-                  className="group rounded-lg border border-primary/20 bg-card px-4 py-3 shadow-sm open:shadow-md"
-                >
-                  <summary className="cursor-pointer list-none font-medium text-foreground outline-none marker:content-none [&::-webkit-details-marker]:hidden">
-                    <span className="flex items-center justify-between gap-2">
-                      {item.question}
-                      <span className="text-primary/60 transition group-open:rotate-180" aria-hidden>
-                        ▼
-                      </span>
-                    </span>
-                  </summary>
-                  <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
-                    {item.answer}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </section>
-
-          {related.length > 0 ? (
-            <section aria-labelledby="related-heading">
-              <h2 id="related-heading" className="text-2xl font-semibold text-primary">
-                Andra tjänster
-              </h2>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-                {related.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      href={`/tjanster/${p.slug}`}
-                      className="block rounded-lg border border-primary/20 bg-card px-4 py-3 font-medium text-foreground shadow-sm transition hover:border-accent hover:text-primary"
-                    >
-                      {p.name} →
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <p className="text-sm text-muted-foreground">
-            Senast uppdaterad <time dateTime={page.updated}>{formatDate(page.updated)}</time>
-          </p>
-        </div>
-      </article>
-
-      <section className="border-t border-primary/10 bg-primary py-14">
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl">
-            Vill du veta vad ditt projekt kostar?
-          </h2>
-          <p className="mt-3 text-primary-foreground/90">
-            Beskriv projektet i vårt formulär så återkommer vi. Hembesök i Boden och Luleå är kostnadsfritt.
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
-            <Link href="/offert">Begär en offert</Link>
+      <PageHeader
+        title={page.h1}
+        lead={page.lead}
+        image={image}
+        crumbs={[{ href: "/", label: "Hem" }, { href: "/tjanster", label: "Tjänster" }, { label: page.name }]}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button asChild size="lg">
+            <Link href="/offert">Begär kostnadsfri offert</Link>
+          </Button>
+          <Button asChild size="lg" variant="outlineOnDark">
+            <a href={`tel:${siteContent.contact.phoneTelDigits}`}>
+              <Phone className="h-4 w-4" aria-hidden />
+              Ring {siteContent.contact.phoneDisplay}
+            </a>
           </Button>
         </div>
-      </section>
+      </PageHeader>
+
+      <div className="wrap grid gap-12 py-12 md:py-16 lg:grid-cols-12 lg:gap-16">
+        <article className="lg:col-span-8">
+          <div className="max-w-prose space-y-12">
+            {page.sections.map((section) => (
+              <section key={section.heading}>
+                <h2 className="display text-display-sm text-graphite">{section.heading}</h2>
+                {section.paragraphs.map((text, i) => (
+                  <p key={i} className="mt-5 text-[1.0625rem] leading-[1.7] text-graphite">
+                    {text}
+                  </p>
+                ))}
+                {section.list ? (
+                  <ul className="mt-5 space-y-2.5 pl-5 text-[1.0625rem] leading-relaxed text-graphite marker:text-brand">
+                    {section.list.map((item) => (
+                      <li key={item} className="list-disc pl-1">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            ))}
+
+            <section aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="display text-display-sm text-graphite">
+                Vanliga frågor om {page.name.toLowerCase()}
+              </h2>
+              <div className="mt-6">
+                <FaqList items={page.faq} />
+              </div>
+            </section>
+
+            <p className="text-sm text-ink-muted">
+              Senast uppdaterad <time dateTime={page.updated}>{formatDate(page.updated)}</time>
+            </p>
+          </div>
+        </article>
+
+        <aside className="lg:col-span-4">
+          <div className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+            <OfferCard />
+
+            <SidebarLinks id="areas-heading" heading={`${page.name} där du bor`} links={areaLinks} />
+
+            <SidebarLinks
+              id="related-heading"
+              heading="Andra tjänster"
+              links={related.map((p) => ({ href: `/tjanster/${p.slug}`, label: p.name, iconKey: p.iconKey }))}
+            />
+          </div>
+        </aside>
+      </div>
+
+      <CtaBand
+        title="Vill du veta vad ditt projekt kostar?"
+        subline="Beskriv projektet i vårt formulär så återkommer vi. Hembesök i Boden och Luleå är kostnadsfritt."
+      />
     </main>
   );
 }

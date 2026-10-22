@@ -15,6 +15,11 @@ export type ServiceSection = {
   heading: string;
   paragraphs: string[];
   list?: string[];
+  /**
+   * Gör listraderna till länkar: "services" länkar rad i till SERVICE_PAGES[i],
+   * "locations" till /byggfirma/boden respektive /byggfirma/lulea.
+   */
+  links?: "services" | "locations";
 };
 
 export type ServiceFaq = { question: string; answer: string };
