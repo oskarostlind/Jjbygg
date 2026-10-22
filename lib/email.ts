@@ -9,8 +9,8 @@ const CONTACT_EMAIL = siteContent.contact.email;
 const FROM_EMAIL =
   process.env.FROM_EMAIL ?? `JJ Bygg & Entreprenad <${CONTACT_EMAIL}>`;
 
-/** Mottagare för administrations-/notifieringsmail. */
-const ADMIN_EMAIL = process.env.JESPER_EMAIL ?? CONTACT_EMAIL;
+/** Mottagare för notifieringsmail – alltid info@ (samma brevlåda Jesper har i telefonen). */
+const ADMIN_EMAIL = CONTACT_EMAIL;
 
 import { SITE_URL } from "@/lib/seo";
 

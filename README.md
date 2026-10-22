@@ -32,7 +32,7 @@ som gör följande i ordning:
    `lib/offert-to-quote.ts`). Förfrågan syns i panelen under *Förfrågningar*.
    CMS:ets id sparas i kolumnen `Offert.cmsQuoteId`. Fel mot CMS:et loggas
    (`console.error`, inkl. fältfel vid HTTP 400) men ger aldrig kunden ett fel.
-6. Mejlar via Resend: bekräftelse till kunden och notifiering till `JESPER_EMAIL`.
+6. Mejlar via Resend: bekräftelse till kunden och notifiering till `info@jjbyggboden.se`.
 
 ### Dubbla mejl – viktigt
 

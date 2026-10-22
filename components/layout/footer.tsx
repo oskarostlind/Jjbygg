@@ -39,9 +39,8 @@ export async function Footer() {
         telDigits: siteContent.contact.phoneTelDigits,
       };
 
-  const envEmail = process.env.JESPER_EMAIL?.trim();
   const cmsEmail = blockValue(content, "footer.email", "");
-  const contactEmail = cmsEmail || envEmail || siteContent.contact.email;
+  const contactEmail = cmsEmail || siteContent.contact.email;
 
   const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   const year = new Date().getFullYear();
