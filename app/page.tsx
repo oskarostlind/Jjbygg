@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { defaultMetadata, SITE_URL } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
-import { Button } from "@/components/ui/button";
+import { Process } from "@/components/home/process";
+import { WhyUs } from "@/components/home/why-us";
+import { FaqList } from "@/components/faq-list";
+import { CtaBand } from "@/components/cta-band";
+import { SectionHeading } from "@/components/section-heading";
 import { editable } from "sitecms-next";
 import { getCmsContent, blockValue, blockHtml, cmsSeo, plainText } from "@/lib/cms";
 
@@ -85,82 +88,39 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />
       <Hero />
       <Services />
+      <Process />
+      <WhyUs items={trust} />
 
-      <section className="border-t border-primary/10 bg-background py-16" aria-labelledby="faq-heading">
-        <div className="mx-auto max-w-3xl px-4">
-          <h2 id="faq-heading" className="text-center text-2xl font-semibold text-primary md:text-3xl">
-            {homePage.faqTitle}
-          </h2>
-          <div className="mt-8 space-y-3">
-            {faq.map((item, i) => (
-              <details
-                key={i}
-                className="group rounded-lg border border-primary/20 bg-card px-4 py-3 shadow-sm open:shadow-md"
-              >
-                <summary className="cursor-pointer list-none font-medium text-foreground outline-none marker:content-none [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-center justify-between gap-2">
-                    <span {...editable("home", `faq.q${i + 1}`)}>{item.question}</span>
-                    <span className="text-primary/60 transition group-open:rotate-180" aria-hidden>
-                      ▼
-                    </span>
-                  </span>
-                </summary>
-                {item.answerHtml ? (
-                  <div
-                    className="cms-rich-inherit mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground"
-                    {...editable("home", `faq.a${i + 1}`)}
-                    dangerouslySetInnerHTML={{ __html: item.answerHtml }}
-                  />
-                ) : (
-                  <p
-                    className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground"
-                    {...editable("home", `faq.a${i + 1}`)}
-                  >
-                    {item.answer}
-                  </p>
-                )}
-              </details>
-            ))}
+      <section className="border-t border-line bg-sand py-16 md:py-24" aria-labelledby="faq-heading">
+        <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-4">
+            <SectionHeading
+              id="faq-heading"
+              title={homePage.faqTitle}
+              intro="Det här undrar de flesta innan de hör av sig. Hittar du inte svaret – ring, så reder vi ut det."
+            />
+          </div>
+          <div className="lg:col-span-8">
+            <FaqList
+              items={faq.map((item, i) => ({
+                question: item.question,
+                answer: item.answer,
+                answerHtml: item.answerHtml,
+                questionProps: editable("home", `faq.q${i + 1}`),
+                answerProps: editable("home", `faq.a${i + 1}`),
+              }))}
+            />
           </div>
         </div>
       </section>
 
-      <section className="border-t border-primary/10 bg-muted/30 py-16">
-        <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-center text-2xl font-semibold text-primary md:text-3xl">
-            {homePage.trustTitle}
-          </h2>
-          <ul className="mt-10 flex flex-col gap-6 sm:flex-row sm:justify-center sm:gap-12">
-            {trust.map((item, i) => (
-              <li key={i} className="flex items-center justify-center gap-3 text-center sm:flex-col">
-                <span
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"
-                  aria-hidden
-                >
-                  ✓
-                </span>
-                <span className="font-medium text-foreground" {...editable("home", `why.item${i + 1}`)}>
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="border-t border-primary/10 bg-primary py-16">
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl" {...editable("home", "cta.title")}>
-            {ctaTitle}
-          </h2>
-          <p className="mt-3 text-primary-foreground/90" {...editable("home", "cta.subtitle")}>
-            {ctaSubline}
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
-            <Link href="/offert">{homePage.ctaButtonText}</Link>
-          </Button>
-        </div>
-      </section>
+      <CtaBand
+        title={ctaTitle}
+        subline={ctaSubline}
+        buttonText={homePage.ctaButtonText}
+        titleProps={editable("home", "cta.title")}
+        sublineProps={editable("home", "cta.subtitle")}
+      />
     </main>
   );
 }

@@ -34,7 +34,7 @@ export function Step3Kontakt({ register, errors, setValue, watch }: Step3Props) 
           aria-invalid={!!errors.namn}
         />
         {errors.namn && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.namn.message}
           </p>
         )}
@@ -50,7 +50,7 @@ export function Step3Kontakt({ register, errors, setValue, watch }: Step3Props) 
           aria-invalid={!!errors.epost}
         />
         {errors.epost && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.epost.message}
           </p>
         )}

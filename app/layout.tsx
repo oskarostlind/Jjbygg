@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
-import { Inter } from "next/font/google";
+import { Archivo, Barlow } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { defaultMetadata, SEO_TITLE } from "@/lib/seo";
 import { Header } from "@/components/header";
@@ -11,11 +11,23 @@ import { LeadSourceTracker } from "@/components/layout/lead-source-tracker";
 import { SitecmsPreview } from "sitecms-next/preview";
 import "./globals.css";
 
-const inter = Inter({
+/**
+ * Typografi: Archivo (bred, tung grotesk – rubriker, harmonierar med loggans
+ * Montserrat ExtraBold) + Barlow (lättläst, lite industriell – brödtext).
+ * Exponeras som CSS-variabler, se tailwind.config.ts (font-display / font-sans).
+ */
+const display = Archivo({
   subsets: ["latin"],
+  axes: ["wdth"],
   display: "swap",
-  adjustFontFallback: true,
-  preload: true,
+  variable: "--font-display",
+});
+
+const body = Barlow({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-body",
 });
 
 export const metadata: Metadata = {
@@ -36,11 +48,19 @@ export default function RootLayout({
   const preview = draftMode().isEnabled;
 
   return (
-    <html lang="sv" className={inter.className}>
+    <html lang="sv" className={`${display.variable} ${body.variable}`}>
       <body className="flex min-h-screen flex-col">
+        <a
+          href="#innehall"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-brand-strong focus:px-4 focus:py-2 focus:font-semibold focus:text-paper"
+        >
+          Hoppa till innehållet
+        </a>
         {preview ? null : <GoogleTagManager />}
         <Header />
-        <div className="flex-1">{children}</div>
+        <div id="innehall" className="flex-1">
+          {children}
+        </div>
         <Footer />
         <LocalBusinessJsonLd />
         {preview ? null : <LeadSourceTracker />}

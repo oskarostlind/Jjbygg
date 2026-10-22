@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "fix-logo": "node scripts/fix-logo-png-transparency.cjs",
+    "icons": "node scripts/generate-icons.cjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

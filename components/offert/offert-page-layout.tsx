@@ -10,8 +10,8 @@ export function OffertPageLayout({ children, centered = false }: OffertPageLayou
   return (
     <main
       className={cn(
-        "offert-page-bg flex w-full flex-col px-4 py-10 md:py-14",
-        "min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)]",
+        "flex w-full flex-col bg-sand py-10 md:py-16",
+        "min-h-[calc(100svh-var(--header-h))]",
         centered ? "items-center justify-center" : "items-center justify-start"
       )}
     >

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { siteContent } from "@/lib/site-content";
@@ -39,9 +40,9 @@ function readLeadSource(): string {
 }
 
 function stepTitle(step: StepId): string {
-  if (step === 1) return "Projektdetaljer";
-  if (step === 2) return "Media & plats";
-  return "Kontaktuppgifter";
+  if (step === 1) return "Berätta om projektet";
+  if (step === 2) return "Bilder och plats";
+  return "Dina kontaktuppgifter";
 }
 
 export default function OffertPage() {
@@ -126,104 +127,105 @@ export default function OffertPage() {
 
   return (
     <OffertPageLayout>
-      <div className="mx-auto w-full max-w-3xl space-y-8 pb-8">
-        <header className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-accent">
-            Offertförfrågan
-          </p>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-            {siteContent.hero.title}
-          </h1>
-          <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-            {siteContent.hero.subtitle}
-          </p>
-        </header>
-
-        <ContactInfo />
-
-        <Stepper currentStep={currentStep} />
-
-        <OffertPremiumCard showAccentTop={false}>
-          <div className="border-b border-slate-100 px-6 py-5 md:px-8">
-            <h2 className="text-xl font-bold text-slate-900">{stepTitle(currentStep)}</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Steg {currentStep} av 3 – fyll i uppgifterna nedan
-            </p>
+      <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-16">
+        {/* Intro + kontakt – på mobil hamnar kontakten under formuläret. */}
+        <div className="lg:col-span-5">
+          <header>
+            <span className="mb-5 block h-1 w-12 rounded-sm bg-brand" aria-hidden />
+            <h1 className="display text-display-lg text-graphite">{siteContent.hero.title}</h1>
+            <p className="mt-4 max-w-prose text-lg leading-relaxed text-ink-muted">{siteContent.hero.subtitle}</p>
+            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-graphite">
+              {siteContent.hero.badges.map((badge) => (
+                <li key={badge} className="inline-flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-sm bg-brand" aria-hidden />
+                  {badge}
+                </li>
+              ))}
+            </ul>
+          </header>
+          <div className="mt-10 hidden lg:block">
+            <ContactInfo />
           </div>
-          <div className="px-6 py-6 md:px-8 md:py-8">
-            <form onSubmit={handleSubmit(onFinalSubmit)} className="space-y-6">
-              {preview ? <OffertPreviewNotice /> : null}
-              {currentStep === 1 && (
-                <Step1Projektdetaljer
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                />
-              )}
-              {currentStep === 2 && (
-                <Step2MediaPlats
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                  imageFiles={imageFiles}
-                  onImageFilesChange={setImageFiles}
-                />
-              )}
-              {currentStep === 3 && (
-                <Step3Kontakt
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                />
-              )}
+        </div>
 
-              {submitError && (
-                <p
-                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-                  role="alert"
-                >
-                  {submitError}
-                </p>
-              )}
-
-              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={goPrev}
-                  disabled={currentStep === 1}
-                  className="border-slate-200 bg-white hover:bg-slate-50"
-                >
-                  Föregående
-                </Button>
-                {currentStep < 3 ? (
-                  <Button
-                    type="button"
-                    onClick={goNext}
-                    className="bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg"
-                  >
-                    Nästa steg
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    disabled={isPending || preview}
-                    className="bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg"
-                  >
-                    {isPending ? "Skickar..." : "Skicka offertförfrågan"}
-                  </Button>
-                )}
+        <div className="lg:col-span-7">
+          <OffertPremiumCard showAccentTop={false}>
+            <div className="border-b border-line bg-sand/60 px-5 pb-5 pt-5 sm:px-8 sm:pt-6">
+              <Stepper currentStep={currentStep} />
+            </div>
+            <div className="px-5 py-6 sm:px-8 sm:py-8">
+              <div className="mb-6">
+                <p className="text-sm font-medium text-ink-muted">Steg {currentStep} av 3</p>
+                <h2 className="mt-1 font-display text-display-sm font-bold text-graphite">{stepTitle(currentStep)}</h2>
               </div>
-            </form>
-          </div>
-        </OffertPremiumCard>
+              <form onSubmit={handleSubmit(onFinalSubmit)} className="space-y-6">
+                {preview ? <OffertPreviewNotice /> : null}
+                {currentStep === 1 && (
+                  <Step1Projektdetaljer
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                )}
+                {currentStep === 2 && (
+                  <Step2MediaPlats
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                    imageFiles={imageFiles}
+                    onImageFilesChange={setImageFiles}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <Step3Kontakt
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                )}
 
-        <footer className="text-center text-sm text-slate-500">
-          {siteContent.footer.companyName} – {siteContent.footer.tagline}
-        </footer>
+                {submitError && (
+                  <p
+                    className="rounded border border-brand-strong/40 bg-brand-tint px-4 py-3 text-sm font-medium text-brand-deep"
+                    role="alert"
+                  >
+                    {submitError}
+                  </p>
+                )}
+
+                <div className="flex flex-col-reverse gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  {currentStep > 1 ? (
+                    <Button type="button" variant="ghost" onClick={goPrev} className="sm:-ml-3">
+                      <ArrowLeft className="h-4 w-4" aria-hidden />
+                      Föregående
+                    </Button>
+                  ) : (
+                    <p className="text-sm text-ink-muted sm:max-w-[16rem]">
+                      Tar ett par minuter. Vi återkommer inom 1–2 vardagar.
+                    </p>
+                  )}
+                  {currentStep < 3 ? (
+                    <Button type="button" size="lg" onClick={goNext}>
+                      Nästa steg
+                      <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Button>
+                  ) : (
+                    <Button type="submit" size="lg" disabled={isPending || preview}>
+                      {isPending ? "Skickar…" : "Skicka offertförfrågan"}
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </div>
+          </OffertPremiumCard>
+
+          <div className="mt-10 lg:hidden">
+            <ContactInfo />
+          </div>
+        </div>
       </div>
     </OffertPageLayout>
   );

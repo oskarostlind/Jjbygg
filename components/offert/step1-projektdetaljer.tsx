@@ -51,7 +51,7 @@ export function Step1Projektdetaljer({ register, errors, setValue, watch }: Step
           </SelectContent>
         </Select>
         {errors.typ && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.typ.message}
           </p>
         )}
@@ -68,7 +68,7 @@ export function Step1Projektdetaljer({ register, errors, setValue, watch }: Step
           aria-invalid={!!errors.beskrivning}
         />
         {errors.beskrivning && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-red-700" role="alert">
             {errors.beskrivning.message}
           </p>
         )}

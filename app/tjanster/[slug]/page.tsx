@@ -5,6 +5,11 @@ import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
+import { ArrowRight, Phone } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
+import { FaqList } from "@/components/faq-list";
+import { CtaBand } from "@/components/cta-band";
+import { ServiceIcon, SERVICE_IMAGES } from "@/components/service-icon";
 
 type Props = { params: { slug: string } };
 
@@ -92,128 +97,117 @@ export default function ServicePage({ params }: Props) {
     },
   ];
 
+  const image = SERVICE_IMAGES[page.iconKey];
+
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-primary/10 bg-primary py-14 md:py-20">
-        <div className="mx-auto max-w-3xl px-4">
-          <nav aria-label="Brödsmulor" className="text-sm text-primary-foreground/70">
-            <ol className="flex flex-wrap items-center gap-1">
-              <li>
-                <Link href="/" className="hover:text-accent">
-                  Hem
-                </Link>
-              </li>
-              <li aria-hidden>›</li>
-              <li>
-                <Link href="/tjanster" className="hover:text-accent">
-                  Tjänster
-                </Link>
-              </li>
-              <li aria-hidden>›</li>
-              <li aria-current="page" className="text-primary-foreground/90">
-                {page.name}
-              </li>
-            </ol>
-          </nav>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-primary-foreground md:text-4xl">
-            {page.h1}
-          </h1>
-          <p className="mt-4 text-lg leading-relaxed text-primary-foreground/90">{page.lead}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link href="/offert">Begär kostnadsfri offert</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      <article className="bg-background py-12 md:py-16">
-        <div className="mx-auto max-w-3xl space-y-10 px-4">
-          {page.sections.map((section) => (
-            <section key={section.heading}>
-              <h2 className="text-2xl font-semibold text-primary">{section.heading}</h2>
-              {section.paragraphs.map((text, i) => (
-                <p key={i} className="mt-4 leading-relaxed text-foreground/90">
-                  {text}
-                </p>
-              ))}
-              {section.list ? (
-                <ul className="mt-4 list-disc space-y-2 pl-6 leading-relaxed text-foreground/90 marker:text-accent">
-                  {section.list.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </section>
-          ))}
-
-          <section aria-labelledby="faq-heading">
-            <h2 id="faq-heading" className="text-2xl font-semibold text-primary">
-              Vanliga frågor om {page.name.toLowerCase()}
-            </h2>
-            <div className="mt-6 space-y-3">
-              {page.faq.map((item) => (
-                <details
-                  key={item.question}
-                  className="group rounded-lg border border-primary/20 bg-card px-4 py-3 shadow-sm open:shadow-md"
-                >
-                  <summary className="cursor-pointer list-none font-medium text-foreground outline-none marker:content-none [&::-webkit-details-marker]:hidden">
-                    <span className="flex items-center justify-between gap-2">
-                      {item.question}
-                      <span className="text-primary/60 transition group-open:rotate-180" aria-hidden>
-                        ▼
-                      </span>
-                    </span>
-                  </summary>
-                  <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
-                    {item.answer}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </section>
-
-          {related.length > 0 ? (
-            <section aria-labelledby="related-heading">
-              <h2 id="related-heading" className="text-2xl font-semibold text-primary">
-                Andra tjänster
-              </h2>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-                {related.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      href={`/tjanster/${p.slug}`}
-                      className="block rounded-lg border border-primary/20 bg-card px-4 py-3 font-medium text-foreground shadow-sm transition hover:border-accent hover:text-primary"
-                    >
-                      {p.name} →
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <p className="text-sm text-muted-foreground">
-            Senast uppdaterad <time dateTime={page.updated}>{formatDate(page.updated)}</time>
-          </p>
-        </div>
-      </article>
-
-      <section className="border-t border-primary/10 bg-primary py-14">
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl">
-            Vill du veta vad ditt projekt kostar?
-          </h2>
-          <p className="mt-3 text-primary-foreground/90">
-            Beskriv projektet i vårt formulär så återkommer vi. Hembesök i Boden och Luleå är kostnadsfritt.
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
-            <Link href="/offert">Begär en offert</Link>
+      <PageHeader
+        title={page.h1}
+        lead={page.lead}
+        image={image}
+        crumbs={[{ href: "/", label: "Hem" }, { href: "/tjanster", label: "Tjänster" }, { label: page.name }]}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button asChild size="lg">
+            <Link href="/offert">Begär kostnadsfri offert</Link>
+          </Button>
+          <Button asChild size="lg" variant="outlineOnDark">
+            <a href={`tel:${siteContent.contact.phoneTelDigits}`}>
+              <Phone className="h-4 w-4" aria-hidden />
+              Ring {siteContent.contact.phoneDisplay}
+            </a>
           </Button>
         </div>
-      </section>
+      </PageHeader>
+
+      <div className="wrap grid gap-12 py-12 md:py-16 lg:grid-cols-12 lg:gap-16">
+        <article className="lg:col-span-8">
+          <div className="max-w-prose space-y-12">
+            {page.sections.map((section) => (
+              <section key={section.heading}>
+                <h2 className="display text-display-md text-graphite">{section.heading}</h2>
+                {section.paragraphs.map((text, i) => (
+                  <p key={i} className="mt-5 text-[1.0625rem] leading-[1.7] text-graphite">
+                    {text}
+                  </p>
+                ))}
+                {section.list ? (
+                  <ul className="mt-5 space-y-2.5 pl-5 text-[1.0625rem] leading-relaxed text-graphite marker:text-brand">
+                    {section.list.map((item) => (
+                      <li key={item} className="list-disc pl-1">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            ))}
+
+            <section aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="display text-display-md text-graphite">
+                Vanliga frågor om {page.name.toLowerCase()}
+              </h2>
+              <div className="mt-6">
+                <FaqList items={page.faq} />
+              </div>
+            </section>
+
+            <p className="text-sm text-ink-muted">
+              Senast uppdaterad <time dateTime={page.updated}>{formatDate(page.updated)}</time>
+            </p>
+          </div>
+        </article>
+
+        <aside className="lg:col-span-4">
+          <div className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+            <div className="rounded-lg bg-graphite p-6 text-ink-onDark md:p-7">
+              <h2 className="font-display text-xl font-bold text-paper">Vad kostar ditt projekt?</h2>
+              <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink-onDark/75">
+                Beskriv projektet så återkommer vi med en offert. Hembesök i Boden och Luleå är kostnadsfritt.
+              </p>
+              <Button asChild size="lg" className="mt-5 w-full">
+                <Link href="/offert">Begär offert</Link>
+              </Button>
+              <a
+                href={`tel:${siteContent.contact.phoneTelDigits}`}
+                className="mt-3 flex h-12 items-center justify-center gap-2 rounded border border-ink-onDark/30 font-display font-bold text-paper transition-colors hover:border-ink-onDark hover:bg-ink-onDark/10"
+              >
+                <Phone className="h-4 w-4" aria-hidden />
+                {siteContent.contact.phoneDisplay}
+              </a>
+            </div>
+
+            {related.length > 0 ? (
+              <nav aria-labelledby="related-heading" className="rounded-lg border border-line bg-paper p-6">
+                <h2 id="related-heading" className="font-display text-base font-bold text-graphite">
+                  Andra tjänster
+                </h2>
+                <ul className="mt-3 divide-y divide-line">
+                  {related.map((p) => (
+                    <li key={p.slug}>
+                      <Link
+                        href={`/tjanster/${p.slug}`}
+                        className="group flex items-center gap-3 py-3 font-medium text-graphite transition-colors hover:text-brand-strong"
+                      >
+                        <ServiceIcon iconKey={p.iconKey} size="sm" className="h-9 w-9 [&>svg]:h-4 [&>svg]:w-4" />
+                        <span className="flex-1">{p.name}</span>
+                        <ArrowRight className="h-4 w-4 text-concrete transition-transform group-hover:translate-x-0.5 group-hover:text-brand-strong" aria-hidden />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ) : null}
+          </div>
+        </aside>
+      </div>
+
+      <CtaBand
+        title="Vill du veta vad ditt projekt kostar?"
+        subline="Beskriv projektet i vårt formulär så återkommer vi. Hembesök i Boden och Luleå är kostnadsfritt."
+      />
     </main>
   );
 }

@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 type OffertPremiumCardProps = {
   children: React.ReactNode;
   className?: string;
-  /** Orange accent-linje i kortets överkant (varumärke). */
+  /** Röd accentlinje i panelens överkant. */
   showAccentTop?: boolean;
 };
 
+/** Lyft panel på papper – formuläret och tack-sidan. */
 export function OffertPremiumCard({
   children,
   className,
@@ -15,8 +16,8 @@ export function OffertPremiumCard({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xl",
-        showAccentTop && "border-t-4 border-t-accent",
+        "overflow-hidden rounded-lg border border-line bg-paper shadow-panel",
+        showAccentTop && "border-t-4 border-t-brand",
         className
       )}
     >
