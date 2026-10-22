@@ -66,6 +66,17 @@
     text-wrap: balance;
   }
 
+  /* Långa svenska sammansättningar ("renoveringstjänster") får inte spränga
+     smala skärmar: avstava, och bryt i nödfall mitt i ordet. */
+  @media (max-width: 639px) {
+    h1,
+    h2,
+    h3 {
+      hyphens: auto;
+      overflow-wrap: anywhere;
+    }
+  }
+
   p {
     text-wrap: pretty;
   }
@@ -96,6 +107,13 @@
   .display {
     @apply font-display font-extrabold;
     font-stretch: 112%;
+  }
+
+  /* Smal skärm: normal bredd så att långa ord får plats. */
+  @media (max-width: 639px) {
+    .display {
+      font-stretch: 100%;
+    }
   }
 
   /* Ytor */

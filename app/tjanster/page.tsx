@@ -40,7 +40,7 @@ export default function TjansterPage() {
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <PageHeader
-        title="Bygg- och renoveringstjänster i Boden och Luleå"
+        title={"Bygg- och renoverings\u00ADtjänster i Boden och Luleå"}
         lead="Från en ny altan till en hel tillbyggnad. Välj tjänst nedan och läs mer om hur vi arbetar, vad som påverkar priset och vad du behöver tänka på."
         crumbs={[{ href: "/", label: "Hem" }, { label: "Tjänster" }]}
       />

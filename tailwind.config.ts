@@ -86,7 +86,7 @@ const config: Config = {
       fontSize: {
         /* Rubrikskala – bred, tung grotesk; tajt radavstånd. */
         "display-xl": ["clamp(2.5rem, 1.6rem + 4.2vw, 4.75rem)", { lineHeight: "0.98", letterSpacing: "-0.02em" }],
-        "display-lg": ["clamp(2.125rem, 1.4rem + 3vw, 3.5rem)", { lineHeight: "1.02", letterSpacing: "-0.02em" }],
+        "display-lg": ["clamp(1.875rem, 1.2rem + 3vw, 3.5rem)", { lineHeight: "1.02", letterSpacing: "-0.02em" }],
         "display-md": ["clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem)", { lineHeight: "1.08", letterSpacing: "-0.015em" }],
         "display-sm": ["clamp(1.375rem, 1.15rem + 1vw, 1.875rem)", { lineHeight: "1.15", letterSpacing: "-0.01em" }],
       },
