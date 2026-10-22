@@ -53,9 +53,11 @@ skickas till sitecms (bara lokalt – innehåller personuppgifter).
 
 ### Databas
 
-Schemat ligger i `prisma/schema.prisma`; migrationer i `prisma/migrations/`.
-Vid deploy med ny migration: `npx prisma migrate deploy` mot Neon
-(`DATABASE_URL`). Vercel-bygget kör bara `prisma generate` (postinstall).
+Schemat ligger i `prisma/schema.prisma`. Projektet använder `prisma db push`
+(ingen migrationshistorik i Neon): Vercel-bygget kör `prisma db push` före
+`next build`, så schemaändringar som är additiva (nya nullable-kolumner) går ut
+automatiskt vid deploy. Destruktiva ändringar stoppar bygget – kör dem
+manuellt med `npx prisma db push` mot `DATABASE_URL` först.
 
 ## Integritet
 
