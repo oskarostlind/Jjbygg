@@ -44,7 +44,7 @@ export default function RootLayout({
         <Footer />
         <LocalBusinessJsonLd />
         {preview ? null : <LeadSourceTracker />}
-        <Analytics />
+        {preview ? null : <Analytics />}
         {/* Renderar ingenting utanför sitecms förhandsgranskning (draft mode). */}
         <SitecmsPreview />
       </body>

@@ -39,9 +39,9 @@ export async function Hero() {
       aria-label="Hero med bildspel"
     >
       <HeroSlideshow slides={slides} field={editable("home", "hero.image")} />
-      <div className="absolute inset-0 bg-slate-900/40" aria-hidden />
-      <div className="relative z-10 mx-auto flex min-h-[32rem] max-w-6xl flex-col items-center justify-center px-4 py-20 text-center md:min-h-[36rem] md:py-28 lg:items-start lg:text-left">
-        <div className="max-w-2xl">
+      <div className="pointer-events-none absolute inset-0 bg-slate-900/40" aria-hidden />
+      <div className="pointer-events-none relative z-10 mx-auto flex min-h-[32rem] max-w-6xl flex-col items-center justify-center px-4 py-20 text-center md:min-h-[36rem] md:py-28 lg:items-start lg:text-left">
+        <div className="pointer-events-auto max-w-2xl">
           <h1
             className="text-4xl font-bold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl"
             {...editable("home", "hero.title")}
