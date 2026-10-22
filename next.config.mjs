@@ -1,3 +1,17 @@
+import { previewFrameHeaders } from "sitecms-next/preview";
+
+/**
+ * Origins som får visa sajten i en iframe (sitecms-panelens live-förhandsgranskning),
+ * via CSP frame-ancestors. Sajten sätter ingen X-Frame-Options (skulle blockera panelen).
+ * localhost:3000 = sitecms lokalt, bara utanför produktion. Headers räknas ut vid build.
+ */
+const SITECMS_PANEL_ORIGINS = [
+  "https://sitecms.se",
+  "https://www.sitecms.se",
+  "https://sitecms-zeta.vercel.app",
+  ...(process.env.NODE_ENV !== "production" ? ["http://localhost:3000"] : []),
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -11,6 +25,9 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  async headers() {
+    return [{ source: "/:path*", headers: previewFrameHeaders(SITECMS_PANEL_ORIGINS) }];
   },
 };
 

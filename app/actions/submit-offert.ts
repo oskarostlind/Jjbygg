@@ -1,5 +1,6 @@
 "use server";
 
+import { draftMode } from "next/headers";
 import { put } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
 import { offertSchema } from "@/lib/validations/offert";
@@ -56,6 +57,12 @@ async function uploadImageToBlob(file: File, index: number): Promise<string> {
 }
 
 export async function submitOffert(formData: FormData): Promise<SubmitOffertResult> {
+  // sitecms förhandsgranskning (draft mode): skicka aldrig riktiga förfrågningar
+  // (ingen uppladdning, databaspost eller e-post).
+  if (draftMode().isEnabled) {
+    return { success: false, error: "Formuläret är avstängt i förhandsgranskning." };
+  }
+
   const raw = parseFormDataToPayload(formData);
 
   const parsed = offertSchema.safeParse({

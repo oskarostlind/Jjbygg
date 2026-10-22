@@ -5,7 +5,15 @@
  * krascha. Om CMS:et är nere, svarar fel, eller nätverket failar ska funktionen
  * returnera null – anroparna faller då tillbaka på det befintliga statiska
  * innehållet i lib/site-content.ts. Kundsajten ska aldrig visa tomt innehåll.
+ *
+ * Live-förhandsgranskning (sitecms-panelen, sitecms-next 0.4): bara när sidan
+ * visas i förhandsgranskningen (draft mode + preview-cookien från
+ * /api/sitecms/preview) hämtas innehållet via paketets klient, som skickar
+ * preview-token (x-sitecms-preview) utan cache och själv faller tillbaka på
+ * sparat innehåll vid fel. Annars är hämtningen exakt som förut.
  */
+
+import { createSitecms, isPreview } from "sitecms-next";
 
 export type CmsBlockType = "text" | "richtext" | "image" | string;
 
@@ -48,7 +56,35 @@ export type CmsContent = {
   seo: CmsSeoEntry[];
 };
 
-const CMS_CONTENT_PATH = "/api/v1/sites/jjbygg/content";
+const CMS_SITE_SLUG = "jjbygg";
+const CMS_CONTENT_PATH = `/api/v1/sites/${CMS_SITE_SLUG}/content`;
+
+/** Sant bara i sitecms förhandsgranskning. Kastar aldrig. */
+async function inPreview(): Promise<boolean> {
+  try {
+    return await isPreview();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Innehåll med kundens osparade ändringar (förhandsgranskningen). Paketets
+ * klient skickar preview-token med `cache: "no-store"` och faller själv
+ * tillbaka på sparat innehåll om förhandsgranskningen gått ut eller inte svarar.
+ */
+async function getPreviewCmsContent(baseUrl: string, apiKey: string): Promise<CmsContent | null> {
+  try {
+    const cms = createSitecms({ apiUrl: baseUrl, site: CMS_SITE_SLUG, apiKey, tag: "cms" });
+    const data = (await cms.getContent()) as unknown as CmsContent | null;
+    if (!data || !Array.isArray(data.pages)) {
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Hämtar innehåll från CMS:et. Returnerar null vid ALLA typer av fel
@@ -61,6 +97,10 @@ export async function getCmsContent(): Promise<CmsContent | null> {
 
   if (!baseUrl || !apiKey) {
     return null;
+  }
+
+  if (await inPreview()) {
+    return getPreviewCmsContent(baseUrl, apiKey);
   }
 
   try {

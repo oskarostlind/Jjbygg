@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { defaultMetadata, SEO_TITLE } from "@/lib/seo";
@@ -7,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { GoogleTagManager } from "@/components/layout/google-tag-manager";
 import { LocalBusinessJsonLd } from "@/components/layout/local-business-json-ld";
 import { LeadSourceTracker } from "@/components/layout/lead-source-tracker";
+import { SitecmsPreview } from "sitecms-next/preview";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,16 +31,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // sitecms förhandsgranskning (draft mode): ingen spårning — kundens redigering
+  // ska inte räknas som besök eller ge leadkällor.
+  const preview = draftMode().isEnabled;
+
   return (
     <html lang="sv" className={inter.className}>
       <body className="flex min-h-screen flex-col">
-        <GoogleTagManager />
+        {preview ? null : <GoogleTagManager />}
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
         <LocalBusinessJsonLd />
-        <LeadSourceTracker />
+        {preview ? null : <LeadSourceTracker />}
         <Analytics />
+        {/* Renderar ingenting utanför sitecms förhandsgranskning (draft mode). */}
+        <SitecmsPreview />
       </body>
     </html>
   );

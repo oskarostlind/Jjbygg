@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
+import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
 import { getCmsContent, blockValue, hasPublishedPosts } from "@/lib/cms";
@@ -40,9 +41,13 @@ export async function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Företag</p>
-            <p className="mt-2 font-semibold">{companyName}</p>
+            <p className="mt-2 font-semibold" {...editable("home", "footer.company")}>
+              {companyName}
+            </p>
             <p className="text-sm text-primary-foreground/80">{footer.tagline}</p>
-            <p className="mt-1 text-sm text-primary-foreground/80">Org.nr {orgNumber}</p>
+            <p className="mt-1 text-sm text-primary-foreground/80">
+              Org.nr <span {...editable("home", "footer.orgnr")}>{orgNumber}</span>
+            </p>
             {showNews ? (
               <Link
                 href="/nyheter"
@@ -68,7 +73,7 @@ export async function Footer() {
               ))}
             </ul>
             <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">Adress</p>
-            <address className="mt-2 not-italic text-sm text-primary-foreground/90">
+            <address className="mt-2 not-italic text-sm text-primary-foreground/90" {...editable("home", "footer.address")}>
               {address}
             </address>
             {footer.postAddress && (footer.postAddress as string) !== (footer.address as string) && (
@@ -81,10 +86,13 @@ export async function Footer() {
             <div className="mt-2 space-y-2 text-sm">
               {phone && (
                 <p>
-                  <span className="block text-xs text-primary-foreground/70">{contactName}</span>
+                  <span className="block text-xs text-primary-foreground/70" {...editable("home", "footer.contactName")}>
+                    {contactName}
+                  </span>
                   <a
                     href={`tel:${phone.telDigits}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
+                    {...editable("home", "footer.phone")}
                   >
                     {phone.display}
                   </a>
@@ -95,6 +103,7 @@ export async function Footer() {
                   <a
                     href={`mailto:${contactEmail}`}
                     className="text-primary-foreground/90 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary rounded"
+                    {...editable("home", "footer.email")}
                   >
                     {contactEmail}
                   </a>

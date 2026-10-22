@@ -15,6 +15,7 @@ import { ContactInfo } from "@/components/contact-info";
 import { OffertPageLayout } from "@/components/offert/offert-page-layout";
 import { OffertPremiumCard } from "@/components/offert/offert-premium-card";
 import { OffertSuccessView } from "@/components/offert/offert-success-view";
+import { OffertPreviewNotice, useOffertPreview } from "@/components/offert/offert-preview";
 
 const STEPS: StepId[] = [1, 2, 3];
 
@@ -50,6 +51,8 @@ export default function OffertPage() {
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [kalla, setKalla] = useState("");
+  // sitecms förhandsgranskning: formuläret går att titta på men inte skicka.
+  const preview = useOffertPreview();
 
   // Varifrån kom besökaren? Skickas med i notifieringsmailet så att vi kan
   // mäta vilken kanal (Google, Google-profil, Facebook, annons…) som ger förfrågningar.
@@ -91,6 +94,7 @@ export default function OffertPage() {
   };
 
   const onFinalSubmit = (values: OffertFormData) => {
+    if (preview) return;
     setSubmitError(null);
     const formData = new FormData();
     formData.set("typ", values.typ);
@@ -148,6 +152,7 @@ export default function OffertPage() {
           </div>
           <div className="px-6 py-6 md:px-8 md:py-8">
             <form onSubmit={handleSubmit(onFinalSubmit)} className="space-y-6">
+              {preview ? <OffertPreviewNotice /> : null}
               {currentStep === 1 && (
                 <Step1Projektdetaljer
                   register={register}
@@ -205,7 +210,7 @@ export default function OffertPage() {
                 ) : (
                   <Button
                     type="submit"
-                    disabled={isPending}
+                    disabled={isPending || preview}
                     className="bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg"
                   >
                     {isPending ? "Skickar..." : "Skicka offertförfrågan"}

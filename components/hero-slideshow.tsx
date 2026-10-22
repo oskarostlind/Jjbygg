@@ -10,9 +10,11 @@ const HERO_IMAGE_SIZES =
 
 type HeroSlideshowProps = {
   slides: readonly HeroSlide[];
+  /** data-sitecms för bilden (live-förhandsgranskning i sitecms). */
+  field?: { "data-sitecms": string };
 };
 
-export function HeroSlideshow({ slides }: HeroSlideshowProps) {
+export function HeroSlideshow({ slides, field }: HeroSlideshowProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [motionEnabled, setMotionEnabled] = useState(true);
 
@@ -37,7 +39,7 @@ export function HeroSlideshow({ slides }: HeroSlideshowProps) {
   const slide = slides[activeIndex];
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" {...field}>
       <Image
         key={slide.src}
         src={slide.src}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
 import { HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides";
 import { HeroSlideshow } from "@/components/hero-slideshow";
@@ -37,20 +38,24 @@ export async function Hero() {
       className="relative min-h-[32rem] overflow-hidden md:min-h-[36rem]"
       aria-label="Hero med bildspel"
     >
-      <HeroSlideshow slides={slides} />
+      <HeroSlideshow slides={slides} field={editable("home", "hero.image")} />
       <div className="absolute inset-0 bg-slate-900/40" aria-hidden />
       <div className="relative z-10 mx-auto flex min-h-[32rem] max-w-6xl flex-col items-center justify-center px-4 py-20 text-center md:min-h-[36rem] md:py-28 lg:items-start lg:text-left">
         <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl">
+          <h1
+            className="text-4xl font-bold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl"
+            {...editable("home", "hero.title")}
+          >
             {headline}
           </h1>
           {sublineHtml ? (
             <div
               className="cms-rich-inherit mt-4 text-lg leading-relaxed text-white/95 md:text-xl"
+              {...editable("home", "hero.subtitle")}
               dangerouslySetInnerHTML={{ __html: sublineHtml }}
             />
           ) : (
-            <p className="mt-4 text-lg leading-relaxed text-white/95 md:text-xl">
+            <p className="mt-4 text-lg leading-relaxed text-white/95 md:text-xl" {...editable("home", "hero.subtitle")}>
               {subline}
             </p>
           )}

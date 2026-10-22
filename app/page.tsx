@@ -5,6 +5,7 @@ import { siteContent } from "@/lib/site-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
 import { Button } from "@/components/ui/button";
+import { editable } from "sitecms-next";
 import { getCmsContent, blockValue, blockHtml, cmsSeo, plainText } from "@/lib/cms";
 
 type FaqEntry = {
@@ -98,7 +99,7 @@ export default async function HomePage() {
               >
                 <summary className="cursor-pointer list-none font-medium text-foreground outline-none marker:content-none [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center justify-between gap-2">
-                    {item.question}
+                    <span {...editable("home", `faq.q${i + 1}`)}>{item.question}</span>
                     <span className="text-primary/60 transition group-open:rotate-180" aria-hidden>
                       ▼
                     </span>
@@ -107,10 +108,14 @@ export default async function HomePage() {
                 {item.answerHtml ? (
                   <div
                     className="cms-rich-inherit mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground"
+                    {...editable("home", `faq.a${i + 1}`)}
                     dangerouslySetInnerHTML={{ __html: item.answerHtml }}
                   />
                 ) : (
-                  <p className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    className="mt-3 border-t border-primary/10 pt-3 text-sm leading-relaxed text-muted-foreground"
+                    {...editable("home", `faq.a${i + 1}`)}
+                  >
                     {item.answer}
                   </p>
                 )}
@@ -134,7 +139,9 @@ export default async function HomePage() {
                 >
                   ✓
                 </span>
-                <span className="font-medium text-foreground">{item}</span>
+                <span className="font-medium text-foreground" {...editable("home", `why.item${i + 1}`)}>
+                  {item}
+                </span>
               </li>
             ))}
           </ul>
@@ -143,10 +150,12 @@ export default async function HomePage() {
 
       <section className="border-t border-primary/10 bg-primary py-16">
         <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl">
+          <h2 className="text-2xl font-semibold text-primary-foreground md:text-3xl" {...editable("home", "cta.title")}>
             {ctaTitle}
           </h2>
-          <p className="mt-3 text-primary-foreground/90">{ctaSubline}</p>
+          <p className="mt-3 text-primary-foreground/90" {...editable("home", "cta.subtitle")}>
+            {ctaSubline}
+          </p>
           <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
             <Link href="/offert">{homePage.ctaButtonText}</Link>
           </Button>
