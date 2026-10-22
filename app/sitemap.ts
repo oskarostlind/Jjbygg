@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import { getCmsPosts } from "@/lib/cms";
 import { SERVICE_PAGES } from "@/lib/services-content";
+import { LOCATION_PAGES } from "@/lib/locations-content";
+import { SERVICE_LOCATION_PAGES } from "@/lib/service-location-content";
 
 import { SITE_URL } from "@/lib/seo";
 
@@ -37,6 +39,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(page.updated),
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...LOCATION_PAGES.map((page) => ({
+      url: `${SITE_URL}/byggfirma/${page.slug}`,
+      lastModified: new Date(page.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...SERVICE_LOCATION_PAGES.map((page) => ({
+      url: `${SITE_URL}/tjanster/${page.service}/${page.location}`,
+      lastModified: new Date(page.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     // Nyhetssidan listas bara när det finns inlägg – en tom sida ska inte indexeras.
     ...(posts.length > 0

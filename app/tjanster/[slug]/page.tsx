@@ -2,14 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
+import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { FaqList } from "@/components/faq-list";
 import { CtaBand } from "@/components/cta-band";
-import { ServiceIcon, SERVICE_IMAGES } from "@/components/service-icon";
+import { OfferCard } from "@/components/offer-card";
+import { SidebarLinks } from "@/components/sidebar-links";
+import { SERVICE_IMAGES } from "@/components/service-icon";
 
 type Props = { params: { slug: string } };
 
@@ -57,6 +61,16 @@ export default function ServicePage({ params }: Props) {
   const related = page.related
     .map((slug) => SERVICE_PAGES.find((p) => p.slug === slug))
     .filter((p): p is (typeof SERVICE_PAGES)[number] => Boolean(p));
+
+  // Lokala varianter av tjänsten (/tjanster/[slug]/[ort]) + ortsidor utan egen variant.
+  const localVariants = serviceLocationPagesFor(page.slug).map((p) => {
+    const loc = getLocationPage(p.location);
+    return { href: `/tjanster/${p.service}/${p.location}`, label: `${page.name} ${loc?.inPhrase ?? p.location}` };
+  });
+  const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(
+    (loc) => ({ href: `/byggfirma/${loc.slug}`, label: `Byggfirma ${loc.inPhrase}` })
+  );
+  const areaLinks = [...localVariants, ...regionLinks].map((link) => ({ ...link, place: true }));
 
   const jsonLd = [
     {
@@ -162,44 +176,15 @@ export default function ServicePage({ params }: Props) {
 
         <aside className="lg:col-span-4">
           <div className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
-            <div className="rounded-lg bg-graphite p-6 text-ink-onDark md:p-7">
-              <h2 className="font-display text-xl font-bold text-paper">Vad kostar ditt projekt?</h2>
-              <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink-onDark/75">
-                Beskriv projektet så återkommer vi med en offert. Hembesök i Boden och Luleå är kostnadsfritt.
-              </p>
-              <Button asChild size="lg" className="mt-5 w-full">
-                <Link href="/offert">Begär offert</Link>
-              </Button>
-              <a
-                href={`tel:${siteContent.contact.phoneTelDigits}`}
-                className="mt-3 flex h-12 items-center justify-center gap-2 rounded border border-ink-onDark/30 font-display font-bold text-paper transition-colors hover:border-ink-onDark hover:bg-ink-onDark/10"
-              >
-                <Phone className="h-4 w-4" aria-hidden />
-                {siteContent.contact.phoneDisplay}
-              </a>
-            </div>
+            <OfferCard />
 
-            {related.length > 0 ? (
-              <nav aria-labelledby="related-heading" className="rounded-lg border border-line bg-paper p-6">
-                <h2 id="related-heading" className="font-display text-base font-bold text-graphite">
-                  Andra tjänster
-                </h2>
-                <ul className="mt-3 divide-y divide-line">
-                  {related.map((p) => (
-                    <li key={p.slug}>
-                      <Link
-                        href={`/tjanster/${p.slug}`}
-                        className="group flex items-center gap-3 py-3 font-medium text-graphite transition-colors hover:text-brand-strong"
-                      >
-                        <ServiceIcon iconKey={p.iconKey} size="sm" className="h-9 w-9 [&>svg]:h-4 [&>svg]:w-4" />
-                        <span className="flex-1">{p.name}</span>
-                        <ArrowRight className="h-4 w-4 text-concrete transition-transform group-hover:translate-x-0.5 group-hover:text-brand-strong" aria-hidden />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ) : null}
+            <SidebarLinks id="areas-heading" heading={`${page.name} där du bor`} links={areaLinks} />
+
+            <SidebarLinks
+              id="related-heading"
+              heading="Andra tjänster"
+              links={related.map((p) => ({ href: `/tjanster/${p.slug}`, label: p.name, iconKey: p.iconKey }))}
+            />
           </div>
         </aside>
       </div>

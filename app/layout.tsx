@@ -36,6 +36,10 @@ export const metadata: Metadata = {
     default: SEO_TITLE,
     template: "%s | JJ Bygg & Entreprenad AB",
   },
+  // Google Search Console: HTML-taggverifiering via env (alternativ till DNS TXT hos Strato).
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({

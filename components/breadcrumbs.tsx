@@ -1,8 +1,27 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-export type Crumb = { href?: string; label: string };
+export type Crumb = {
+  /** Sökväg relativt sajtroten, t.ex. "/tjanster". Utelämnas på sista steget. */
+  href?: string;
+  label: string;
+};
+
+/** BreadcrumbList-JSON-LD för samma lista som visas i <Breadcrumbs />. */
+export function breadcrumbJsonLd(crumbs: Crumb[], currentUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((crumb, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: crumb.label,
+      item: crumb.href ? new URL(crumb.href, SITE_URL).toString() : currentUrl,
+    })),
+  };
+}
 
 type BreadcrumbsProps = {
   items: Crumb[];

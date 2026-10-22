@@ -3,6 +3,7 @@ import { defaultMetadata, SITE_URL } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
+import { ServiceAreas } from "@/components/service-areas";
 import { Process } from "@/components/home/process";
 import { WhyUs } from "@/components/home/why-us";
 import { FaqList } from "@/components/faq-list";
@@ -88,6 +89,7 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />
       <Hero />
       <Services />
+      <ServiceAreas />
       <Process />
       <WhyUs items={trust} />
 

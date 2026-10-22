@@ -7,7 +7,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/"],
+      // /offert/tack finns inte som route i dag; listas ändå så att en framtida
+      // tacksida (efter skickat formulär) inte indexeras.
+      disallow: ["/api/", "/offert/tack"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
