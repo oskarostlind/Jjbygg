@@ -14,6 +14,7 @@ import { breadcrumbJsonLd, type Crumb } from "@/components/breadcrumbs";
 import { CtaBand } from "@/components/cta-band";
 import { SidebarLinks } from "@/components/sidebar-links";
 import { SERVICE_IMAGES } from "@/components/service-icon";
+import { ServiceReferenser } from "@/components/referenser/service-referenser";
 import {
   ArticleFaq,
   ArticleHero,
@@ -134,6 +135,8 @@ export default function ServiceLocationPage({ params }: Props) {
         }
       >
         <ArticleSections sections={page.sections} />
+
+        <ServiceReferenser slug={service.slug} />
 
         <ArticleFaq heading={`Vanliga frågor om ${service.name.toLowerCase()} ${location.inPhrase}`} faq={page.faq} />
 

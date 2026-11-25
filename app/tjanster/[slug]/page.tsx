@@ -14,6 +14,7 @@ import { CtaBand } from "@/components/cta-band";
 import { OfferCard } from "@/components/offer-card";
 import { SidebarLinks } from "@/components/sidebar-links";
 import { SERVICE_IMAGES } from "@/components/service-icon";
+import { ServiceReferenser } from "@/components/referenser/service-referenser";
 
 type Props = { params: { slug: string } };
 
@@ -158,6 +159,8 @@ export default function ServicePage({ params }: Props) {
                 ) : null}
               </section>
             ))}
+
+            <ServiceReferenser slug={page.slug} />
 
             <section aria-labelledby="faq-heading">
               <h2 id="faq-heading" className="display text-display-sm text-graphite">
