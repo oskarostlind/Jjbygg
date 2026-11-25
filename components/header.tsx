@@ -25,6 +25,7 @@ export async function Header() {
       label: "Tjänster",
       children: SERVICE_PAGES.map((page) => ({ href: `/tjanster/${page.slug}`, label: page.name })),
     },
+    { href: "/referenser", label: "Utförda arbeten" },
     ...(showNews ? [{ href: "/nyheter", label: "Nyheter" }] : []),
     { href: "/offert", label: "Begär offert" },
   ];
@@ -41,7 +42,7 @@ export async function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded px-3 py-2 text-[0.9375rem] font-semibold text-graphite transition-colors hover:text-brand-strong"
+                className={`whitespace-nowrap rounded px-3 py-2 text-[0.9375rem] font-semibold text-graphite transition-colors hover:text-brand-strong${item.href === "/referenser" ? " hidden lg:inline-block" : ""}`}
               >
                 {item.label}
               </Link>
