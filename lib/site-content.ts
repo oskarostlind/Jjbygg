@@ -69,7 +69,7 @@ export const siteContent = {
       },
       {
         title: "Badrum & Våtrum",
-        description: "Med fokus på certifiering och kvalitet",
+        description: "Kakel, tätskikt och nya ytskikt",
         iconKey: "badrum",
       },
       {
