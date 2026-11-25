@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { unstable_noStore as noStore } from "next/cache";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
-import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay } from "@/lib/contact";
+import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishMobileDisplay, swedishMobileE164 } from "@/lib/contact";
 import { getCmsContent, blockValue, hasPublishedPosts } from "@/lib/cms";
 import { SERVICE_PAGES } from "@/lib/services-content";
+import { LOCATIONS, locationHref } from "@/lib/locations-content";
 
 const { footer } = siteContent;
 const FALLBACK_CONTACT_NAME = "Jesper Johansson";
@@ -15,7 +15,6 @@ const footerLink =
   "rounded text-ink-onDark/80 transition-colors hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-graphite";
 
 export async function Footer() {
-  noStore();
   const content = await getCmsContent();
   // Feature-flagga via innehåll: samma regel som i Header – länken visas
   // bara om det finns minst ett publicerat nyhetsinlägg.
@@ -33,7 +32,7 @@ export async function Footer() {
   const cmsPhoneRaw = blockValue(content, "footer.phone", "");
   const cmsPhoneDigits = cmsPhoneRaw ? parseSwedishMobileTenDigits(cmsPhoneRaw) : null;
   const phone = cmsPhoneDigits
-    ? { display: formatSwedishMobileDisplay(cmsPhoneDigits), telDigits: cmsPhoneDigits }
+    ? { display: formatSwedishMobileDisplay(cmsPhoneDigits), telDigits: swedishMobileE164(cmsPhoneDigits) }
     : envPhone ?? {
         display: siteContent.contact.phoneDisplay,
         telDigits: siteContent.contact.phoneTelDigits,
@@ -50,7 +49,7 @@ export async function Footer() {
       <div className="wrap py-14 md:py-20">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Logga + företag */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <Image
               src={siteContent.logo.primaryWhite}
               alt={siteContent.logo.imageAlt}
@@ -121,7 +120,7 @@ export async function Footer() {
           </div>
 
           {/* Genvägar */}
-          <nav className="lg:col-span-2" aria-labelledby="footer-shortcuts">
+          <nav className="lg:col-span-3" aria-labelledby="footer-shortcuts">
             <h2 id="footer-shortcuts" className="font-display text-base font-bold text-paper">
               Genvägar
             </h2>
@@ -134,6 +133,11 @@ export async function Footer() {
               <li>
                 <Link href="/tjanster" className={footerLink}>
                   Tjänster
+                </Link>
+              </li>
+              <li>
+                <Link href="/referenser" className={footerLink}>
+                  Utförda arbeten
                 </Link>
               </li>
               {showNews ? (
@@ -153,6 +157,20 @@ export async function Footer() {
                   Integritetspolicy
                 </Link>
               </li>
+            </ul>
+
+            {/* Orter: Boden är startsidans sektion #boden, övriga har egna sidor. */}
+            <h2 id="footer-areas" className="mt-8 font-display text-base font-bold text-paper">
+              Här arbetar vi
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]" aria-labelledby="footer-areas">
+              {LOCATIONS.map((location) => (
+                <li key={location.slug}>
+                  <Link href={locationHref(location.slug)} className={footerLink}>
+                    Byggföretag {location.inPhrase}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

@@ -16,30 +16,6 @@ export const SEO_TITLE = siteContent.meta.title;
 /** Samma som siteContent.meta.description (single source of truth). */
 export const SEO_DESCRIPTION = siteContent.meta.description;
 
-const SEO_KEYWORDS: string[] = [
-  "JJ Bygg & Entreprenad AB",
-  "byggfirma Boden",
-  "byggfirma Luleå",
-  "byggföretag Boden",
-  "byggföretag Luleå",
-  "Boden",
-  "Luleå",
-  "Norrbotten",
-  "nybyggnation",
-  "nybyggnad",
-  "renovering",
-  "tillbyggnad",
-  "altan",
-  "takbyte",
-  "badrumsrenovering",
-  "köksrenovering",
-  "ROT-avdrag",
-  "entreprenad",
-  "totalentreprenad",
-  "kostnadsfri offert",
-  "bygg",
-];
-
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
@@ -50,7 +26,6 @@ export const defaultMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SEO_TITLE,
   description: SEO_DESCRIPTION,
-  keywords: SEO_KEYWORDS,
   robots: { index: true, follow: true },
   openGraph: {
     title: SEO_TITLE,

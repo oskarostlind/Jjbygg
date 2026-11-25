@@ -1,9 +1,15 @@
 /**
- * Innehåll för ortsidorna under /byggfirma/[ort].
+ * Orter och innehåll för ortsidorna under /byggfirma/[ort].
  *
  * Varje ort har egen handskriven text om lokala förhållanden (kommun, bygglov,
  * husbestånd, klimat, område). Skriv aldrig en generator som byter ortnamn –
  * det är "doorway pages" och straffas av Google.
+ *
+ * Boden har ingen egen ortsida: startsidan är sidan för "byggföretag/byggfirma
+ * i Boden" (sektionen #boden, se BODEN_SECTION nedan och
+ * components/home/boden-section.tsx). /byggfirma/boden redirectar permanent
+ * till / (next.config.mjs). Två sidor med samma sökord delade på visningarna
+ * och sänkte rankingen – lägg inte tillbaka en Boden-ortsida.
  *
  * Inga påståenden om företaget (certifikat, antal projekt, kundcitat) läggs in
  * här förrän Jesper har bekräftat dem. Skriv "kontakta oss" i stället.
@@ -13,7 +19,8 @@ import type { ServiceFaq, ServiceSection } from "@/lib/services-content";
 
 export type LocationSlug = "boden" | "lulea" | "norrbotten";
 
-export type LocationPage = {
+/** Grunddata om en ort – räcker för länkar, brödsmulor och areaServed. */
+export type Location = {
   slug: LocationSlug;
   /** Ortnamn i nominativ: "Boden". */
   name: string;
@@ -21,6 +28,9 @@ export type LocationPage = {
   inPhrase: string;
   /** schema.org-typ för areaServed. */
   areaType: "City" | "AdministrativeArea";
+};
+
+export type LocationPage = Location & {
   /** Hela <title>, max 60 tecken. */
   metaTitle: string;
   /** Max 155 tecken. */
@@ -35,118 +45,84 @@ export type LocationPage = {
   updated: string;
 };
 
+/** Hemorten. Har tjänst×ort-sidor (/tjanster/[slug]/boden) men ingen egen ortsida. */
+const BODEN: Location = { slug: "boden", name: "Boden", inPhrase: "i Boden", areaType: "City" };
+
+/**
+ * Boden-sektionen på startsidan (#boden). Texten kommer från den tidigare
+ * ortsidan /byggfirma/boden, nedkortad till det som är specifikt för Boden.
+ */
+export const BODEN_SECTION = {
+  heading: "Byggföretag i Boden",
+  intro:
+    "JJ Bygg & Entreprenad AB är en byggfirma med Boden som hemmaplan. Härifrån tar vi uppdrag i hela kommunen – och i Luleå, en halvtimme bort.",
+  paragraphs: [
+    "Vi bygger, renoverar och byter tak åt villaägare, fritidshusägare och företag. Kontaktperson är Jesper Johansson, och det är honom du pratar med oavsett om du behöver en snickare till en ny altan eller ett byggföretag som håller ihop en hel tillbyggnad.",
+    "Boden växer, och efterfrågan på hantverkare är stor. Hör därför av dig i god tid – gärna under vintern om bygget ska stå klart till sommaren.",
+  ],
+  topics: [
+    {
+      heading: "Stadsdelar och byar",
+      paragraphs: [
+        "Vi tar uppdrag i centrala Boden, Sävast, Sävastön, Erikslund, Hedenbacken, Prästholmen, Sanden, Svartbyn, Trångfors, Heden, Bredåker, Vittjärv, Harads och Gunnarsbyn – och i byarna runt omkring.",
+        "Många villor i Erikslund, Hedenbacken och Prästholmen byggdes på 1950-, 60- och 70-talen och har nått åldern då tak, fönster och badrum behöver ses över. I Sävast och på Sävastön är husen yngre. Där handlar det oftare om tillbyggnad, garage, altan eller uterum.",
+      ],
+    },
+    {
+      heading: "Klimat och byggsäsong",
+      paragraphs: [
+        "Boden ligger i inlandet, och vintrarna är långa och kalla. Tjälen kan nå ned mot två meter i oisolerad mark, och snölasten hör till de högsta i landet. Det avgör hur djupt plintarna under en altan ska gå och hur tak, uterum och carportar dimensioneras.",
+        "Markarbeten, gjutning och takbyten planerar vi helst till barmarksperioden från maj till oktober. Kök, badrum och annat invändigt arbete går utmärkt att göra på vintern.",
+      ],
+    },
+    {
+      heading: "Bygglov i Bodens kommun",
+      paragraphs: [
+        "Bygglov, anmälan och förhandsbesked hanteras av Bodens kommun, och ansökan gör du i kommunens e-tjänst på boden.se. Räkna med att handläggningen tar flera veckor, ibland längre under vår och sommar.",
+        "Vi hjälper dig att reda ut om projektet kräver bygglov eller anmälan och kan ta fram underlag i samband med offerten.",
+      ],
+    },
+  ],
+  /** Läggs efter startsidans allmänna frågor i samma FAQ-lista och samma FAQPage-schema. */
+  faq: [
+    {
+      question: "Vilka delar av Boden jobbar ni i?",
+      answer:
+        "Hela Bodens kommun – centrala Boden, Sävast, Sävastön, Erikslund, Hedenbacken, Prästholmen, Sanden, Svartbyn, Trångfors, Heden, Harads, Gunnarsbyn och byarna runt omkring. Vi tar också uppdrag i Luleå och övriga Norrbotten.",
+    },
+    {
+      question: "Hjälper ni till med bygglovet hos Bodens kommun?",
+      answer:
+        "Ja, vi hjälper dig att reda ut om projektet kräver bygglov eller anmälan och vilka handlingar kommunen vill ha. Själva ansökan gör du som fastighetsägare via kommunens e-tjänst, men vi kan ta fram underlag och svara på frågor under handläggningen.",
+    },
+    {
+      question: "Kan man bygga på vintern i Boden?",
+      answer:
+        "Ja, invändiga arbeten som kök, badrum och ytskikt fungerar utmärkt vintertid. Grundläggning, altaner och takbyten planeras däremot helst till barmarkssäsongen. Hör av dig under vintern så hinner vi planera in sommarens arbeten.",
+    },
+    {
+      question: "Tar ni uppdrag från företag och föreningar i Boden?",
+      answer:
+        "Ja. Vi bygger och renoverar åt privatpersoner, företag, föreningar och mindre fastighetsägare. Beskriv projektet i offertformuläret så hör vi av oss.",
+    },
+  ] satisfies ServiceFaq[],
+  /** ISO-datum då texten senast uppdaterades – styr lastModified för / i sitemapen. */
+  updated: "2026-11-26",
+};
+
+/** Ortsidorna under /byggfirma/[ort] (Boden ligger på startsidan, se ovan). */
 export const LOCATION_PAGES: LocationPage[] = [
-  {
-    slug: "boden",
-    name: "Boden",
-    inPhrase: "i Boden",
-    areaType: "City",
-    metaTitle: "Byggfirma i Boden – renovering, altan & takbyte | JJ Bygg",
-    metaDescription:
-      "JJ Bygg & Entreprenad är byggfirman i Boden för tillbyggnad, renovering, badrum, altan och takbyte. Lokalt, ROT-avdrag och kostnadsfritt hembesök.",
-    h1: "Byggfirma i Boden",
-    lead:
-      "JJ Bygg & Entreprenad AB har sin bas i Boden. Vi bygger, renoverar och byter tak åt villaägare, fritidshusägare och företag i hela kommunen – från Sävast och Erikslund till Harads och Gunnarsbyn.",
-    sections: [
-      {
-        heading: "Lokal byggfirma med Boden som hemmaplan",
-        paragraphs: [
-          "Att anlita en byggfirma från orten har praktiska fördelar. Vi känner till hur husen i Boden är byggda, vilka markförhållanden som är vanliga i olika stadsdelar och hur Bodens kommun hanterar bygglov och anmälningar. Hembesök kostar inget, och korta avstånd gör att vi kan komma förbi snabbt om något behöver stämmas av under projektets gång.",
-          "Vi tar uppdrag i hela Bodens kommun: centrala Boden, Sävast, Sävastön, Erikslund, Hedenbacken, Prästholmen, Sanden, Svartbyn, Trångfors, Heden, Bredåker, Vittjärv, Harads och Gunnarsbyn. Bor du i byarna runt omkring går det också bra – hör av dig så berättar vi hur vi kan hjälpa till.",
-        ],
-      },
-      {
-        heading: "Det här hjälper vi till med i Boden",
-        paragraphs: [
-          "Vi arbetar med det mesta inom bygg på villor, fritidshus och mindre fastigheter. Läs mer om varje tjänst på respektive sida:",
-        ],
-        links: "services",
-        list: [
-          "Nybyggnation och tillbyggnad – garage, tillbyggnader, attefallshus och fritidshus",
-          "Renovering och interiör – kök, ytskikt, planlösning och totalrenovering",
-          "Badrum och våtrum – rivning, tätskikt, kakel och samordning av VVS och el",
-          "Altaner och uteplatser – trädäck, uterum, räcken och staket",
-          "Takbyten och plåtarbeten – nytt tak, hängrännor, snörasskydd och plåtdetaljer",
-          "Totalentreprenad – en kontakt som håller i hela projektet",
-        ],
-      },
-      {
-        heading: "Husen i Boden – vad som är typiskt",
-        paragraphs: [
-          "En stor del av Bodens villabestånd byggdes under 1950-, 60- och 70-talen, inte minst i stadsdelar som Erikslund, Hedenbacken och Prästholmen. Många av husen är gedigna, men har nått den ålder där tak, fönster, badrum och elinstallationer behöver ses över. Det gör renovering, takbyte och badrumsrenovering till de vanligaste uppdragen i de centrala delarna.",
-          "I Sävast och på Sävastön, mellan Boden och Luleå, har det byggts mycket nytt de senaste decennierna. Här handlar uppdragen oftare om tillbyggnader, garage, altaner och uterum på hus som är yngre men där familjen vuxit ur ytan. Runt Luleälven och i byarna norrut finns dessutom många fritidshus och äldre gårdar där både renovering och tillbyggnad är aktuella.",
-          "Boden växer. Den pågående industrietableringen och nya bostadsområden gör att efterfrågan på hantverkare ökar. Planera därför ditt projekt i god tid – särskilt om du vill ha något klart till sommaren.",
-        ],
-      },
-      {
-        heading: "Klimatet i Boden ställer krav på bygget",
-        paragraphs: [
-          "Boden ligger i inlandet, några mil från kusten, och vintrarna är både långa och kalla. Tjälen går djupt – i oisolerad mark kan den nå ned mot två meter – och det påverkar allt från plintar under en altan till grundläggningen av ett nytt garage. En grund som inte är dimensionerad för tjälen kan börja röra sig redan efter några vintrar.",
-          "Snölasten är bland de högsta i landet. Tak, uterum och carportar måste dimensioneras efter Boverkets snölastkarta för just den här delen av Norrbotten, och det är en av anledningarna till att plåttak är så vanliga här: snön glider av, och vikten är låg. Samtidigt betyder stora temperatursvängningar under vår och höst att plåtdetaljer, hängrännor och tätningar får jobba hårt.",
-          "Byggsäsongen är kortare än söderut. Gjutning, markarbeten och takbyten planeras helst till barmarksperioden från maj till oktober, medan invändiga arbeten som kök, badrum och ytskikt går utmärkt att göra på vintern.",
-        ],
-      },
-      {
-        heading: "Bygglov i Bodens kommun",
-        paragraphs: [
-          "Bygglov, anmälan och förhandsbesked i Boden hanteras av Bodens kommun. Ansökan görs via kommunens e-tjänst på boden.se, där du också kan följa ditt ärende. Kommunen kan svara på om din fastighet omfattas av detaljplan, vilket avgör mycket av vad som får byggas utan lov.",
-          "Tänk på att bygglov kräver ritningar, situationsplan och ofta en kontrollplan, och att handläggningen tar tid – räkna med flera veckor och ibland längre under vår och sommar. Vi hjälper dig gärna att förstå vilka handlingar som behövs för ditt projekt och kan ta fram underlag i samband med offerten.",
-          "Vissa åtgärder är bygglovsbefriade för en- och tvåbostadshus: attefallshus upp till 30 kvadratmeter, friggebodar, mindre tillbyggnader på upp till 15 kvadratmeter och altaner under vissa mått. Flera av dem kräver ändå en anmälan och startbesked innan du får börja bygga.",
-        ],
-      },
-      {
-        heading: "ROT-avdrag för dig som bor i Boden",
-        paragraphs: [
-          "Äger du din villa, ditt radhus eller fritidshus i Boden kan du använda ROT-avdraget på arbetskostnaden för renovering, om- och tillbyggnad. Avdraget är 30 procent av arbetskostnaden upp till 50 000 kronor per person och år enligt nuvarande regler, och vi drar av det direkt på fakturan. Kontrollera alltid aktuella villkor på skatteverket.se. Observera att ROT inte gäller nybyggnad av helt nya byggnader.",
-        ],
-      },
-      {
-        heading: "Så kommer vi igång",
-        paragraphs: [
-          "Beskriv ditt projekt i vårt offertformulär eller ring oss. Vi bokar ett kostnadsfritt hembesök i Boden, går igenom vad du vill göra och vad som behöver kontrolleras med kommunen, och återkommer med en skriftlig offert där arbete och material redovisas var för sig.",
-        ],
-      },
-    ],
-    faq: [
-      {
-        question: "Vilka delar av Boden jobbar ni i?",
-        answer:
-          "Hela Bodens kommun – centrala Boden, Sävast, Sävastön, Erikslund, Hedenbacken, Prästholmen, Sanden, Svartbyn, Trångfors, Heden, Harads, Gunnarsbyn och byarna runt omkring. Vi tar också uppdrag i Luleå och övriga Norrbotten.",
-      },
-      {
-        question: "Kostar hembesöket något?",
-        answer:
-          "Nej. Hembesök och offert i Boden är kostnadsfritt och utan förpliktelser. Vi tittar på plats, ställer frågor och återkommer med ett skriftligt förslag.",
-      },
-      {
-        question: "Hjälper ni till med bygglovet hos Bodens kommun?",
-        answer:
-          "Ja, vi hjälper dig att reda ut om projektet kräver bygglov eller anmälan och vilka handlingar kommunen vill ha. Själva ansökan gör du som fastighetsägare via kommunens e-tjänst, men vi kan ta fram underlag och svara på frågor under handläggningen.",
-      },
-      {
-        question: "Kan man bygga på vintern i Boden?",
-        answer:
-          "Ja, invändiga arbeten som kök, badrum och ytskikt fungerar utmärkt vintertid. Grundläggning, altaner och takbyten planeras däremot helst till barmarkssäsongen. Hör av dig under vintern så hinner vi planera in sommarens arbeten.",
-      },
-      {
-        question: "Tar ni uppdrag från företag och föreningar i Boden?",
-        answer:
-          "Ja. Vi bygger och renoverar åt privatpersoner, företag, föreningar och mindre fastighetsägare. Beskriv projektet i offertformuläret så hör vi av oss.",
-      },
-    ],
-    updated: "2026-10-22",
-  },
   {
     slug: "lulea",
     name: "Luleå",
     inPhrase: "i Luleå",
     areaType: "City",
-    metaTitle: "Byggfirma i Luleå – renovering, altan & takbyte | JJ Bygg",
+    metaTitle: "Byggföretag i Luleå – byggfirma, renovering & tak | JJ Bygg",
     metaDescription:
-      "Söker du byggfirma i Luleå? JJ Bygg & Entreprenad renoverar, bygger till, byter tak och bygger altaner i hela Luleå kommun. ROT-avdrag och gratis hembesök.",
-    h1: "Byggfirma i Luleå",
+      "Söker du byggföretag i Luleå? Byggfirman JJ Bygg & Entreprenad renoverar, bygger till, byter tak och bygger altaner i hela Luleå kommun. Gratis hembesök.",
+    h1: "Byggföretag i Luleå",
     lead:
-      "Luleå ligger en halvtimme från vår bas i Boden, och en stor del av våra uppdrag finns här: villor på Bergnäset och Björkskatan, radhus på Hertsön, sjönära fritidshus i skärgården och tillbyggnader i Sunderbyn. Vi kommer gärna ut på ett kostnadsfritt hembesök.",
+      "Luleå ligger en halvtimme från vår bas i Boden, och en stor del av våra uppdrag finns här: villor på Bergnäset och Björkskatan, radhus på Hertsön, sjönära fritidshus i skärgården och tillbyggnader i Sunderbyn. Oavsett om du söker en snickare till altanen eller hantverkare för en hel renovering kommer vi gärna ut på ett kostnadsfritt hembesök.",
     sections: [
       {
         heading: "Byggfirma som jobbar i hela Luleå kommun",
@@ -227,16 +203,16 @@ export const LOCATION_PAGES: LocationPage[] = [
           "Byter du till samma material och färg krävs normalt inget bygglov. Ändrar du takets utseende påtagligt, eller bor i ett område med detaljplan eller kulturvärden som Gammelstad, kan bygglov behövas. Luleå kommun svarar på vad som gäller för din fastighet.",
       },
     ],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
   {
     slug: "norrbotten",
     name: "Norrbotten",
     inPhrase: "i Norrbotten",
     areaType: "AdministrativeArea",
-    metaTitle: "Byggfirma i Norrbotten – Boden, Luleå & omnejd | JJ Bygg",
+    metaTitle: "Byggföretag i Norrbotten – Boden, Luleå & omnejd | JJ Bygg",
     metaDescription:
-      "JJ Bygg & Entreprenad är byggfirman i Norrbotten med bas i Boden. Vi tar uppdrag i Boden, Luleå, Älvsbyn, Kalix, Piteå och Jokkmokk. Kostnadsfri offert.",
+      "JJ Bygg är ett byggföretag i Norrbotten med bas i Boden. Vi tar uppdrag i Boden, Luleå, Älvsbyn, Kalix, Piteå och Jokkmokk. Kostnadsfri offert.",
     h1: "Byggfirma i Norrbotten",
     lead:
       "Vi har vår bas i Boden och arbetar främst i Boden och Luleå, men tar också uppdrag i övriga Norrbotten – Älvsbyn, Kalix, Piteå, Jokkmokk och byarna däremellan. Beskriv ditt projekt så berättar vi om vi kan hjälpa till.",
@@ -247,7 +223,7 @@ export const LOCATION_PAGES: LocationPage[] = [
           "De flesta av våra uppdrag finns i Bodens och Luleå kommuner, där vi kan göra hembesök med kort varsel och känner till både husbestånd och kommunernas bygglovshantering. Läs mer om hur vi arbetar på respektive ort:",
         ],
         links: "locations",
-        list: ["Byggfirma i Boden – vår hemort", "Byggfirma i Luleå – en halvtimme bort"],
+        list: ["Byggföretag i Boden – vår hemort", "Byggföretag i Luleå – en halvtimme bort"],
       },
       {
         heading: "Vi tar uppdrag i Älvsbyn, Kalix, Piteå och Jokkmokk",
@@ -315,12 +291,24 @@ export const LOCATION_PAGES: LocationPage[] = [
       },
     ],
     alsoServing: ["Älvsbyn", "Kalix", "Piteå", "Jokkmokk"],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
 ];
 
+/** Alla orter vi arbetar på – för areaServed, länkar och tjänst×ort-sidorna. */
+export const LOCATIONS: Location[] = [BODEN, ...LOCATION_PAGES];
+
+export function getLocation(slug: string): Location | undefined {
+  return LOCATIONS.find((location) => location.slug === slug);
+}
+
 export function getLocationPage(slug: string): LocationPage | undefined {
   return LOCATION_PAGES.find((page) => page.slug === slug);
+}
+
+/** Länk till ortens sida: Boden är startsidans sektion #boden, övriga /byggfirma/[ort]. */
+export function locationHref(slug: LocationSlug): string {
+  return slug === "boden" ? "/#boden" : `/byggfirma/${slug}`;
 }
 
 /** Orter som har tjänst×ort-sidor (regionsidan har inga). */

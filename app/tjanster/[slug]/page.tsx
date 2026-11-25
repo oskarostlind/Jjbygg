@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
-import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { LOCATION_PAGES, getLocation } from "@/lib/locations-content";
 import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
@@ -14,6 +14,7 @@ import { CtaBand } from "@/components/cta-band";
 import { OfferCard } from "@/components/offer-card";
 import { SidebarLinks } from "@/components/sidebar-links";
 import { SERVICE_IMAGES } from "@/components/service-icon";
+import { ServiceReferenser } from "@/components/referenser/service-referenser";
 
 type Props = { params: { slug: string } };
 
@@ -64,7 +65,7 @@ export default function ServicePage({ params }: Props) {
 
   // Lokala varianter av tjänsten (/tjanster/[slug]/[ort]) + ortsidor utan egen variant.
   const localVariants = serviceLocationPagesFor(page.slug).map((p) => {
-    const loc = getLocationPage(p.location);
+    const loc = getLocation(p.location);
     return { href: `/tjanster/${p.service}/${p.location}`, label: `${page.name} ${loc?.inPhrase ?? p.location}` };
   });
   const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(
@@ -158,6 +159,8 @@ export default function ServicePage({ params }: Props) {
                 ) : null}
               </section>
             ))}
+
+            <ServiceReferenser slug={page.slug} />
 
             <section aria-labelledby="faq-heading">
               <h2 id="faq-heading" className="display text-display-sm text-graphite">

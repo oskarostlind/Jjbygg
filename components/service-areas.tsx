@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import { LOCATION_PAGES } from "@/lib/locations-content";
+import { LOCATIONS, locationHref } from "@/lib/locations-content";
 
 /**
- * Liten länkrad "Vi finns i …" till ortsidorna under /byggfirma/[ort].
- * Ligger på startsidan efter tjänsterna; ger ortsidorna interna länkar från
- * sajtens starkaste sida.
+ * Liten länkrad "Vi finns i …": Boden (sektionen #boden på startsidan) och
+ * ortsidorna under /byggfirma/[ort]. Ligger på startsidan efter tjänsterna;
+ * ger ortsidorna interna länkar från sajtens starkaste sida.
  */
 export function ServiceAreas() {
   return (
@@ -19,13 +19,13 @@ export function ServiceAreas() {
           Vi finns i
         </h2>
         <ul className="flex flex-wrap items-center justify-center gap-2">
-          {LOCATION_PAGES.map((location) => (
+          {LOCATIONS.map((location) => (
             <li key={location.slug}>
               <Link
-                href={`/byggfirma/${location.slug}`}
+                href={locationHref(location.slug)}
                 className="inline-flex h-10 items-center rounded-full border border-line-strong bg-paper px-4 text-sm font-semibold text-graphite transition-colors hover:border-brand-strong hover:text-brand-strong"
               >
-                Byggfirma {location.inPhrase}
+                Byggföretag {location.inPhrase}
               </Link>
             </li>
           ))}

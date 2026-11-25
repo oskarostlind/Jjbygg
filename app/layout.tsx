@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { GoogleTagManager } from "@/components/layout/google-tag-manager";
 import { LocalBusinessJsonLd } from "@/components/layout/local-business-json-ld";
 import { LeadSourceTracker } from "@/components/layout/lead-source-tracker";
+import { PhoneClickTracker } from "@/components/layout/phone-click-tracker";
 import { SitecmsPreview } from "sitecms-next/preview";
 import { SitecmsAnalytics } from "sitecms-next/analytics";
 import "./globals.css";
@@ -50,6 +51,10 @@ export default function RootLayout({
 }>) {
   // sitecms förhandsgranskning (draft mode): ingen spårning — kundens redigering
   // ska inte räknas som besök eller ge leadkällor.
+  // draftMode().isEnabled tvingar INTE dynamisk rendering: sidorna förblir
+  // statiska/ISR och renderas per anrop bara när draft mode-cookien finns.
+  // Lägg inte till cookies(), headers() eller noStore() här eller i Header/Footer
+  // – då blir hela sajten dynamisk (cache-control: no-store).
   const preview = draftMode().isEnabled;
 
   return (
@@ -70,6 +75,7 @@ export default function RootLayout({
         <LocalBusinessJsonLd />
         {preview ? null : <LeadSourceTracker />}
         {preview ? null : <Analytics />}
+        {preview ? null : <PhoneClickTracker />}
         {/* Renderar ingenting utanför sitecms förhandsgranskning (draft mode). */}
         <SitecmsPreview />
         {/* Cookiefri trafikmätning till sitecms – skickar inget i förhandsgranskning. */}

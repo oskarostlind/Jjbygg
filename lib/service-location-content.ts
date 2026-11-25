@@ -85,10 +85,10 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
     location: "boden",
     metaTitle: "Renovering i Boden – kök, ytskikt & äldre hus | JJ Bygg",
     metaDescription:
-      "Renovera villa eller fritidshus i Boden? JJ Bygg renoverar kök, ytskikt och hela hus från 50–70-talen – med ROT-avdrag direkt på fakturan. Gratis hembesök.",
+      "Köksrenovering eller totalrenovering i Boden? JJ Bygg renoverar villor och fritidshus från 50–70-talen – med ROT-avdrag på fakturan. Gratis hembesök.",
     h1: "Renovering i Boden",
     lead:
-      "Många hus i Boden byggdes för femtio–sjuttio år sedan och står nu inför sin andra eller tredje renovering. Vi hjälper dig att göra rätt saker i rätt ordning – från nytt kök till totalrenovering.",
+      "Många hus i Boden byggdes för femtio–sjuttio år sedan och står nu inför sin andra eller tredje renovering. Vi hjälper dig att göra rätt saker i rätt ordning – från köksrenovering till totalrenovering.",
     sections: [
       {
         heading: "Bodens villor från 50-, 60- och 70-talen",
@@ -129,7 +129,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
           "Det som skyddar huset: tak, fasad, dränering och fönster – och sedan badrum och el. Ytskikt och kök kommer sist. Vid hembesöket hjälper vi dig att prioritera utifrån husets skick.",
       },
     ],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
   {
     service: "badrumsrenovering",
@@ -238,10 +238,10 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
     location: "boden",
     metaTitle: "Takbyte i Boden – plåttak & snörasskydd | JJ Bygg",
     metaDescription:
-      "Byta tak i Boden? JJ Bygg byter tak på villor och fritidshus, dimensionerat för inlandets snölast, med nya plåtdetaljer och snörasskydd. ROT-avdrag.",
+      "Takläggare i Boden: JJ Bygg byter tak på villor och fritidshus, dimensionerat för inlandets snölast, med nya plåtdetaljer och snörasskydd. ROT-avdrag.",
     h1: "Takbyte i Boden",
     lead:
-      "Taken i Boden bär några av landets tyngsta snölaster vinter efter vinter. Vi byter tak på villor, garage och fritidshus i hela kommunen – med underlag, plåt och snörasskydd gjorda för inlandsklimatet.",
+      "Taken i Boden bär några av landets tyngsta snölaster vinter efter vinter. Vi byter tak på villor, garage och fritidshus i hela kommunen – med underlag, plåt och snörasskydd gjorda för inlandsklimatet. Söker du takläggare eller plåtslagare i Boden kommer vi gärna ut och tittar på taket.",
     sections: [
       {
         heading: "Vad snön gör med taken i Boden",
@@ -282,7 +282,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
           "Oftast en till ett par veckor beroende på takets storlek, väder och hur mycket av underlaget som behöver bytas. Du får en tidplan i offerten.",
       },
     ],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
   {
     service: "totalentreprenad",
@@ -399,10 +399,10 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
     location: "lulea",
     metaTitle: "Renovering i Luleå – villa, radhus & kök | JJ Bygg",
     metaDescription:
-      "Renovera i Luleå? JJ Bygg renoverar 70-talsvillor på Hertsön, äldre hus på Bergnäset och kök i hela kommunen. ROT-avdrag på fakturan, gratis hembesök.",
+      "Köksrenovering eller totalrenovering i Luleå? JJ Bygg renoverar 70-talsvillor på Hertsön och äldre hus på Bergnäset. ROT-avdrag och gratis hembesök.",
     h1: "Renovering i Luleå",
     lead:
-      "Luleås hus är lika olika som stadens delar – 70-talsradhus på Hertsön, sekelskifteshus på Bergnäset och nybyggda villor i Sunderbyn. Vi renoverar kök, ytskikt och hela hus i hela kommunen, planerat i rätt ordning.",
+      "Luleås hus är lika olika som stadens delar – 70-talsradhus på Hertsön, sekelskifteshus på Bergnäset och nybyggda villor i Sunderbyn. Vi gör allt från köksrenovering och nya ytskikt till totalrenovering i hela kommunen, planerat i rätt ordning.",
     sections: [
       {
         heading: "Hertsön, Björkskatan och 70-talshusen",
@@ -442,7 +442,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
           "Kontakta styrelsen innan du begär offert – många föreningar kräver godkännande för kök, badrum och ändrade väggar. ROT-avdraget gäller bara arbete inne i din egen bostad.",
       },
     ],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
   {
     service: "badrumsrenovering",
@@ -550,10 +550,10 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
     location: "lulea",
     metaTitle: "Takbyte i Luleå – plåttak för snö och kustvind | JJ Bygg",
     metaDescription:
-      "Byta tak i Luleå? JJ Bygg byter tak och plåtdetaljer dimensionerade för Bottenvikens snölast och vind. Nya hängrännor och snörasskydd. ROT-avdrag.",
+      "Takläggare i Luleå: JJ Bygg byter tak och plåtdetaljer dimensionerade för Bottenvikens snölast och vind. Nya hängrännor och snörasskydd. ROT-avdrag.",
     h1: "Takbyte i Luleå",
     lead:
-      "Taken i Luleå ska klara både tung snö och hårda vindar från Bottenviken. Vi byter tak på villor, radhus och fritidshus i hela kommunen – med infästningar, plåt och avvattning anpassade för kustklimatet.",
+      "Taken i Luleå ska klara både tung snö och hårda vindar från Bottenviken. Vi byter tak på villor, radhus och fritidshus i hela kommunen – med infästningar, plåt och avvattning anpassade för kustklimatet. Behöver du en takläggare eller plåtslagare i Luleå börjar vi med ett kostnadsfritt hembesök.",
     sections: [
       {
         heading: "Snö och vind – dubbel belastning vid kusten",
@@ -593,7 +593,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
           "Ja. I radhus med gemensamt tak behöver grannar eller föreningen ofta vara med på beslutet, och arbetet planeras så att skarvarna mot grannarnas tak blir täta. Kontakta föreningen innan du begär offert.",
       },
     ],
-    updated: "2026-10-22",
+    updated: "2026-11-26",
   },
   {
     service: "totalentreprenad",

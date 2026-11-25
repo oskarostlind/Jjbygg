@@ -18,24 +18,28 @@ export const siteContent = {
   },
   meta: {
     /** Kort titel utan upprepning (SEO: max ~580 px bredd i SERP). */
-    title: "Bygg & entreprenad i Boden och Luleå | JJ Bygg",
+    title: "Byggföretag i Boden & Luleå – byggfirma JJ Bygg",
+    /** Max 155 tecken. */
     description:
-      "JJ Bygg & Entreprenad AB utför nybyggnad, renovering, altaner och takbyte i Boden och Luleå. Kontakta oss för en kostnadsfri offert!",
-    keywords:
-      "JJ Bygg & Entreprenad AB, byggfirma Boden, byggfirma Luleå, nybyggnation, renovering, altan, takbyte, ROT, entreprenad, Norrbotten",
+      "Byggföretag och byggfirma i Boden och Luleå. JJ Bygg gör renovering, tillbyggnad, tak, badrum och altan. Begär kostnadsfri offert utan förpliktelser.",
   },
   contact: {
     personName: "Jesper Johansson",
     phoneDisplay: "070-535 71 94",
-    /** Endast siffror för tel:-länk (fallback om CONTACT_NUMBER saknas). */
-    phoneTelDigits: "0705357194",
+    /** Värdet efter "tel:" i internationellt format (fallback om CONTACT_NUMBER saknas). */
+    phoneTelDigits: "+46705357194",
     email: "info@jjbyggboden.se",
     address: "Kallkällvägen 16 c, 961 96 Boden",
+  },
+  /** Bolagsuppgifter (belagda: Bolagsverket/Skatteverket). Lägg inte till något här utan underlag. */
+  company: {
+    foundingYear: "2010",
+    taxStatus: "Godkänt för F-skatt",
   },
   hero: {
     title: "Begär en offert",
     subtitle: "Fyll i formuläret nedan så återkommer vi till dig.",
-    headline: "Professionell bygg & entreprenad i Boden och Luleå",
+    headline: "Byggföretag i Boden och Luleå",
     subline:
       "JJ Bygg & Entreprenad AB hjälper dig med allt från nybyggnation och tillbyggnad till altaner och takbyten. Kvalitet, transparens och lokalt engagemang i hela Norrbotten.",
     ctaText: "Begär en offert",

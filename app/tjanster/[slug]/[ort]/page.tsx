@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
-import { getLocationPage } from "@/lib/locations-content";
+import { getLocation, locationHref } from "@/lib/locations-content";
 import {
   SERVICE_LOCATION_PAGES,
   getServiceLocationPage,
@@ -14,6 +14,7 @@ import { breadcrumbJsonLd, type Crumb } from "@/components/breadcrumbs";
 import { CtaBand } from "@/components/cta-band";
 import { SidebarLinks } from "@/components/sidebar-links";
 import { SERVICE_IMAGES } from "@/components/service-icon";
+import { ServiceReferenser } from "@/components/referenser/service-referenser";
 import {
   ArticleFaq,
   ArticleHero,
@@ -58,7 +59,7 @@ export function generateMetadata({ params }: Props): Metadata {
 export default function ServiceLocationPage({ params }: Props) {
   const page = getServiceLocationPage(params.slug, params.ort);
   const service = getServicePage(params.slug);
-  const location = getLocationPage(params.ort);
+  const location = getLocation(params.ort);
   if (!page || !service || !location) notFound();
 
   const url = `${SITE_URL}/tjanster/${page.service}/${page.location}`;
@@ -73,7 +74,7 @@ export default function ServiceLocationPage({ params }: Props) {
   const sameServiceElsewhere = serviceLocationPagesFor(page.service)
     .filter((p) => p.location !== page.location)
     .map((p) => {
-      const loc = getLocationPage(p.location);
+      const loc = getLocation(p.location);
       return {
         href: `/tjanster/${p.service}/${p.location}`,
         label: `${service.name} ${loc?.inPhrase ?? p.location}`,
@@ -125,7 +126,7 @@ export default function ServiceLocationPage({ params }: Props) {
               heading="Läs mer"
               links={[
                 { href: `/tjanster/${service.slug}`, label: `Allt om ${service.name.toLowerCase()}`, iconKey: service.iconKey },
-                { href: `/byggfirma/${location.slug}`, label: `Byggfirma ${location.inPhrase}`, place: true },
+                { href: locationHref(location.slug), label: `Byggföretag ${location.inPhrase}`, place: true },
               ]}
             />
             <SidebarLinks id="same-service-heading" heading="Samma tjänst på andra orter" links={sameServiceElsewhere} />
@@ -134,6 +135,8 @@ export default function ServiceLocationPage({ params }: Props) {
         }
       >
         <ArticleSections sections={page.sections} />
+
+        <ServiceReferenser slug={service.slug} />
 
         <ArticleFaq heading={`Vanliga frågor om ${service.name.toLowerCase()} ${location.inPhrase}`} faq={page.faq} />
 

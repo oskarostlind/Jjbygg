@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { SERVICE_PAGES } from "@/lib/services-content";
+import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { ServiceIcon, SERVICE_IMAGES } from "@/components/service-icon";
 import { CtaBand } from "@/components/cta-band";
+import { serviceCardImage } from "@/lib/referenser-content";
 
 const TITLE = "Tjänster – bygg & renovering i Boden och Luleå | JJ Bygg";
 const DESCRIPTION =
@@ -48,7 +50,7 @@ export default function TjansterPage() {
       <section className="bg-sand py-4 md:py-8" aria-label="Våra tjänster">
         <ul className="wrap divide-y divide-line">
           {SERVICE_PAGES.map((page) => {
-            const image = SERVICE_IMAGES[page.iconKey];
+            const image = serviceCardImage(page.slug) ?? SERVICE_IMAGES[page.iconKey];
             return (
               <li key={page.slug} className="group relative grid gap-6 py-8 md:grid-cols-12 md:items-center md:gap-10 md:py-10">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-sand-deep md:col-span-5 md:aspect-[4/3] lg:col-span-4">
@@ -77,6 +79,20 @@ export default function TjansterPage() {
                         Läs om {page.name.toLowerCase()}
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                       </span>
+                      {/* Ortvarianter – ligger ovanpå kortets heltäckande länk (z-10). */}
+                      <ul className="relative z-10 mt-5 flex flex-wrap gap-2" aria-label={`${page.name} på din ort`}>
+                        {serviceLocationPagesFor(page.slug).map((local) => (
+                          <li key={local.location}>
+                            <Link
+                              href={`/tjanster/${local.service}/${local.location}`}
+                              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line-strong bg-paper px-3.5 text-sm font-semibold text-graphite transition-colors hover:border-brand-strong hover:text-brand-strong"
+                            >
+                              <MapPin className="h-3.5 w-3.5 text-brand-strong" aria-hidden />
+                              {local.h1}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>

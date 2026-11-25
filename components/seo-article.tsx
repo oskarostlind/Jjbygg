@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { SERVICE_PAGES, type ServiceFaq, type ServiceSection } from "@/lib/services-content";
-import type { LocationSlug } from "@/lib/locations-content";
+import { locationHref, type LocationSlug } from "@/lib/locations-content";
 import { siteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
@@ -101,12 +101,13 @@ export function ArticleLayout({ children, aside }: { children: React.ReactNode; 
   );
 }
 
-const LOCATION_LIST_HREFS = ["/byggfirma/boden", "/byggfirma/lulea"];
+/** Boden är startsidans sektion #boden (ingen egen ortsida), Luleå /byggfirma/lulea. */
+const LOCATION_LIST_HREFS = [locationHref("boden"), locationHref("lulea")];
 
 /**
  * Listrader i ett avsnitt med `links: "services"` länkas till SERVICE_PAGES i samma
  * ordning (eller till tjänst×ort-sidan om `serviceHrefs` anger en), `links: "locations"`
- * till ortsidorna.
+ * till Boden (startsidan) och Luleå.
  */
 export function ArticleSections({
   sections,

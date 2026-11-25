@@ -17,7 +17,7 @@ export type ServiceSection = {
   list?: string[];
   /**
    * Gör listraderna till länkar: "services" länkar rad i till SERVICE_PAGES[i],
-   * "locations" till /byggfirma/boden respektive /byggfirma/lulea.
+   * "locations" till startsidans Boden-sektion (/#boden) respektive /byggfirma/lulea.
    */
   links?: "services" | "locations";
 };
@@ -130,7 +130,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       "Köksrenovering, ytskikt eller totalrenovering i Boden och Luleå. JJ Bygg planerar, river och bygger upp – med ROT-avdrag direkt på fakturan.",
     h1: "Renovering och interiör i Boden och Luleå",
     lead:
-      "Från ett nytt kök till en totalrenovering av hela huset. Vi hjälper dig att planera i rätt ordning, så att du slipper riva upp det som nyss blev klart.",
+      "Från en köksrenovering till en totalrenovering av hela huset. Vi hjälper dig att planera i rätt ordning, så att du slipper riva upp det som nyss blev klart.",
     sections: [
       {
         heading: "Renoveringar vi gör",
@@ -200,7 +200,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
     ],
     related: ["badrumsrenovering", "totalentreprenad", "nybyggnation-tillbyggnad"],
-    updated: "2026-09-25",
+    updated: "2026-11-26",
   },
   {
     slug: "badrumsrenovering",
@@ -357,10 +357,10 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Takbyten & plåtarbeten",
     metaTitle: "Takbyte i Boden och Luleå – tak & plåtarbeten | JJ Bygg",
     metaDescription:
-      "Dags att byta tak i Boden eller Luleå? JJ Bygg byter tak och plåtdetaljer anpassat för norrländsk snö och kyla. ROT-avdrag och kostnadsfri offert.",
+      "Söker du takläggare i Boden eller Luleå? JJ Bygg byter tak och plåtdetaljer anpassat för norrländsk snö och kyla. ROT-avdrag och kostnadsfri offert.",
     h1: "Takbyte och plåtarbeten i Boden och Luleå",
     lead:
-      "Taket är husets viktigaste skydd, och i Norrbotten får det jobba hårt: tung snö, is, stora temperaturskillnader och vår med smältvatten. Vi byter tak som är byggda för att klara det.",
+      "Taket är husets viktigaste skydd, och i Norrbotten får det jobba hårt: tung snö, is, stora temperaturskillnader och vår med smältvatten. Vi byter tak som är byggda för att klara det. Letar du efter takläggare eller plåtslagare i Boden eller Luleå gör vi både takbytet och plåtarbetena runt det.",
     sections: [
       {
         heading: "Tecken på att taket behöver bytas",
@@ -425,7 +425,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
     ],
     related: ["nybyggnation-tillbyggnad", "totalentreprenad", "renovering"],
-    updated: "2026-09-25",
+    updated: "2026-11-26",
   },
   {
     slug: "totalentreprenad",
@@ -434,7 +434,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     metaTitle: "Totalentreprenad i Boden och Luleå | JJ Bygg",
     metaDescription:
       "Vill du ha en kontakt för hela byggprojektet? JJ Bygg tar helhetsansvar som totalentreprenör i Boden och Luleå – planering, samordning och kvalitet.",
-    h1: "Entreprenad och projektledning i Boden och Luleå",
+    h1: "Totalentreprenad i Boden och Luleå",
     lead:
       "Ett byggprojekt med flera hantverkare kräver någon som håller i trådarna. Som totalentreprenör tar vi ansvaret för planering, samordning och resultat – du har en kontakt från start till slut.",
     sections: [
@@ -497,7 +497,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
     ],
     related: ["nybyggnation-tillbyggnad", "renovering", "badrumsrenovering"],
-    updated: "2026-09-25",
+    updated: "2026-11-26",
   },
 ];
 
