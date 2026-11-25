@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { unstable_noStore as noStore } from "next/cache";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
@@ -15,7 +14,6 @@ const footerLink =
   "rounded text-ink-onDark/80 transition-colors hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-graphite";
 
 export async function Footer() {
-  noStore();
   const content = await getCmsContent();
   // Feature-flagga via innehåll: samma regel som i Header – länken visas
   // bara om det finns minst ett publicerat nyhetsinlägg.

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
-import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { MobileNav, type NavItem } from "@/components/layout/mobile-nav";
 import { SERVICE_PAGES } from "@/lib/services-content";
 
 export async function Header() {
-  noStore();
   const phoneFromEnv = resolveContactPhoneFromEnv();
   const phoneDisplay = phoneFromEnv?.display ?? siteContent.contact.phoneDisplay;
   const phoneTel = phoneFromEnv?.telDigits ?? siteContent.contact.phoneTelDigits;

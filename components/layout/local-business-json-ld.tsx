@@ -1,4 +1,3 @@
-import { unstable_noStore as noStore } from "next/cache";
 import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL, ogImageUrl } from "@/lib/seo";
@@ -83,7 +82,6 @@ type LocalBusinessLd = {
 };
 
 export function LocalBusinessJsonLd() {
-  noStore();
   const phone = resolveContactPhoneFromEnv();
   const logoUrl = new URL(siteContent.logo.primary, SITE_URL).toString();
 
