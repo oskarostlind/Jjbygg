@@ -9,13 +9,23 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | Sida | Primärt sökord | Sekundära sökord | Innehåll i |
 | --- | --- | --- | --- |
 | `/` | byggföretag boden, byggfirma boden | byggföretag luleå, snickare boden, hantverkare boden, jj bygg | `lib/site-content.ts` + CMS, Boden-sektionen i `lib/locations-content.ts` (`BODEN_SECTION`) |
-| `/tjanster` | byggtjänster boden luleå | snickare boden, snickare luleå | `app/tjanster/page.tsx` |
-| `/tjanster/nybyggnation-tillbyggnad` | tillbyggnad boden luleå | bygga garage, attefallshus norrbotten | `lib/services-content.ts` |
-| `/tjanster/renovering` | renovering boden luleå | köksrenovering, totalrenovering | `lib/services-content.ts` |
+| `/tjanster` | byggtjänster boden luleå | (översikt över alla 16 tjänster, grupperade) | `app/tjanster/page.tsx`, grupper i `SERVICE_GROUPS` |
+| `/tjanster/nybyggnation-tillbyggnad` | tillbyggnad boden luleå | bygga hus, fritidshus (garage, grund och attefallshus har egna sidor) | `lib/services-content.ts` |
+| `/tjanster/renovering` | renovering boden luleå | ytskikt, ändrad planlösning (kök, totalrenovering, golv och bastu har egna sidor) | `lib/services-content.ts` |
 | `/tjanster/badrumsrenovering` | badrumsrenovering boden luleå | renovera badrum, tätskikt | `lib/services-content.ts` |
 | `/tjanster/altan-uteplats` | bygga altan boden luleå | uterum, trädäck | `lib/services-content.ts` |
 | `/tjanster/takbyte-platarbeten` | takbyte boden luleå | takläggare, plåtslagare, byta tak, plåttak, snörasskydd | `lib/services-content.ts` |
 | `/tjanster/totalentreprenad` | totalentreprenad boden luleå | byggentreprenör, totalentreprenör | `lib/services-content.ts` |
+| `/tjanster/koksrenovering` | köksrenovering boden luleå | renovera kök, byta kök, köksmontering | `lib/services-content.ts` |
+| `/tjanster/totalrenovering` | totalrenovering boden luleå | renovera hus, invändig renovering, stambyte villa | `lib/services-content.ts` |
+| `/tjanster/golvlaggning` | golvläggning boden luleå | lägga golv, parkett, klickgolv, fiskbensparkett | `lib/services-content.ts` |
+| `/tjanster/bastu` | bygga bastu boden luleå | bastubygge, bastu inomhus/utomhus, renovera bastu | `lib/services-content.ts` |
+| `/tjanster/garage-carport` | bygga garage boden luleå | carport, förråd | `lib/services-content.ts` |
+| `/tjanster/grund-betongplatta` | gjuta platta, husgrund boden luleå | betongplatta, grundläggning | `lib/services-content.ts` |
+| `/tjanster/fonster-dorrar` | fönsterbyte boden luleå | byta fönster, byta ytterdörr | `lib/services-content.ts` |
+| `/tjanster/fasad-tillaggsisolering` | fasadrenovering boden luleå | byta panel, fasadbyte, tilläggsisolering | `lib/services-content.ts` |
+| `/tjanster/attefallshus-friggebod` | attefallshus boden luleå | friggebod, gäststuga, komplementbyggnad | `lib/services-content.ts` |
+| `/tjanster/snickare` | snickare boden, snickare luleå | snickeriarbeten, hantverkare | `lib/services-content.ts` |
 | `/byggfirma/lulea` | byggföretag luleå | byggfirma luleå, snickare luleå, hantverkare luleå | `lib/locations-content.ts` |
 | `/byggfirma/norrbotten` | byggföretag norrbotten, byggfirma norrbotten | byggfirma älvsbyn / kalix / piteå / jokkmokk | `lib/locations-content.ts` |
 | `/tjanster/nybyggnation-tillbyggnad/boden` | tillbyggnad boden | bygga garage boden, attefallshus boden | `lib/service-location-content.ts` |
@@ -33,6 +43,18 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | `/referenser` | utförda arbeten byggfirma boden | altan, badrum, bastu, betongplatta – bilder från egna jobb | `lib/referenser-content.ts` + `public/referenser/` |
 | `/offert` | offert byggfirma boden | (konvertering, inte ranking) | `app/offert` |
 | `/nyheter`, `/nyheter/[slug]` | – (CMS) | listas i sitemap bara när inlägg finns | sitecms |
+
+### Tjänstesidorna (2026-11-26: 6 → 16)
+
+Search Console visade visningar på sökningar utan egen sida (köksrenovering, golvläggning, bastu, garage, fönsterbyte, snickare m.fl.), så tio tjänstesidor lades till i `SERVICE_PAGES`. Regler:
+
+- **De sex ursprungliga tjänsterna ligger först i `SERVICE_PAGES`, i oförändrad ordning.** Ortsidornas listor med `links: "services"` länkar rad *i* till `SERVICE_PAGES[i]`. Lägg nya tjänster sist. `tests/services-content.test.ts` vaktar ordningen.
+- **Inga `/boden`- eller `/lulea`-varianter av de tio nya tjänsterna.** Tjänst×ort-sidorna finns bara för de sex ursprungliga; fler blir tunna dubbletter. Nya tjänstesidor har "Boden och Luleå" i title/H1 och länkar till orterna ("Här arbetar vi") i stället.
+- Ny tjänst = en post i `SERVICE_PAGES` (egen handskriven text, 550–750 ord, 3–4 frågor), en ikon i `ServiceIconKey` (`lib/site-content.ts`) + `components/service-icon.tsx`, och sluggen i en grupp i `SERVICE_GROUPS`. Routen, sitemapen, footern, mobilmenyn, startsidans "Fler tjänster" och `hasOfferCatalog` följer med automatiskt.
+- Länkar mellan tjänstesidor: `related` (sidopanelen "Andra tjänster") och `serviceLinks` på en sektion (raden "Läs mer: …" eller en punktlista med `note`).
+- **Inga priser, prisintervall eller timpriser** (ägarens beslut) – skriv vad som påverkar priset. Enda beloppet är ROT-taket i `ROT_NOTE`. ROT gäller inte nybyggda fristående byggnader (garage, friggebod, attefallshus, fristående bastu) – de sidorna säger det uttryckligen.
+- **Inga kvadratmetergränser för bygglovsbefriade byggnader.** Reglerna ändrades 1 december 2025; sidorna hänvisar till avstämning med Bodens/Luleå kommun. Samma sak för strandskydd, snölast och tjäldjup (inga siffror).
+- Sidhuvudena delar på de fem stockfotona i `public/hero/`. På `/tjanster` får en tjänst egen bild (`serviceCardImage`), annars stockfoto (bara de sex ursprungliga) eller en ikonruta.
 
 ### Boden ligger på startsidan (2026-11-26)
 
@@ -56,10 +78,11 @@ Kontrollera också att `faq.a2` (offertfrågan) säger "utan förpliktelser" och
 
 ### Intern länkning
 
-- Startsidan → alla sex tjänstesidor (`components/services.tsx`), de sex tjänst×Boden-sidorna (Boden-sektionen) och Luleå/Norrbotten via `components/service-areas.tsx` ("Vi finns i") och Boden-sektionen.
-- Footern (alla sidor) → alla sex tjänstesidor + "Här arbetar vi" (Boden, Luleå, Norrbotten).
-- `/tjanster` → varje tjänst och dess Boden- och Luleå-variant.
-- Tjänstesida → sina tjänst×ort-varianter + `/byggfirma/norrbotten` ("… där du bor").
+- Startsidan → alla 16 tjänstesidor (`components/services.tsx`: sex kort + raden "Fler tjänster" med övriga), de sex tjänst×Boden-sidorna (Boden-sektionen) och Luleå/Norrbotten via `components/service-areas.tsx` ("Vi finns i") och Boden-sektionen.
+- Footern (alla sidor) → alla 16 tjänstesidor (egen rad i fyra spalter) + "Alla tjänster" + "Här arbetar vi" (Boden, Luleå, Norrbotten).
+- `/tjanster` → varje tjänst, grupperade under fyra rubriker (`SERVICE_GROUPS`), och Boden-/Luleå-varianten för de sex som har sådana.
+- Tjänstesida → sina tjänst×ort-varianter + `/byggfirma/norrbotten` ("… där du bor"); tjänster utan ortvarianter → Boden (`/#boden`), Luleå och Norrbotten ("Här arbetar vi"). Dessutom `related` och `serviceLinks` till närliggande tjänster – `/tjanster/snickare` länkar till alla övriga.
+- `/referenser` → den mest specifika tjänsten per bild (bastu, golvläggning, grund & betongplatta …).
 - Ortsida → tjänstelistan (länkar till tjänst×ort där sådan finns, annars tjänstesidan), "Våra tjänster i …" (kort), andra orter.
 - Tjänst×ort → tjänstesidan, ortsidan, samma tjänst på andra orter, andra tjänster på samma ort.
 - Brödsmulor (`components/breadcrumbs.tsx`, `breadcrumbJsonLd()`) med `BreadcrumbList`-JSON-LD på alla landningssidor.
@@ -79,7 +102,7 @@ Egna bilder från riktiga jobb. Datat ligger i `lib/referenser-content.ts` och a
 Lägg till ett nytt projekt:
 
 1. Lägg bilden i `public/referenser/` som JPEG med beskrivande filnamn utan å/ä/ö (`altan-glasracke-villa.jpg`). Gärna 1600–2400 px bred. Beskär bort skärmdumpsramar, ansikten och registreringsskyltar.
-2. Lägg en post i `REFERENSER` i `lib/referenser-content.ts`: `slug`, `title`, `description` (1–2 meningar), `image` (sökväg + faktisk bredd/höjd i pixlar), `alt`, `category` och `service` (slug i `lib/services-content.ts` – styr vilken tjänstesida bilden visas på och länkas till). Tjänstesidan visar tjänstens två första projekt. Kortet på `/tjanster` tar projektet med `cardImage: true`, annars tjänstens första.
+2. Lägg en post i `REFERENSER` i `lib/referenser-content.ts`: `slug`, `title`, `description` (1–2 meningar), `image` (sökväg + faktisk bredd/höjd i pixlar), `alt`, `category` och `service` (slug i `lib/services-content.ts` för den mest specifika tjänsten – dit länkar `/referenser`, och bilden blir tjänstens kortbild på `/tjanster`). Ska bilden också visas på en bredare tjänstesida anges den i `alsoServices` (bastubilden: `service: "bastu"`, `alsoServices: ["renovering"]`). Tjänstesidan visar de två första projekten, egna före lånade. Kortet på `/tjanster` tar projektet med `cardImage: true`, annars tjänstens första – aldrig ett lånat.
 3. Uppdatera `REFERENSER_UPDATED` (styr `lastModified` i sitemapen). Startsidans urval ändras i `HOME_SLUGS` i `home-referenser.tsx`.
 
 Skriv bara det som syns på bilden eller som Jesper har bekräftat – hitta inte på ort, mått, pris eller tid. Det här gör ett projekt bättre (för både besökare och lokal sökning), så fråga efter det:
@@ -98,7 +121,7 @@ De sex första bilderna är bara 1170 px breda (beskurna ur skärmdumpar). De vi
    - **DNS TXT (rekommenderas, domänegendom):** kopiera TXT-posten Google visar. Logga in på Strato → Domäner → jjbyggboden.se → DNS-inställningar → lägg till TXT-post på `@` med värdet `google-site-verification=…`. Vänta några minuter–timmar och klicka Verifiera.
    - **HTML-tagg (URL-prefix-egendom `https://www.jjbyggboden.se`):** kopiera värdet i `content="…"` ur metataggen Google ger. Sätt miljövariabeln `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` i Vercel (Production) till det värdet och deploya om. `app/layout.tsx` skriver då ut `<meta name="google-site-verification">`. Klicka Verifiera.
 3. **Skicka in sitemap:** Search Console → Webbplatskartor → ange `https://www.jjbyggboden.se/sitemap.xml` → Skicka.
-4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 25 adresser i sitemapen indexeras (`/referenser` är ny; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
+4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 35 adresser i sitemapen indexeras (`/referenser` och de tio tjänstesidorna från 2026-11-26 är nya; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
 5. Begär indexering manuellt för de nya landningssidorna via URL-granskning om de inte plockats upp inom två veckor.
 
 ## Google Business Profile
@@ -113,7 +136,7 @@ Lokala sökningar ("byggfirma boden") visar kartpaketet överst. En profil är v
    - Webbplats: https://www.jjbyggboden.se
    - Primär kategori: **Byggfirma** (eng. General contractor). Sekundära: Snickare, Takläggare, Badrumsrenovering, Byggentreprenör.
    - Serviceområde: Boden, Luleå, Älvsbyn, Kalix, Piteå, Jokkmokk.
-   - Tjänster: lägg in de sex tjänsterna med länk till respektive `/tjanster/...`-sida.
+   - Tjänster: lägg in tjänsterna (alla 16 går bra) med länk till respektive `/tjanster/...`-sida.
 3. Verifiering sker via vykort, telefon eller video beroende på vad Google erbjuder.
 4. Efter verifiering: lägg in profilens publika URL i `SAME_AS` i `components/layout/local-business-json-ld.tsx`.
 5. Lägg upp 5–10 foton (lagbild, pågående jobb, färdiga altaner/tak) och be nöjda kunder om recensioner – recensioner är den starkaste rankingfaktorn i kartpaketet.
@@ -132,7 +155,7 @@ Lokala sökningar ("byggfirma boden") visar kartpaketet överst. En profil är v
 - Ingen `meta keywords` (Google ignorerar den).
 - `app/not-found.tsx`: egen 404-sida med länkar till start, tjänster och offert.
 - Konverteringar i Vercel Analytics (egna händelser – kan kräva Pro-plan hos Vercel): `offert_skickad` när offertformuläret skickats (`components/offert/offert-success-view.tsx`) och `telefon_klick` vid klick på en `tel:`-länk (`components/layout/phone-click-tracker.tsx`).
-- Kontrollskript: starta `npm run build && npm run start` och kör `node scripts/check-seo.mjs http://localhost:3000`. Det kontrollerar status, en H1, title/description/canonical, JSON-LD, alt-texter, alla interna länkar från sitemapen, att ingen sida svarar `no-store`, att `#boden` finns på startsidan och att `/byggfirma/boden` svarar 308 → `/` utan att någon sida länkar dit. Utan databas lokalt: bygg med `npx next build` (`npm run build` kör `prisma db push`).
+- Kontrollskript: starta `npm run build && npm run start` och kör `node scripts/check-seo.mjs http://localhost:3000`. Det kontrollerar status, en H1, unik title, description/canonical, JSON-LD, alt-texter, alla interna länkar från sitemapen, att ingen sida svarar `no-store`, att `#boden` finns på startsidan och att `/byggfirma/boden` svarar 308 → `/` utan att någon sida länkar dit. Utan databas lokalt: bygg med `npx next build` (`npm run build` kör `prisma db push`).
 
 ## Månatlig checklista
 

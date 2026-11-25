@@ -11,7 +11,7 @@
  * Bilderna är 1170 px breda. Visa dem aldrig bredare än så (ingen helskärms-hero).
  */
 
-export type ReferensKategori = "Altan & uteplats" | "Badrum" | "Renovering" | "Grund & betong";
+export type ReferensKategori = "Altan & uteplats" | "Badrum" | "Bastu" | "Golv" | "Renovering" | "Grund & betong";
 
 export type Referens = {
   slug: string;
@@ -22,8 +22,16 @@ export type Referens = {
   /** Beskrivande alt-text med arbetstyp – utan ort så länge orten inte är bekräftad. */
   alt: string;
   category: ReferensKategori;
-  /** Slug i SERVICE_PAGES (lib/services-content.ts) som projektet hör till. */
+  /**
+   * Slug i SERVICE_PAGES (lib/services-content.ts) för den mest specifika tjänsten.
+   * /referenser länkar hit, och bilden används på den tjänstens kort på /tjanster.
+   */
   service: string;
+  /**
+   * Fler tjänstesidor där bilden också visas under "Från våra jobb" (t.ex. den
+   * bredare tjänsten "renovering" för en bastu). Ger ingen kortbild på /tjanster.
+   */
+  alsoServices?: string[];
   /** Sätt på den bild som ska användas på tjänstens kort på /tjanster (annars tas tjänstens första). */
   cardImage?: boolean;
 };
@@ -60,8 +68,9 @@ export const REFERENSER: Referens[] = [
       "Nybyggd bastu under snedtak, med ljus träpanel på väggar och tak, lavar i två nivåer och ett fönster som släpper in dagsljus.",
     image: { src: "/referenser/bastu-panel-lavar.jpg", width: 1170, height: 1560 },
     alt: "Nybyggd bastu med ljus träpanel på väggar och snedtak, lavar i två nivåer och ett litet fönster",
-    category: "Renovering",
-    service: "renovering",
+    category: "Bastu",
+    service: "bastu",
+    alsoServices: ["renovering"],
   },
   {
     slug: "betongplatta-gjutning-kvall",
@@ -71,7 +80,8 @@ export const REFERENSER: Referens[] = [
     image: { src: "/referenser/betongplatta-gjutning-kvall.jpg", width: 1170, height: 875 },
     alt: "Nygjuten stor betongplatta på kvällen med formvirke runt kanten och byggstaket i bakgrunden",
     category: "Grund & betong",
-    service: "nybyggnation-tillbyggnad",
+    service: "grund-betongplatta",
+    alsoServices: ["nybyggnation-tillbyggnad"],
   },
   {
     slug: "golv-fiskbensmonster-hall",
@@ -80,8 +90,9 @@ export const REFERENSER: Referens[] = [
       "Nytt golv lagt i fiskbensmönster genom hallen och vidare in i nästa rum, med vita golvlister mot väggarna.",
     image: { src: "/referenser/golv-fiskbensparkett-hall.jpg", width: 1170, height: 1560 },
     alt: "Nylagt golv i fiskbensmönster i en hall med vita golvlister och dörröppning mot nästa rum",
-    category: "Renovering",
-    service: "renovering",
+    category: "Golv",
+    service: "golvlaggning",
+    alsoServices: ["renovering"],
   },
   {
     slug: "betongplatta-husgrund",
@@ -91,7 +102,8 @@ export const REFERENSER: Referens[] = [
     image: { src: "/referenser/betongplatta-husgrund.jpg", width: 1170, height: 878 },
     alt: "Färdig gjuten betongplatta till husgrund med ingjutna rör och skogsbryn i bakgrunden",
     category: "Grund & betong",
-    service: "nybyggnation-tillbyggnad",
+    service: "grund-betongplatta",
+    alsoServices: ["nybyggnation-tillbyggnad"],
     cardImage: true,
   },
 ];
@@ -100,18 +112,26 @@ export function getReferens(slug: string): Referens | undefined {
   return REFERENSER.find((r) => r.slug === slug);
 }
 
-/** Projekt som hör till en tjänstesida (slug i SERVICE_PAGES). Tom lista om inga finns. */
+/**
+ * Projekt som visas på en tjänstesida (slug i SERVICE_PAGES): först de som har
+ * tjänsten som `service`, sedan de som anger den i `alsoServices`. Tom lista om inga finns.
+ */
 export function referenserFor(serviceSlug: string): Referens[] {
-  return REFERENSER.filter((r) => r.service === serviceSlug);
+  return [
+    ...REFERENSER.filter((r) => r.service === serviceSlug),
+    ...REFERENSER.filter((r) => r.service !== serviceSlug && r.alsoServices?.includes(serviceSlug)),
+  ];
 }
 
 /**
  * Egen bild till små tjänstekort (t.ex. listan på /tjanster) – projektet med
- * cardImage, annars tjänstens första. Returnerar undefined om tjänsten saknar egna bilder, så att
- * anroparen kan falla tillbaka på stockfotot.
+ * cardImage, annars tjänstens första. Bara projekt med tjänsten som `service`
+ * räknas (inte `alsoServices`), så att samma bild inte hamnar på två kort.
+ * Returnerar undefined om tjänsten saknar egna bilder, så att anroparen kan
+ * falla tillbaka på stockfoto eller ikonruta.
  */
 export function serviceCardImage(serviceSlug: string): { src: string; alt: string } | undefined {
-  const items = referenserFor(serviceSlug);
+  const items = REFERENSER.filter((r) => r.service === serviceSlug);
   const first = items.find((r) => r.cardImage) ?? items[0];
   return first ? { src: first.image.src, alt: first.alt } : undefined;
 }

@@ -65,22 +65,6 @@ export async function Footer() {
             </p>
           </div>
 
-          {/* Tjänster */}
-          <nav className="lg:col-span-3" aria-labelledby="footer-services">
-            <h2 id="footer-services" className="font-display text-base font-bold text-paper">
-              Tjänster
-            </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
-              {SERVICE_PAGES.map((page) => (
-                <li key={page.slug}>
-                  <Link href={`/tjanster/${page.slug}`} className={footerLink}>
-                    {page.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
           {/* Kontakt */}
           <div className="lg:col-span-3">
             <h2 className="font-display text-base font-bold text-paper">Kontakt</h2>
@@ -159,11 +143,14 @@ export async function Footer() {
               </li>
             </ul>
 
-            {/* Orter: Boden är startsidans sektion #boden, övriga har egna sidor. */}
-            <h2 id="footer-areas" className="mt-8 font-display text-base font-bold text-paper">
+          </nav>
+
+          {/* Orter: Boden är startsidans sektion #boden, övriga har egna sidor. */}
+          <nav className="lg:col-span-3" aria-labelledby="footer-areas">
+            <h2 id="footer-areas" className="font-display text-base font-bold text-paper">
               Här arbetar vi
             </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.9375rem]" aria-labelledby="footer-areas">
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               {LOCATIONS.map((location) => (
                 <li key={location.slug}>
                   <Link href={locationHref(location.slug)} className={footerLink}>
@@ -174,6 +161,27 @@ export async function Footer() {
             </ul>
           </nav>
         </div>
+
+        {/* Tjänster – alla tjänstesidor, i spalter så att listan inte blir en lång kolumn. */}
+        <nav className="mt-12 border-t border-ink-onDark/15 pt-10" aria-labelledby="footer-services">
+          <h2 id="footer-services" className="font-display text-base font-bold text-paper">
+            Tjänster
+          </h2>
+          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[0.9375rem] sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
+            {SERVICE_PAGES.map((page) => (
+              <li key={page.slug}>
+                <Link href={`/tjanster/${page.slug}`} className={footerLink}>
+                  {page.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-[0.9375rem]">
+            <Link href="/tjanster" className={`${footerLink} font-semibold text-paper`}>
+              Alla tjänster
+            </Link>
+          </p>
+        </nav>
 
         <div className="mt-14 flex flex-col gap-2 border-t border-ink-onDark/15 pt-6 text-sm text-ink-onDark/55 sm:flex-row sm:items-center sm:justify-between">
           <p>

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
-import { LOCATION_PAGES, getLocation } from "@/lib/locations-content";
+import {
+  SERVICE_PAGES,
+  getServicePage,
+  type ServicePage as ServicePageData,
+  type ServiceSection,
+} from "@/lib/services-content";
+import { LOCATIONS, LOCATION_PAGES, getLocation, locationHref } from "@/lib/locations-content";
 import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
@@ -54,6 +59,60 @@ function formatDate(iso: string): string {
   );
 }
 
+const PARAGRAPH = "mt-5 text-[1.0625rem] leading-[1.7] text-graphite";
+
+/**
+ * Sektionens länkar till andra tjänstesidor + ev. efterföljande stycken.
+ * Med `note` på länkarna: punktlista "Tjänst – note" följd av `after`.
+ * Utan: `after` följt av raden "Läs mer: A · B".
+ */
+function SectionServiceLinks({ section }: { section: ServiceSection }) {
+  const links = (section.serviceLinks ?? [])
+    .map((link) => ({ ...link, page: getServicePage(link.slug) }))
+    .filter((link): link is typeof link & { page: ServicePageData } => Boolean(link.page));
+  const after = (section.after ?? []).map((text, i) => (
+    <p key={i} className={PARAGRAPH}>
+      {text}
+    </p>
+  ));
+  if (links.length === 0) return <>{after}</>;
+
+  if (links.some((link) => link.note)) {
+    return (
+      <>
+        <ul className="mt-5 space-y-2.5 pl-5 text-[1.0625rem] leading-relaxed text-graphite marker:text-brand">
+          {links.map((link) => (
+            <li key={link.slug} className="list-disc pl-1">
+              <Link href={`/tjanster/${link.slug}`} className="link">
+                {link.page.name}
+              </Link>
+              {link.note ? ` – ${link.note}` : null}
+            </li>
+          ))}
+        </ul>
+        {after}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {after}
+      <p className={PARAGRAPH}>
+        Läs mer:{" "}
+        {links.map((link, i) => (
+          <span key={link.slug}>
+            {i > 0 ? " · " : null}
+            <Link href={`/tjanster/${link.slug}`} className="link">
+              {link.page.name}
+            </Link>
+          </span>
+        ))}
+      </p>
+    </>
+  );
+}
+
 export default function ServicePage({ params }: Props) {
   const page = getServicePage(params.slug);
   if (!page) notFound();
@@ -71,7 +130,14 @@ export default function ServicePage({ params }: Props) {
   const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(
     (loc) => ({ href: `/byggfirma/${loc.slug}`, label: `Byggfirma ${loc.inPhrase}` })
   );
-  const areaLinks = [...localVariants, ...regionLinks].map((link) => ({ ...link, place: true }));
+  // Tjänster utan tjänst×ort-sidor (allt utöver de sex ursprungliga) länkar till
+  // orterna i stället: Boden (startsidans #boden), Luleå och Norrbotten.
+  const hasLocalVariants = localVariants.length > 0;
+  const areaLinks = (
+    hasLocalVariants
+      ? [...localVariants, ...regionLinks]
+      : LOCATIONS.map((loc) => ({ href: locationHref(loc.slug), label: `Byggföretag ${loc.inPhrase}` }))
+  ).map((link) => ({ ...link, place: true }));
 
   const jsonLd = [
     {
@@ -157,6 +223,7 @@ export default function ServicePage({ params }: Props) {
                     ))}
                   </ul>
                 ) : null}
+                <SectionServiceLinks section={section} />
               </section>
             ))}
 
@@ -181,7 +248,11 @@ export default function ServicePage({ params }: Props) {
           <div className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
             <OfferCard />
 
-            <SidebarLinks id="areas-heading" heading={`${page.name} där du bor`} links={areaLinks} />
+            <SidebarLinks
+              id="areas-heading"
+              heading={hasLocalVariants ? `${page.name} där du bor` : "Här arbetar vi"}
+              links={areaLinks}
+            />
 
             <SidebarLinks
               id="related-heading"

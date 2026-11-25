@@ -5,7 +5,7 @@
  *   node scripts/check-seo.mjs [http://localhost:3000]
  *
  * - Hämtar /sitemap.xml och kontrollerar att varje sida svarar 200
- * - Per sida: exakt en <h1>, <title>, meta description, självrefererande canonical,
+ * - Per sida: exakt en <h1>, unik <title>, meta description, självrefererande canonical,
  *   lang="sv", ingen hreflang, alla <img> har alt, JSON-LD parsas som giltig JSON
  * - Crawlar alla interna länkar (href="/…") från sitemap-sidorna och kontrollerar 200
  * - Räknar ord i <main> för landningssidorna
@@ -23,6 +23,8 @@ const REDIRECTED_PATH = "/byggfirma/boden";
 
 const errors = [];
 const warn = [];
+/** title → första sidan som hade den; två sidor med samma title konkurrerar om samma sökning. */
+const seenTitles = new Map();
 
 function fail(msg) {
   errors.push(msg);
@@ -81,7 +83,9 @@ async function checkPage(url, { landing }) {
 
   const title = html.match(/<title>([^<]*)<\/title>/i)?.[1];
   if (!title) fail(`${url}: saknar <title>`);
-  else if (decode(title).length > 60) warn.push(`${url}: title ${decode(title).length} tecken: ${decode(title)}`);
+  else if (seenTitles.has(title)) fail(`${url}: samma <title> som ${seenTitles.get(title)}`);
+  else seenTitles.set(title, url);
+  if (title && decode(title).length > 60) warn.push(`${url}: title ${decode(title).length} tecken: ${decode(title)}`);
 
   const desc = html.match(/<meta name="description" content="([^"]*)"/i)?.[1];
   if (!desc) fail(`${url}: saknar meta description`);

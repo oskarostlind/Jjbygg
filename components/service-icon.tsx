@@ -1,5 +1,22 @@
 import type { LucideIcon } from "lucide-react";
-import { Building2, Paintbrush, Droplets, Fence, Home, ClipboardList } from "lucide-react";
+import {
+  Building2,
+  Paintbrush,
+  Droplets,
+  Fence,
+  Home,
+  ClipboardList,
+  CookingPot,
+  Hammer,
+  Layers,
+  Flame,
+  Warehouse,
+  Shovel,
+  DoorOpen,
+  BrickWall,
+  HousePlus,
+  Ruler,
+} from "lucide-react";
 import type { ServiceIconKey } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +27,31 @@ const SERVICE_ICONS: Record<ServiceIconKey, LucideIcon> = {
   altan: Fence,
   tak: Home,
   entreprenad: ClipboardList,
+  kok: CookingPot,
+  totalrenovering: Hammer,
+  golv: Layers,
+  bastu: Flame,
+  garage: Warehouse,
+  grund: Shovel,
+  fonster: DoorOpen,
+  fasad: BrickWall,
+  attefall: HousePlus,
+  snickare: Ruler,
 };
+
+const STOCK = {
+  stomme: { src: "/hero/quilia-j86QX1TMNaw-unsplash.jpg", alt: "Bjälklag och stomme under uppförande" },
+  verktyg: { src: "/hero/benjamin-lehman-EJU7A__krX0-unsplash.jpg", alt: "Verktyg på en arbetsbänk" },
+  matning: { src: "/hero/callum-hill-NGGkGzslIaM-unsplash.jpg", alt: "Snickare mäter upp trävirke" },
+  takstolar: { src: "/hero/yves-cedric-schulze-o-ANXY28n_w-unsplash.jpg", alt: "Takstolar mot blå himmel" },
+} as const;
 
 /**
  * Foto per tjänst (ur public/hero) – används som bakgrund i tjänstesidornas
- * sidhuvud. Samma bild får återkomma: en per sida.
+ * sidhuvud. Samma bild får återkomma: en per sida. Bildbanken har bara fem
+ * foton, så de nyare tjänsterna delar på dem tills egna bilder i full
+ * upplösning finns (se docs/SEO.md). På /tjanster visas stockfoton bara för
+ * de sex ursprungliga tjänsterna – övriga får egen bild eller ikonruta.
  */
 export const SERVICE_IMAGES: Record<ServiceIconKey, { src: string; alt: string }> = {
   nybyggnation: {
@@ -41,6 +78,30 @@ export const SERVICE_IMAGES: Record<ServiceIconKey, { src: string; alt: string }
     src: "/hero/callum-hill-NGGkGzslIaM-unsplash.jpg",
     alt: "Hantverkare mäter och planerar",
   },
+  kok: STOCK.verktyg,
+  totalrenovering: STOCK.verktyg,
+  golv: STOCK.matning,
+  bastu: STOCK.matning,
+  garage: STOCK.takstolar,
+  grund: STOCK.stomme,
+  fonster: STOCK.matning,
+  fasad: STOCK.matning,
+  attefall: STOCK.stomme,
+  snickare: STOCK.matning,
+};
+
+/**
+ * Stockfoto till tjänstekorten på /tjanster när tjänsten saknar egen bild.
+ * Bara de sex ursprungliga tjänsterna – bildbanken räcker inte till fler utan
+ * att samma foto upprepas, så övriga kort visar ikonen i en ruta i stället.
+ */
+export const SERVICE_CARD_PHOTOS: Partial<Record<ServiceIconKey, { src: string; alt: string }>> = {
+  nybyggnation: SERVICE_IMAGES.nybyggnation,
+  renovering: SERVICE_IMAGES.renovering,
+  badrum: SERVICE_IMAGES.badrum,
+  altan: SERVICE_IMAGES.altan,
+  tak: SERVICE_IMAGES.tak,
+  entreprenad: SERVICE_IMAGES.entreprenad,
 };
 
 type ServiceIconProps = {
@@ -48,6 +109,12 @@ type ServiceIconProps = {
   className?: string;
   size?: "sm" | "md";
 };
+
+/** Bara ikonen, utan platta – för större ikonrutor (korten på /tjanster). */
+export function ServiceGlyph({ iconKey, className }: { iconKey: ServiceIconKey; className?: string }) {
+  const Icon = SERVICE_ICONS[iconKey];
+  return <Icon className={className} strokeWidth={1.5} aria-hidden />;
+}
 
 /** Ikon på en sandfärgad platta – känns igen från startsidan till tjänstesidorna. */
 export function ServiceIcon({ iconKey, className, size = "md" }: ServiceIconProps) {
