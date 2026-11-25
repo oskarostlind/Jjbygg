@@ -18,7 +18,7 @@ const ADDRESS_GEO = {
  * Sociala profiler / kataloger (Google Business Profile, Facebook, Instagram, Hitta, Eniro…).
  * Tom tills Jesper bekräftat adresserna – utelämnas då ur JSON-LD (tomma värden är ogiltiga).
  */
-const SAME_AS: string[] = [];
+const SAME_AS: string[] = ["https://g.page/r/CZf0jOWtak9zEBM"];
 
 /**
  * Öppettider läggs bara till om de finns i site-content/CMS. Finns inte i dag,

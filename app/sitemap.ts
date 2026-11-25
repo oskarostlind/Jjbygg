@@ -3,6 +3,7 @@ import { getCmsPosts } from "@/lib/cms";
 import { SERVICE_PAGES } from "@/lib/services-content";
 import { BODEN_SECTION, LOCATION_PAGES } from "@/lib/locations-content";
 import { SERVICE_LOCATION_PAGES } from "@/lib/service-location-content";
+import { REFERENSER_UPDATED } from "@/lib/referenser-content";
 
 import { SITE_URL } from "@/lib/seo";
 
@@ -49,6 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: latest([TJANSTER_UPDATED, ...SERVICE_PAGES.map((page) => page.updated)]),
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/referenser`,
+      lastModified: new Date(REFERENSER_UPDATED),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     },
     ...SERVICE_PAGES.map((page) => ({
       url: `${SITE_URL}/tjanster/${page.slug}`,

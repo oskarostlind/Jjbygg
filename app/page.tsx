@@ -4,6 +4,7 @@ import { siteContent } from "@/lib/site-content";
 import { BODEN_SECTION } from "@/lib/locations-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
+import { HomeReferenser } from "@/components/referenser/home-referenser";
 import { ServiceAreas } from "@/components/service-areas";
 import { BodenSection } from "@/components/home/boden-section";
 import { Process } from "@/components/home/process";
@@ -97,6 +98,7 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />
       <Hero />
       <Services />
+      <HomeReferenser />
       <ServiceAreas />
       <BodenSection />
       <Process />

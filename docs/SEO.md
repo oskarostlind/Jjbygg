@@ -30,6 +30,7 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | `/tjanster/altan-uteplats/lulea` | bygga altan luleå | uterum luleå, altan strandskydd | `lib/service-location-content.ts` |
 | `/tjanster/takbyte-platarbeten/lulea` | takbyte luleå | takläggare luleå, plåtslagare luleå, plåttak luleå | `lib/service-location-content.ts` |
 | `/tjanster/totalentreprenad/lulea` | totalentreprenad luleå | byggentreprenör luleå | `lib/service-location-content.ts` |
+| `/referenser` | utförda arbeten byggfirma boden | altan, badrum, bastu, betongplatta – bilder från egna jobb | `lib/referenser-content.ts` + `public/referenser/` |
 | `/offert` | offert byggfirma boden | (konvertering, inte ranking) | `app/offert` |
 | `/nyheter`, `/nyheter/[slug]` | – (CMS) | listas i sitemap bara när inlägg finns | sitecms |
 
@@ -71,6 +72,25 @@ Kontrollera också att `faq.a2` (offertfrågan) säger "utan förpliktelser" och
 - Tjänstesidor, ortsidor och tjänst×ort: `Service` (+ `areaServed`), `BreadcrumbList`, `FAQPage`.
 - Validera: https://search.google.com/test/rich-results och https://validator.schema.org.
 
+## Utförda arbeten (`/referenser`)
+
+Egna bilder från riktiga jobb. Datat ligger i `lib/referenser-content.ts` och används på fyra ställen: `/referenser`, sektionen "Från våra jobb" på tjänstesidorna och deras ortsvarianter (`components/referenser/service-referenser.tsx`), "Utförda arbeten" på startsidan (`components/referenser/home-referenser.tsx`) och korten på `/tjanster`. Sidan har `ItemList`/`ImageObject`-JSON-LD – inga recensioner eller betyg.
+
+Lägg till ett nytt projekt:
+
+1. Lägg bilden i `public/referenser/` som JPEG med beskrivande filnamn utan å/ä/ö (`altan-glasracke-villa.jpg`). Gärna 1600–2400 px bred. Beskär bort skärmdumpsramar, ansikten och registreringsskyltar.
+2. Lägg en post i `REFERENSER` i `lib/referenser-content.ts`: `slug`, `title`, `description` (1–2 meningar), `image` (sökväg + faktisk bredd/höjd i pixlar), `alt`, `category` och `service` (slug i `lib/services-content.ts` – styr vilken tjänstesida bilden visas på och länkas till). Tjänstesidan visar tjänstens två första projekt. Kortet på `/tjanster` tar projektet med `cardImage: true`, annars tjänstens första.
+3. Uppdatera `REFERENSER_UPDATED` (styr `lastModified` i sitemapen). Startsidans urval ändras i `HOME_SLUGS` i `home-referenser.tsx`.
+
+Skriv bara det som syns på bilden eller som Jesper har bekräftat – hitta inte på ort, mått, pris eller tid. Det här gör ett projekt bättre (för både besökare och lokal sökning), så fråga efter det:
+
+- **Ort eller stadsdel** ("Altan i Sävast", "Badrum i Bergnäset") – i titel, beskrivning och alt-text. Det är den starkaste lokala signalen och saknas helt på de sex första bilderna.
+- **Vad som gjordes** – rivning, tätskikt, material, vad som var svårt.
+- **Tidsåtgång** och ungefär när jobbet gjordes (år/säsong).
+- Kundens godkännande att bilden visas. Citat från kund bara om kunden själv har skrivit det.
+
+De sex första bilderna är bara 1170 px breda (beskurna ur skärmdumpar). De visas därför aldrig bredare än ca 670 px och används inte i sidhuvudena, som fortfarande har stockfoton ur `public/hero/`. Byt dem när Jesper skickar originalfiler i full upplösning.
+
 ## Google Search Console
 
 1. Gå till https://search.google.com/search-console och lägg till egendom. Välj **Domän** (`jjbyggboden.se`) – då täcks både apex och www.
@@ -78,7 +98,7 @@ Kontrollera också att `faq.a2` (offertfrågan) säger "utan förpliktelser" och
    - **DNS TXT (rekommenderas, domänegendom):** kopiera TXT-posten Google visar. Logga in på Strato → Domäner → jjbyggboden.se → DNS-inställningar → lägg till TXT-post på `@` med värdet `google-site-verification=…`. Vänta några minuter–timmar och klicka Verifiera.
    - **HTML-tagg (URL-prefix-egendom `https://www.jjbyggboden.se`):** kopiera värdet i `content="…"` ur metataggen Google ger. Sätt miljövariabeln `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` i Vercel (Production) till det värdet och deploya om. `app/layout.tsx` skriver då ut `<meta name="google-site-verification">`. Klicka Verifiera.
 3. **Skicka in sitemap:** Search Console → Webbplatskartor → ange `https://www.jjbyggboden.se/sitemap.xml` → Skicka.
-4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 24 adresser i sitemapen indexeras (25 före 2026-11-26 – `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
+4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 25 adresser i sitemapen indexeras (`/referenser` är ny; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
 5. Begär indexering manuellt för de nya landningssidorna via URL-granskning om de inte plockats upp inom två veckor.
 
 ## Google Business Profile
