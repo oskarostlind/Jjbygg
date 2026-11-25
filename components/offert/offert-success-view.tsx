@@ -1,10 +1,25 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { OffertPageLayout } from "@/components/offert/offert-page-layout";
 import { OffertPremiumCard } from "@/components/offert/offert-premium-card";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Visas när offertformuläret har skickats. Skickar konverteringshändelsen
+ * "offert_skickad" till Vercel Analytics – en gång per skickad förfrågan.
+ */
 export function OffertSuccessView() {
+  const tracked = useRef(false);
+  useEffect(() => {
+    if (tracked.current) return;
+    tracked.current = true;
+    track("offert_skickad");
+  }, []);
+
   return (
     <OffertPageLayout centered>
       <div className="wrap">

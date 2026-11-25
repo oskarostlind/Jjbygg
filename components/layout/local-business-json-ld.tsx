@@ -2,19 +2,16 @@ import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL, ogImageUrl } from "@/lib/seo";
 import { SERVICE_PAGES } from "@/lib/services-content";
-import { LOCATION_PAGES } from "@/lib/locations-content";
+import { LOCATIONS } from "@/lib/locations-content";
 
-/** Visningsnummer om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
-const TELEPHONE_FALLBACK = siteContent.contact.phoneDisplay;
+/** Internationellt format (+46…) om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
+const TELEPHONE_FALLBACK = siteContent.contact.phoneTelDigits;
 
-/**
- * Ungefärlig punkt i Boden (närområde centrum) – inte mätvärde för navigation.
- * Uppdatera vid behov om ni vill anknyta närmare fastighet.
- */
-const BODEN_APPROX_GEO = {
+/** Koordinater för adressen Kallkällvägen 16 c, 961 96 Boden. */
+const ADDRESS_GEO = {
   "@type": "GeoCoordinates" as const,
-  latitude: 65.8251,
-  longitude: 21.6889,
+  latitude: 65.8593,
+  longitude: 21.5864,
 };
 
 /**
@@ -68,9 +65,12 @@ type LocalBusinessLd = {
   image: string[];
   telephone: string;
   email: string;
-  vatID?: string;
+  /** Organisationsnummer. */
+  taxID: string;
+  identifier: { "@type": "PropertyValue"; propertyID: string; value: string };
+  foundingDate: string;
   address: PostalAddressLd;
-  geo: typeof BODEN_APPROX_GEO;
+  geo: typeof ADDRESS_GEO;
   areaServed: { "@type": "City" | "AdministrativeArea"; name: string }[];
   sameAs?: string[];
   founder?: { "@type": "Person"; name: string };
@@ -95,11 +95,18 @@ export function LocalBusinessJsonLd() {
     description: SEO_DESCRIPTION,
     logo: logoUrl,
     image: [ogImageUrl, logoUrl],
-    telephone: phone?.display ?? TELEPHONE_FALLBACK,
+    telephone: phone?.telDigits ?? TELEPHONE_FALLBACK,
     email: siteContent.contact.email,
+    taxID: siteContent.footer.orgNumber,
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "Organisationsnummer",
+      value: siteContent.footer.orgNumber,
+    },
+    foundingDate: siteContent.company.foundingYear,
     address: postalAddressFromFooterLine(siteContent.footer.address),
-    geo: BODEN_APPROX_GEO,
-    areaServed: LOCATION_PAGES.map((location) => ({ "@type": location.areaType, name: location.name })),
+    geo: ADDRESS_GEO,
+    areaServed: LOCATIONS.map((location) => ({ "@type": location.areaType, name: location.name })),
     ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
     founder: { "@type": "Person", name: siteContent.contact.personName },
     hasOfferCatalog: {
@@ -116,10 +123,21 @@ export function LocalBusinessJsonLd() {
     },
   };
 
+  const website = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#webbplats`,
+    url: SITE_URL,
+    name: siteContent.footer.companyName,
+    alternateName: "JJ Bygg",
+    inLanguage: "sv-SE",
+    publisher: { "@id": `${SITE_URL}/#foretag` },
+  };
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify([data, website]) }}
     />
   );
 }
