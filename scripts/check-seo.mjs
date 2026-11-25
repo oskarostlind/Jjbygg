@@ -9,12 +9,17 @@
  *   lang="sv", ingen hreflang, alla <img> har alt, JSON-LD parsas som giltig JSON
  * - Crawlar alla interna länkar (href="/…") från sitemap-sidorna och kontrollerar 200
  * - Räknar ord i <main> för landningssidorna
+ * - Startsidan: sektionen #boden finns; /byggfirma/boden redirectar permanent (308) till /
+ *   och ingen sida länkar dit; ingen sida svarar med cache-control no-store
  *
  * Avslutar med exit code 1 om något fel hittas.
  */
 
 const base = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
 const SITE_URL = "https://www.jjbyggboden.se";
+
+/** Tidigare ortsida för Boden – ersatt av startsidans sektion #boden. */
+const REDIRECTED_PATH = "/byggfirma/boden";
 
 const errors = [];
 const warn = [];
@@ -39,7 +44,12 @@ function decode(s) {
 
 async function get(url) {
   const res = await fetch(url, { redirect: "manual", headers: { "user-agent": "jjbygg-seo-check" } });
-  return { status: res.status, html: res.status === 200 ? await res.text() : "" };
+  return {
+    status: res.status,
+    html: res.status === 200 ? await res.text() : "",
+    location: res.headers.get("location") ?? "",
+    cacheControl: res.headers.get("cache-control") ?? "",
+  };
 }
 
 function wordCount(html) {
@@ -54,9 +64,17 @@ function wordCount(html) {
 }
 
 async function checkPage(url, { landing }) {
-  const { status, html } = await get(toLocal(url));
+  const { status, html, cacheControl } = await get(toLocal(url));
   console.log(`${status} ${url}`);
   if (status !== 200) return fail(`${url} svarade ${status}`);
+
+  // Sidorna ska vara statiska/ISR. no-store betyder att något (noStore, cookies, headers)
+  // har gjort sidan dynamisk. Nyhetsinlägg är dynamiska med avsikt.
+  if (/no-store/i.test(cacheControl) && !/\/nyheter\/.+/.test(url)) {
+    fail(`${url}: cache-control är "${cacheControl}" (sidan renderas dynamiskt)`);
+  }
+  if (html.includes(REDIRECTED_PATH)) fail(`${url}: länkar till ${REDIRECTED_PATH} (ska vara /#boden)`);
+  if (url === SITE_URL && !/<section[^>]*\bid="boden"/i.test(html)) fail(`${url}: saknar sektionen #boden`);
 
   const h1s = html.match(/<h1[\s>]/gi) ?? [];
   if (h1s.length !== 1) fail(`${url}: ${h1s.length} st <h1> (ska vara exakt 1)`);
@@ -113,6 +131,14 @@ if (sitemapRes.status !== 200) {
 }
 const urls = [...sitemapRes.html.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 console.log(`Sitemap: ${urls.length} adresser\n`);
+
+if (urls.includes(`${SITE_URL}${REDIRECTED_PATH}`)) fail(`${REDIRECTED_PATH} ligger kvar i sitemapen`);
+const redirected = await get(`${base}${REDIRECTED_PATH}`);
+const redirectTarget = redirected.location ? new URL(redirected.location, base).pathname : "";
+console.log(`${redirected.status} ${REDIRECTED_PATH} → ${redirected.location || "(ingen Location)"}\n`);
+if (redirected.status !== 308 || redirectTarget !== "/") {
+  fail(`${REDIRECTED_PATH} ska svara 308 → / (svarade ${redirected.status} → ${redirected.location || "–"})`);
+}
 
 const allLinks = new Set();
 for (const url of urls) {

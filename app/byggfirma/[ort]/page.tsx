@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { LOCATIONS, LOCATION_PAGES, getLocationPage, locationHref } from "@/lib/locations-content";
 import { SERVICE_PAGES } from "@/lib/services-content";
 import { serviceLocationPagesIn } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
@@ -71,9 +71,9 @@ export default function LocationPage({ params }: Props) {
     const service = SERVICE_PAGES.find((s) => s.slug === p.service);
     return { href: `/tjanster/${p.service}/${p.location}`, label: service?.name ?? p.h1, iconKey: service?.iconKey };
   });
-  const otherLocations = LOCATION_PAGES.filter((p) => p.slug !== page.slug).map((p) => ({
-    href: `/byggfirma/${p.slug}`,
-    label: `Byggfirma ${p.inPhrase}`,
+  const otherLocations = LOCATIONS.filter((p) => p.slug !== page.slug).map((p) => ({
+    href: locationHref(p.slug),
+    label: `Byggföretag ${p.inPhrase}`,
     place: true,
   }));
 

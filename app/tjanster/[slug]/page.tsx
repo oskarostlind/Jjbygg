@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-content";
-import { LOCATION_PAGES, getLocationPage } from "@/lib/locations-content";
+import { LOCATION_PAGES, getLocation } from "@/lib/locations-content";
 import { serviceLocationPagesFor } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
@@ -64,7 +64,7 @@ export default function ServicePage({ params }: Props) {
 
   // Lokala varianter av tjänsten (/tjanster/[slug]/[ort]) + ortsidor utan egen variant.
   const localVariants = serviceLocationPagesFor(page.slug).map((p) => {
-    const loc = getLocationPage(p.location);
+    const loc = getLocation(p.location);
     return { href: `/tjanster/${p.service}/${p.location}`, label: `${page.name} ${loc?.inPhrase ?? p.location}` };
   });
   const regionLinks = LOCATION_PAGES.filter((loc) => !localVariants.some((v) => v.href.endsWith(`/${loc.slug}`))).map(

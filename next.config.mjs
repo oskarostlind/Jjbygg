@@ -26,6 +26,13 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Startsidan är sidan för "byggföretag/byggfirma i Boden" (sektionen #boden).
+      // Den tidigare ortsidan konkurrerade om samma sökningar – permanent redirect (308).
+      { source: "/byggfirma/boden", destination: "/", permanent: true },
+    ];
+  },
   async headers() {
     return [{ source: "/:path*", headers: previewFrameHeaders(SITECMS_PANEL_ORIGINS) }];
   },

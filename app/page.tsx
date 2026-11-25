@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { defaultMetadata, SITE_URL } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
+import { BODEN_SECTION } from "@/lib/locations-content";
 import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
 import { ServiceAreas } from "@/components/service-areas";
+import { BodenSection } from "@/components/home/boden-section";
 import { Process } from "@/components/home/process";
 import { WhyUs } from "@/components/home/why-us";
 import { FaqList } from "@/components/faq-list";
@@ -69,11 +71,17 @@ export default async function HomePage() {
   const { homePage } = siteContent;
   const content = await getCmsContent();
 
-  const faq: FaqEntry[] = homePage.faq.map((item, i) => ({
-    question: blockValue(content, `faq.q${i + 1}`, item.question),
-    answer: blockValue(content, `faq.a${i + 1}`, item.answer),
-    answerHtml: blockHtml(content, `faq.a${i + 1}`),
-  }));
+  // En FAQ-lista och ett FAQPage-schema: de allmänna frågorna (CMS-nycklar
+  // faq.q1–3/faq.a1–3) följda av frågorna om Boden (statiska, inte i CMS:et).
+  const cmsFaqCount = homePage.faq.length;
+  const faq: FaqEntry[] = [
+    ...homePage.faq.map((item, i) => ({
+      question: blockValue(content, `faq.q${i + 1}`, item.question),
+      answer: blockValue(content, `faq.a${i + 1}`, item.answer),
+      answerHtml: blockHtml(content, `faq.a${i + 1}`),
+    })),
+    ...BODEN_SECTION.faq.map((item) => ({ ...item, answerHtml: null })),
+  ];
 
   const trust: string[] = homePage.trust.map((item, i) =>
     blockValue(content, `why.item${i + 1}`, item)
@@ -90,6 +98,7 @@ export default async function HomePage() {
       <Hero />
       <Services />
       <ServiceAreas />
+      <BodenSection />
       <Process />
       <WhyUs items={trust} />
 
@@ -108,8 +117,8 @@ export default async function HomePage() {
                 question: item.question,
                 answer: item.answer,
                 answerHtml: item.answerHtml,
-                questionProps: editable("home", `faq.q${i + 1}`),
-                answerProps: editable("home", `faq.a${i + 1}`),
+                questionProps: i < cmsFaqCount ? editable("home", `faq.q${i + 1}`) : undefined,
+                answerProps: i < cmsFaqCount ? editable("home", `faq.a${i + 1}`) : undefined,
               }))}
             />
           </div>

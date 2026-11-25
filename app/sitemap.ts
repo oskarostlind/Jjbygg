@@ -1,10 +1,22 @@
 import { MetadataRoute } from "next";
 import { getCmsPosts } from "@/lib/cms";
 import { SERVICE_PAGES } from "@/lib/services-content";
-import { LOCATION_PAGES } from "@/lib/locations-content";
+import { BODEN_SECTION, LOCATION_PAGES } from "@/lib/locations-content";
 import { SERVICE_LOCATION_PAGES } from "@/lib/service-location-content";
 
 import { SITE_URL } from "@/lib/seo";
+
+/** Senaste ISO-datumet i en lista. */
+function latest(dates: string[]): Date {
+  return new Date(dates.reduce((a, b) => (a > b ? a : b)));
+}
+
+/**
+ * lastModified för sidor utan eget datum i innehållsfilerna. Uppdatera när
+ * sidans innehåll ändras – Google litar bara på datum som stämmer.
+ */
+const OFFERT_UPDATED = "2026-10-22";
+const TJANSTER_UPDATED = "2026-11-26";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // getCmsPosts() kraschar aldrig – returnerar tom array om CMS:et är nere,
@@ -21,16 +33,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
       url: SITE_URL,
+      // Startsidans Boden-sektion (/byggfirma/boden redirectar hit och listas inte).
+      lastModified: new Date(BODEN_SECTION.updated),
       changeFrequency: "monthly" as const,
       priority: 1,
     },
     {
       url: `${SITE_URL}/offert`,
+      lastModified: new Date(OFFERT_UPDATED),
       changeFrequency: "monthly" as const,
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/tjanster`,
+      lastModified: latest([TJANSTER_UPDATED, ...SERVICE_PAGES.map((page) => page.updated)]),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
