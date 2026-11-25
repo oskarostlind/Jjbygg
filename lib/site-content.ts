@@ -147,4 +147,22 @@ export const siteContent = {
 
 export type SiteContent = typeof siteContent;
 
-export type ServiceIconKey = (typeof siteContent.homePage.services)[number]["iconKey"];
+/** Ikonnycklar för de sex tjänstekorten på startsidan (CMS-styrda titlar, se cmsServices). */
+export type HomeServiceIconKey = (typeof siteContent.homePage.services)[number]["iconKey"];
+
+/**
+ * Alla tjänsteikoner (components/service-icon.tsx). De sex första hör till
+ * startsidans kort; övriga till tjänstesidor som bara finns i lib/services-content.ts.
+ */
+export type ServiceIconKey =
+  | HomeServiceIconKey
+  | "kok"
+  | "totalrenovering"
+  | "golv"
+  | "bastu"
+  | "garage"
+  | "grund"
+  | "fonster"
+  | "fasad"
+  | "attefall"
+  | "snickare";
