@@ -7,6 +7,7 @@ import { SITE_URL, defaultMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { ServiceIcon, SERVICE_IMAGES } from "@/components/service-icon";
 import { CtaBand } from "@/components/cta-band";
+import { serviceCardImage } from "@/lib/referenser-content";
 
 const TITLE = "Tjänster – bygg & renovering i Boden och Luleå | JJ Bygg";
 const DESCRIPTION =
@@ -48,7 +49,7 @@ export default function TjansterPage() {
       <section className="bg-sand py-4 md:py-8" aria-label="Våra tjänster">
         <ul className="wrap divide-y divide-line">
           {SERVICE_PAGES.map((page) => {
-            const image = SERVICE_IMAGES[page.iconKey];
+            const image = serviceCardImage(page.slug) ?? SERVICE_IMAGES[page.iconKey];
             return (
               <li key={page.slug} className="group relative grid gap-6 py-8 md:grid-cols-12 md:items-center md:gap-10 md:py-10">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-sand-deep md:col-span-5 md:aspect-[4/3] lg:col-span-4">
