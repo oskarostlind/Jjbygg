@@ -21,7 +21,7 @@ export type ServiceSection = {
   /**
    * Länkar till andra tjänstesidor, sist i sektionen. Med `note` på raderna blir
    * det en punktlista ("Tjänst – note"), annars en rad "Läs mer: A · B".
-   * Renderas bara på tjänstesidorna (app/tjanster/[slug]/page.tsx).
+   * Renderas på tjänstesidorna och, som punktlista, på ortsidorna (components/seo-article.tsx).
    */
   serviceLinks?: ServiceSectionLink[];
   /** Stycken efter listan/länkarna (bara tjänstesidorna). */
@@ -52,7 +52,7 @@ export type ServicePage = {
   updated: string;
 };
 
-const ROT_NOTE =
+export const ROT_NOTE =
   "Som privatperson kan du få ROT-avdrag på arbetskostnaden – 30 % enligt nuvarande regler, upp till 50 000 kr per person och år. Vi drar av det direkt på fakturan. Kontrollera alltid aktuella villkor på skatteverket.se.";
 
 export const SERVICE_PAGES: ServicePage[] = [
@@ -429,7 +429,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       {
         heading: "Bygglov, pris och ROT",
         paragraphs: [
-          "Byter du till samma material och färg krävs normalt inget bygglov. Ändras husets utseende påtagligt – till exempel från pannor till plåt i ett område med detaljplan – kan bygglov behövas. Fråga kommunen innan.",
+          "Sedan den 1 december 2025 krävs normalt varken bygglov eller anmälan för att byta taktäckning på ett småhus, även om du byter från pannor till plåt eller ändrar färg. Undantagen är hus och områden med särskilt kulturhistoriskt värde eller där kommunen har infört utökad lovplikt, och om bärande delar i taket ändras. Vi stämmer av med kommunen innan vi börjar.",
           "Priset beror på takets yta, lutning, material och hur mycket av underlaget som behöver bytas. Vi lämnar offert efter att ha sett taket på plats. " +
             ROT_NOTE,
         ],

@@ -28,6 +28,7 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | `/tjanster/snickare` | snickare boden, snickare luleå | snickeriarbeten, hantverkare | `lib/services-content.ts` |
 | `/byggfirma/lulea` | byggföretag luleå | byggfirma luleå, snickare luleå, hantverkare luleå | `lib/locations-content.ts` |
 | `/byggfirma/norrbotten` | byggföretag norrbotten, byggfirma norrbotten | byggfirma älvsbyn / kalix / piteå / jokkmokk | `lib/locations-content.ts` |
+| `/byggfirma/savast` | byggföretag sävast | invändig renovering sävast, totalrenovering sävast, badrumsrenovering sävast | `lib/locations-content.ts` |
 | `/tjanster/nybyggnation-tillbyggnad/boden` | tillbyggnad boden | bygga garage boden, attefallshus boden | `lib/service-location-content.ts` |
 | `/tjanster/renovering/boden` | renovering boden | köksrenovering boden, renovera hus boden | `lib/service-location-content.ts` |
 | `/tjanster/badrumsrenovering/boden` | badrumsrenovering boden | renovera badrum boden | `lib/service-location-content.ts` |
@@ -40,8 +41,15 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | `/tjanster/altan-uteplats/lulea` | bygga altan luleå | uterum luleå, altan strandskydd | `lib/service-location-content.ts` |
 | `/tjanster/takbyte-platarbeten/lulea` | takbyte luleå | takläggare luleå, plåtslagare luleå, plåttak luleå | `lib/service-location-content.ts` |
 | `/tjanster/totalentreprenad/lulea` | totalentreprenad luleå | byggentreprenör luleå | `lib/service-location-content.ts` |
+| `/guider` | vad kostar renovering/bygge (översikt) | prisguider badrum, tak, altan, tillbyggnad | `lib/guider-content.ts` (`GUIDES`), `app/guider/page.tsx` |
+| `/guider/vad-kostar-badrumsrenovering` | vad kostar en badrumsrenovering | renovera badrum kostnad, badrum pris per kvm | `lib/guider-content.ts` |
+| `/guider/vad-kostar-takbyte` | vad kostar ett takbyte | takbyte kostnad per kvm, byta tak pris | `lib/guider-content.ts` |
+| `/guider/vad-kostar-altan` | vad kostar det att bygga altan | bygga altan pris per kvm, altan kostnad | `lib/guider-content.ts` |
+| `/guider/vad-kostar-tillbyggnad` | vad kostar en tillbyggnad | tillbyggnad pris per kvm, bygga till hus kostnad | `lib/guider-content.ts` |
 | `/referenser` | utförda arbeten byggfirma boden | altan, badrum, bastu, betongplatta – bilder från egna jobb | `lib/referenser-content.ts` + `public/referenser/` |
 | `/offert` | offert byggfirma boden | (konvertering, inte ranking) | `app/offert` |
+| `/om-oss` | jj bygg boden, om jj bygg & entreprenad | byggföretag boden sedan 2010 (förtroende, inte ranking) | `app/om-oss/page.tsx` |
+| `/kontakt` | jj bygg kontakt, jj bygg telefon | öppettider, adress (navigering, inte ranking) | `app/kontakt/page.tsx` + `siteContent.contact` |
 | `/nyheter`, `/nyheter/[slug]` | – (CMS) | listas i sitemap bara när inlägg finns | sitecms |
 
 ### Tjänstesidorna (2026-11-26: 6 → 16)
@@ -55,6 +63,26 @@ Search Console visade visningar på sökningar utan egen sida (köksrenovering, 
 - **Inga priser, prisintervall eller timpriser** (ägarens beslut) – skriv vad som påverkar priset. Enda beloppet är ROT-taket i `ROT_NOTE`. ROT gäller inte nybyggda fristående byggnader (garage, friggebod, attefallshus, fristående bastu) – de sidorna säger det uttryckligen.
 - **Inga kvadratmetergränser för bygglovsbefriade byggnader.** Reglerna ändrades 1 december 2025; sidorna hänvisar till avstämning med Bodens/Luleå kommun. Samma sak för strandskydd, snölast och tjäldjup (inga siffror).
 - Sidhuvudena delar på de fem stockfotona i `public/hero/`. På `/tjanster` får en tjänst egen bild (`serviceCardImage`), annars stockfoto (bara de sex ursprungliga) eller en ikonruta.
+
+### Sävast, Om oss och Kontakt (2026-11-26)
+
+- **Sävast** gav ~170 visningar på tre månader i Search Console ("byggföretag sävast", "invändig renovering sävast", "totalrenovering sävast", "badrumsrenovering sävast") utan egen sida. `/byggfirma/savast` är en tredje post i `LOCATION_PAGES` med egen text (tätort i Bodens kommun, ca 7 km söder om Bodens centrum längs väg 97 mot Luleå, nära Luleälven, gränsar mot Sunderbyn). Den följer automatiskt med i "Vi finns i", footerns "Här arbetar vi", `areaServed` (som `Place` med `containedInPlace` Boden), sitemapen och tjänstesidornas ortlänkar.
+- **Sävast får inga tjänst×ort-sidor** (`SERVICE_LOCATION_SLUGS` är fortfarande Boden och Luleå; `tests/locations-content.test.ts` vaktar det). Ortsidan länkar i stället till tjänstesidorna via `serviceLinks` (punktlista i texten + sidopanelen "Läs mer om tjänsterna").
+- Skriv inte om E4 – den går inte genom Sävast.
+- `/om-oss` och `/kontakt` är statiska sidor med `AboutPage` respektive `ContactPage` som pekar på företagsnoden `${SITE_URL}/#foretag`. Faktarutan, öppettiderna och svarstiden kommer ur `siteContent` (`company`, `contact.openingHours`, `contact.responseTime`). Inget porträtt – lägg in ett när Jesper skickar ett.
+- **Förtroenderaden** (`components/trust-bar.tsx`, punkterna i `siteContent.trustBar`) ligger i underkanten av startsidans hero (ersatte de tre badges som nu bara visas på `/offert`) och i sidfoten. Länken "Omdömen på Google" går till en Google-sökning som visar profilen (`siteContent.google.reviewsUrl`); `/kontakt` länkar till skriv-omdöme-länken (`writeReviewUrl`). Visa aldrig betyg eller antal omdömen på sajten.
+- Huvudmenyn har "Kontakt" från 1024 px (lg); "Om oss" finns bara i mobilmenyn och footerns Genvägar.
+
+### Prisguiderna (`/guider`, 2026-11-26)
+
+Prisfrågor ("vad kostar det att renovera ett badrum", "takbyte kostnad per kvm") är de sökningar där AI-svar och Google AI Overviews oftast visas. Fyra guider svarar på dem utan att ange priser. Regler:
+
+- **Inga belopp, prisintervall, timpriser eller kvadratmeterpriser** – samma beslut som för tjänstesidorna. Enda beloppet är ROT-taket i `ROT_NOTE` (exporteras från `lib/services-content.ts` och återanvänds). `tests/guider-content.test.ts` vaktar belopp, mått, utropstecken, title ≤ 60/description ≤ 155 tecken, 900–1300 ord och 4–5 frågor.
+- Varje guide har samma delar: **Kort svar** överst (2–3 citerbara meningar), "Det här avgör priset" (faktor → varför → vad du kan göra), Norrbotten, bygglov där det är relevant, ROT, "Så får du ett rättvisande pris", "Vanliga fallgropar", "Läs mer" (tjänstesidan + dess Boden/Luleå-sidor + `/referenser`) och FAQ.
+- Schema: `Article` (författare/utgivare = `#foretag`, `datePublished`/`dateModified`, `sv-SE`), `BreadcrumbList`, `FAQPage`. Översikten har `CollectionPage` med `ItemList`.
+- En guide hör till en tjänst (`service`). Tjänstesidan visar rutan "Guide" (`components/guide-link.tsx`) när tjänsten har en guide. Guiderna finns i sitemapen (`guideSitemapEntries`), footerns Genvägar och `/llms.txt`.
+- Bygglovstexterna följer reglerna från 1 december 2025 (Boverkets vägledning "Vad får jag bygga utan bygglov?") utan kvadratmeter- eller metergränser. ROT-texterna följer skatteverket.se (30 procent från 2026, bara arbetskostnad, altan och tillbyggnad bara när de sitter ihop med huset). Kontrollera båda vid regeländringar och uppdatera `updated`.
+- Ny guide = en post i `GUIDES` med egen handskriven text. Routen, sitemapen, översikten, llms.txt och länken från tjänstesidan följer med automatiskt.
 
 ### Boden ligger på startsidan (2026-11-26)
 
@@ -78,20 +106,23 @@ Kontrollera också att `faq.a2` (offertfrågan) säger "utan förpliktelser" och
 
 ### Intern länkning
 
-- Startsidan → alla 16 tjänstesidor (`components/services.tsx`: sex kort + raden "Fler tjänster" med övriga), de sex tjänst×Boden-sidorna (Boden-sektionen) och Luleå/Norrbotten via `components/service-areas.tsx` ("Vi finns i") och Boden-sektionen.
-- Footern (alla sidor) → alla 16 tjänstesidor (egen rad i fyra spalter) + "Alla tjänster" + "Här arbetar vi" (Boden, Luleå, Norrbotten).
+- Startsidan → alla 16 tjänstesidor (`components/services.tsx`: sex kort + raden "Fler tjänster" med övriga), de sex tjänst×Boden-sidorna (Boden-sektionen) och Luleå/Norrbotten/Sävast via `components/service-areas.tsx` ("Vi finns i") och Boden-sektionen.
+- Footern (alla sidor) → alla 16 tjänstesidor (egen rad i fyra spalter) + "Alla tjänster" + "Här arbetar vi" (Boden, Luleå, Norrbotten, Sävast) + Genvägar (bl.a. Om oss och Kontakt) + förtroenderaden.
+- `/om-oss` → Boden, Sävast, Luleå, Norrbotten, alla tjänstesidor (i de fyra grupperna), `/referenser`.
 - `/tjanster` → varje tjänst, grupperade under fyra rubriker (`SERVICE_GROUPS`), och Boden-/Luleå-varianten för de sex som har sådana.
 - Tjänstesida → sina tjänst×ort-varianter + `/byggfirma/norrbotten` ("… där du bor"); tjänster utan ortvarianter → Boden (`/#boden`), Luleå och Norrbotten ("Här arbetar vi"). Dessutom `related` och `serviceLinks` till närliggande tjänster – `/tjanster/snickare` länkar till alla övriga.
+- Guide (`/guider/[slug]`) → sin tjänstesida och dess Boden/Luleå-sidor, `/referenser`, `/offert` och de andra guiderna; tjänstesidan → sin guide (rutan "Guide"). Footern → `/guider`.
 - `/referenser` → den mest specifika tjänsten per bild (bastu, golvläggning, grund & betongplatta …).
-- Ortsida → tjänstelistan (länkar till tjänst×ort där sådan finns, annars tjänstesidan), "Våra tjänster i …" (kort), andra orter.
+- Ortsida → tjänstelistan (länkar till tjänst×ort där sådan finns, annars tjänstesidan), "Våra tjänster i …" (kort; för Sävast "Läs mer om tjänsterna" med tjänstesidorna ur `serviceLinks`), andra orter.
 - Tjänst×ort → tjänstesidan, ortsidan, samma tjänst på andra orter, andra tjänster på samma ort.
 - Brödsmulor (`components/breadcrumbs.tsx`, `breadcrumbJsonLd()`) med `BreadcrumbList`-JSON-LD på alla landningssidor.
 - Länkblocken ovan ligger i sidopanelen (`components/sidebar-links.tsx`) bredvid offertkortet (`components/offer-card.tsx`); den delade markupen för ort- och tjänst×ort-sidorna finns i `components/seo-article.tsx` och följer tjänstesidans layout (`PageHeader`, `FaqList`, `CtaBand`).
 
 ### Strukturerad data
 
-- `components/layout/local-business-json-ld.tsx` (alla sidor): `GeneralContractor` med adress, telefon i formatet `+46…`, geo (adressens koordinater), org.nr (`taxID`/`identifier`), `foundingDate` 2010, `areaServed` (Boden, Luleå = City; Norrbotten = AdministrativeArea), `hasOfferCatalog` över tjänsterna. `sameAs` är tom och utelämnas tills Google Business Profile, Facebook m.m. finns – fyll i `SAME_AS`. Ingen `openingHoursSpecification` eftersom öppettider saknas i innehållet; lägg till när Jesper bekräftat tider. Samma script innehåller ett `WebSite`-schema. Lägg aldrig till `aggregateRating` utan riktiga, verifierbara omdömen.
+- `components/layout/local-business-json-ld.tsx` (alla sidor): `GeneralContractor` med adress, telefon i formatet `+46…`, geo (adressens koordinater), org.nr (`taxID`/`identifier`), `foundingDate` 2010, `areaServed` (Boden, Luleå = City; Norrbotten = AdministrativeArea; Sävast = Place med `containedInPlace` Boden, via `areaServedLd()`), `hasOfferCatalog` över tjänsterna, `openingHoursSpecification` måndag–fredag 07–17 (samma som Google-profilen och `siteContent.contact.openingHours` – ändra båda). `sameAs` har Google-profilen; lägg till Facebook m.m. i `SAME_AS` när de finns. Samma script innehåller ett `WebSite`-schema. Lägg aldrig till `aggregateRating` utan riktiga, verifierbara omdömen.
 - Startsidan: `FAQPage` (allmänna frågor + Boden-frågorna i ett schema).
+- `/om-oss`: `AboutPage` + `BreadcrumbList`; `/kontakt`: `ContactPage` + `BreadcrumbList`. Båda har `about`/`mainEntity` → `${SITE_URL}/#foretag`.
 - Tjänstesidor, ortsidor och tjänst×ort: `Service` (+ `areaServed`), `BreadcrumbList`, `FAQPage`.
 - Validera: https://search.google.com/test/rich-results och https://validator.schema.org.
 
@@ -121,7 +152,7 @@ De sex första bilderna är bara 1170 px breda (beskurna ur skärmdumpar). De vi
    - **DNS TXT (rekommenderas, domänegendom):** kopiera TXT-posten Google visar. Logga in på Strato → Domäner → jjbyggboden.se → DNS-inställningar → lägg till TXT-post på `@` med värdet `google-site-verification=…`. Vänta några minuter–timmar och klicka Verifiera.
    - **HTML-tagg (URL-prefix-egendom `https://www.jjbyggboden.se`):** kopiera värdet i `content="…"` ur metataggen Google ger. Sätt miljövariabeln `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` i Vercel (Production) till det värdet och deploya om. `app/layout.tsx` skriver då ut `<meta name="google-site-verification">`. Klicka Verifiera.
 3. **Skicka in sitemap:** Search Console → Webbplatskartor → ange `https://www.jjbyggboden.se/sitemap.xml` → Skicka.
-4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 35 adresser i sitemapen indexeras (`/referenser` och de tio tjänstesidorna från 2026-11-26 är nya; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
+4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 43 adresser i sitemapen indexeras (`/referenser`, de tio tjänstesidorna, `/byggfirma/savast`, `/om-oss` och `/kontakt` från 2026-11-26 är nya; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
 5. Begär indexering manuellt för de nya landningssidorna via URL-granskning om de inte plockats upp inom två veckor.
 
 ## Google Business Profile
@@ -135,7 +166,8 @@ Lokala sökningar ("byggfirma boden") visar kartpaketet överst. En profil är v
    - Telefon: 070-535 71 94
    - Webbplats: https://www.jjbyggboden.se
    - Primär kategori: **Byggfirma** (eng. General contractor). Sekundära: Snickare, Takläggare, Badrumsrenovering, Byggentreprenör.
-   - Serviceområde: Boden, Luleå, Älvsbyn, Kalix, Piteå, Jokkmokk.
+   - Serviceområde: Boden, Sävast, Luleå, Älvsbyn, Kalix, Piteå, Jokkmokk.
+   - Öppettider: måndag–fredag 07–17 (står även på `/kontakt` och i JSON-LD).
    - Tjänster: lägg in tjänsterna (alla 16 går bra) med länk till respektive `/tjanster/...`-sida.
 3. Verifiering sker via vykort, telefon eller video beroende på vad Google erbjuder.
 4. Efter verifiering: lägg in profilens publika URL i `SAME_AS` i `components/layout/local-business-json-ld.tsx`.

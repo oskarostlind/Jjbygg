@@ -266,7 +266,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
       {
         heading: "Bygglov, säsong och ROT",
         paragraphs: [
-          "Byter du till samma material och färg behövs normalt inget bygglov. Byter du från pannor till plåt eller ändrar färg påtagligt i ett område med detaljplan kan Bodens kommun kräva lov – fråga via e-tjänsten på boden.se. Takbyten görs från sen vår till tidig höst; vi planerar så att taket är tätt varje kväll. ROT-avdraget ger 30 procent på arbetskostnaden upp till 50 000 kronor per person och år enligt nuvarande regler.",
+          "Sedan den 1 december 2025 krävs normalt varken bygglov eller anmälan för att byta taktäckning på ett småhus, även vid byte från pannor till plåt. Undantag gäller hus och områden med särskilt kulturhistoriskt värde eller utökad lovplikt – fråga Bodens kommun via e-tjänsten på boden.se om du är osäker. Takbyten görs från sen vår till tidig höst; vi planerar så att taket är tätt varje kväll. ROT-avdraget ger 30 procent på arbetskostnaden upp till 50 000 kronor per person och år enligt nuvarande regler.",
         ],
       },
     ],
@@ -577,7 +577,7 @@ export const SERVICE_LOCATION_PAGES: ServiceLocationPage[] = [
       {
         heading: "Bygglov, säsong och ROT",
         paragraphs: [
-          "Samma material och färg kräver normalt inget bygglov. Byte från pannor till plåt eller en påtaglig färgändring kan kräva lov i områden med detaljplan eller kulturvärden – fråga Luleå kommun via e-tjänsten på lulea.se. Takbyten görs från sen vår till tidig höst, och vi planerar så att taket är tätt varje kväll även om vädret vid kusten slår om. ROT-avdraget ger 30 procent på arbetskostnaden upp till 50 000 kronor per person och år enligt nuvarande regler.",
+          "Sedan den 1 december 2025 krävs normalt varken bygglov eller anmälan för att byta taktäckning på ett småhus, även vid byte från pannor till plåt. Undantag gäller hus och områden med särskilt kulturhistoriskt värde eller utökad lovplikt – fråga Luleå kommun via e-tjänsten på lulea.se om du är osäker. Takbyten görs från sen vår till tidig höst, och vi planerar så att taket är tätt varje kväll även om vädret vid kusten slår om. ROT-avdraget ger 30 procent på arbetskostnaden upp till 50 000 kronor per person och år enligt nuvarande regler.",
         ],
       },
     ],

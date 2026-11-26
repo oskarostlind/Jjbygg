@@ -4,6 +4,7 @@ import { SERVICE_PAGES } from "@/lib/services-content";
 import { BODEN_SECTION, LOCATION_PAGES } from "@/lib/locations-content";
 import { SERVICE_LOCATION_PAGES } from "@/lib/service-location-content";
 import { REFERENSER_UPDATED } from "@/lib/referenser-content";
+import { guideSitemapEntries } from "@/lib/guider-content";
 
 import { SITE_URL } from "@/lib/seo";
 
@@ -75,6 +76,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    { url: `${SITE_URL}/om-oss`, lastModified: new Date("2026-11-26"), changeFrequency: "yearly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/kontakt`, lastModified: new Date("2026-11-26"), changeFrequency: "yearly" as const, priority: 0.6 },
+    ...guideSitemapEntries(SITE_URL),
     {
       url: `${SITE_URL}/integritet`,
       changeFrequency: "yearly" as const,

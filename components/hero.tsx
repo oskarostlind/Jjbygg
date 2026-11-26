@@ -4,6 +4,7 @@ import { editable } from "sitecms-next";
 import { siteContent } from "@/lib/site-content";
 import { HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides";
 import { HeroSlideshow } from "@/components/hero-slideshow";
+import { TrustBar } from "@/components/trust-bar";
 import { Button } from "@/components/ui/button";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { getCmsContent, blockValue, blockHtml, blockAlt } from "@/lib/cms";
@@ -88,19 +89,9 @@ export async function Hero() {
         </div>
       </div>
 
-      {/* Förtroendesignaler: sandfärgad list som binder ihop hero med sidan under. */}
+      {/* Förtroenderad: sandfärgad list som binder ihop hero med sidan under. */}
       <div className="wrap relative z-10 pointer-events-none">
-        <ul className="pointer-events-auto -mb-px grid grid-cols-1 divide-y divide-line border-x border-t border-line bg-sand sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {hero.badges.map((badge) => (
-            <li
-              key={badge}
-              className="flex items-center gap-3 px-4 py-3.5 font-display text-[0.9375rem] font-bold text-graphite sm:justify-center sm:px-3 md:py-4"
-            >
-              <span className="h-2.5 w-2.5 shrink-0 rounded-sm bg-brand" aria-hidden />
-              {badge}
-            </li>
-          ))}
-        </ul>
+        <TrustBar variant="hero" className="pointer-events-auto -mb-px" />
       </div>
     </section>
   );

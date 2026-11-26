@@ -25,8 +25,15 @@ export async function Header() {
     },
     { href: "/referenser", label: "Utförda arbeten" },
     ...(showNews ? [{ href: "/nyheter", label: "Nyheter" }] : []),
+    { href: "/om-oss", label: "Om oss" },
+    { href: "/kontakt", label: "Kontakt" },
     { href: "/offert", label: "Begär offert" },
   ];
+
+  // Desktopmenyn är trång: Start och offert har egna element, Om oss finns bara i
+  // mobilmenyn och sidfoten. Utförda arbeten och Kontakt visas först från lg.
+  const desktopHidden = new Set(["/", "/offert", "/om-oss"]);
+  const lgOnly = new Set(["/referenser", "/kontakt"]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-line bg-sand">
@@ -35,12 +42,12 @@ export async function Header() {
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Huvudnavigation">
           {items
-            .filter((item) => item.href !== "/offert" && item.href !== "/")
+            .filter((item) => !desktopHidden.has(item.href))
             .map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`whitespace-nowrap rounded px-3 py-2 text-[0.9375rem] font-semibold text-graphite transition-colors hover:text-brand-strong${item.href === "/referenser" ? " hidden lg:inline-block" : ""}`}
+                className={`whitespace-nowrap rounded px-3 py-2 text-[0.9375rem] font-semibold text-graphite transition-colors hover:text-brand-strong${lgOnly.has(item.href) ? " hidden lg:inline-block" : ""}`}
               >
                 {item.label}
               </Link>

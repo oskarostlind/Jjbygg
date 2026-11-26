@@ -2,7 +2,7 @@ import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL, ogImageUrl } from "@/lib/seo";
 import { SERVICE_PAGES } from "@/lib/services-content";
-import { LOCATIONS } from "@/lib/locations-content";
+import { LOCATIONS, areaServedLd } from "@/lib/locations-content";
 
 /** Internationellt format (+46…) om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
 const TELEPHONE_FALLBACK = siteContent.contact.phoneTelDigits;
@@ -21,9 +21,17 @@ const ADDRESS_GEO = {
 const SAME_AS: string[] = ["https://g.page/r/CZf0jOWtak9zEBM"];
 
 /**
- * Öppettider läggs bara till om de finns i site-content/CMS. Finns inte i dag,
- * därför ingen openingHoursSpecification (påhittade tider är värre än inga).
+ * Öppettider enligt Google-företagsprofilen (samma som siteContent.contact.openingHours):
+ * måndag–fredag 07–17, stängt helger. Ändras tiderna i profilen – ändra båda.
  */
+const OPENING_HOURS = [
+  {
+    "@type": "OpeningHoursSpecification" as const,
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "07:00",
+    closes: "17:00",
+  },
+];
 
 type PostalAddressLd = {
   "@type": "PostalAddress";
@@ -71,9 +79,10 @@ type LocalBusinessLd = {
   foundingDate: string;
   address: PostalAddressLd;
   geo: typeof ADDRESS_GEO;
-  areaServed: { "@type": "City" | "AdministrativeArea"; name: string }[];
+  areaServed: ReturnType<typeof areaServedLd>[];
   sameAs?: string[];
   founder?: { "@type": "Person"; name: string };
+  openingHoursSpecification: typeof OPENING_HOURS;
   hasOfferCatalog: {
     "@type": "OfferCatalog";
     name: string;
@@ -106,9 +115,10 @@ export function LocalBusinessJsonLd() {
     foundingDate: siteContent.company.foundingYear,
     address: postalAddressFromFooterLine(siteContent.footer.address),
     geo: ADDRESS_GEO,
-    areaServed: LOCATIONS.map((location) => ({ "@type": location.areaType, name: location.name })),
+    areaServed: LOCATIONS.map(areaServedLd),
     ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
     founder: { "@type": "Person", name: siteContent.contact.personName },
+    openingHoursSpecification: OPENING_HOURS,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Bygg- och entreprenadtjänster",
