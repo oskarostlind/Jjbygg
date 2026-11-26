@@ -17,7 +17,7 @@
 
 import type { ServiceFaq, ServiceSection } from "@/lib/services-content";
 
-export type LocationSlug = "boden" | "lulea" | "norrbotten";
+export type LocationSlug = "boden" | "lulea" | "norrbotten" | "savast";
 
 /** Grunddata om en ort – räcker för länkar, brödsmulor och areaServed. */
 export type Location = {
@@ -26,9 +26,23 @@ export type Location = {
   name: string;
   /** "i Boden", "i Luleå", "i Norrbotten". */
   inPhrase: string;
-  /** schema.org-typ för areaServed. */
-  areaType: "City" | "AdministrativeArea";
+  /**
+   * schema.org-typ för areaServed: City för städerna, AdministrativeArea för
+   * länet, Place för en tätort inom en kommun (Sävast) – då med `containedIn`.
+   */
+  areaType: "City" | "AdministrativeArea" | "Place";
+  /** Kommunens centralort för en tätort (Place), t.ex. "Boden" för Sävast. */
+  containedIn?: string;
 };
+
+/** areaServed-nod för JSON-LD. En tätort får containedInPlace med sin kommun. */
+export function areaServedLd(location: Location) {
+  return {
+    "@type": location.areaType,
+    name: location.name,
+    ...(location.containedIn ? { containedInPlace: { "@type": "City", name: location.containedIn } } : {}),
+  };
+}
 
 export type LocationPage = Location & {
   /** Hela <title>, max 60 tecken. */
@@ -110,7 +124,11 @@ export const BODEN_SECTION = {
   updated: "2026-11-26",
 };
 
-/** Ortsidorna under /byggfirma/[ort] (Boden ligger på startsidan, se ovan). */
+/**
+ * Ortsidorna under /byggfirma/[ort] (Boden ligger på startsidan, se ovan).
+ * Sävast har ingen tjänst×ort-sida (se SERVICE_LOCATION_SLUGS); sidan länkar
+ * till tjänstesidorna via `serviceLinks`.
+ */
 export const LOCATION_PAGES: LocationPage[] = [
   {
     slug: "lulea",
@@ -291,6 +309,90 @@ export const LOCATION_PAGES: LocationPage[] = [
       },
     ],
     alsoServing: ["Älvsbyn", "Kalix", "Piteå", "Jokkmokk"],
+    updated: "2026-11-26",
+  },
+  {
+    slug: "savast",
+    name: "Sävast",
+    inPhrase: "i Sävast",
+    areaType: "Place",
+    containedIn: "Boden",
+    metaTitle: "Byggföretag i Sävast – renovering, badrum & garage | JJ Bygg",
+    metaDescription:
+      "Byggföretag i Sävast: JJ Bygg & Entreprenad i Boden gör invändig renovering, totalrenovering, badrum, tillbyggnad och garage. Kostnadsfritt hembesök.",
+    h1: "Byggföretag i Sävast",
+    lead:
+      "Sävast ligger strax söder om Boden, längs väg 97 mot Luleå. Vi renoverar badrum och hela hus, bygger till och bygger garage åt villaägare i Sävast, och vi kommer gärna ut på ett kostnadsfritt hembesök innan du bestämmer dig.",
+    sections: [
+      {
+        heading: "Byggfirma nära Sävast",
+        paragraphs: [
+          "Sävast är en tätort i Bodens kommun, ungefär sju kilometer söder om Bodens centrum. Samhället ligger nära både skog och Luleälven, längs vägen mot Luleå, och gränsar till Sunderbyn på andra sidan kommungränsen. Omkring 3 400 personer bor här, och en stor del av husen är villor.",
+          "Vi utgår från Boden, så vägen till Sävast är kort. Det gör det enkelt att komma ut på hembesök, att titta in på ett pågående jobb och att planera arbetsdagarna utan att resorna blir en post i offerten. Du har en och samma kontaktperson, Jesper Johansson, från första samtalet tills jobbet är klart.",
+        ],
+      },
+      {
+        heading: "Husen i Sävast och jobben vi gör där",
+        paragraphs: [
+          "Husbeståndet i Sävast är blandat. Här finns äldre hus som har några decennier på nacken, villaområden som i stort är yngre än i Bodens centrala stadsdelar och hus som har byggts de senaste åren. Kommunen planerar dessutom för fler bostäder, bland annat vid Sävast torg.",
+          "Det avgör vilka jobb vi oftast får. I ett äldre hus handlar det om att byta det som har gjort sitt – badrum, kök, golv och fönster – eller att ta hela huset på en gång, gärna i samband med att det har bytt ägare. I yngre villor är det oftare en tillbyggnad, ett garage eller ett nytt badrum när det första har tjänat ut. Den som har byggt nytt behöver ibland hjälp med det som inte ingick i husleveransen, som garage, förråd eller altan.",
+        ],
+      },
+      {
+        heading: "Det här hjälper vi till med i Sävast",
+        paragraphs: ["Vi gör det mesta inom bygg på villor och fritidshus. De vanligaste jobben i Sävast:"],
+        serviceLinks: [
+          { slug: "renovering", note: "invändig renovering med nya ytskikt, golv, innerväggar och ändrad planlösning" },
+          { slug: "totalrenovering", note: "när ett helt plan eller hela huset ska göras om" },
+          { slug: "badrumsrenovering", note: "rivning, tätskikt, kakel och samordning av rörmokare och elektriker" },
+          { slug: "nybyggnation-tillbyggnad", note: "ett extra rum, ett större kök eller en ny entré" },
+          { slug: "garage-carport", note: "garage, carport och förråd från grund till tak" },
+        ],
+      },
+      {
+        heading: "Invändig renovering och totalrenovering",
+        paragraphs: [
+          "Invändiga jobb går att göra året runt, och vintern är en bra tid för badrum, kök och ytskikt. Vid en totalrenovering börjar vi med att gå igenom huset tillsammans: vad som ska rivas, vad som behöver bytas i el och VVS, och i vilken ordning arbetet ska göras. Då vet du i förväg vilka rum som går att använda under bygget och när det är bättre att bo någon annanstans.",
+          "Rörmokare och elektriker samordnar vi, så att du inte behöver hålla i flera hantverkare själv. Under arbetet får du löpande besked om hur det går och om något oväntat dyker upp när golv och väggar öppnas.",
+        ],
+      },
+      {
+        heading: "Tillbyggnad och garage – bygglov, mark och snö",
+        paragraphs: [
+          "Tillbyggnader och garage kräver ofta bygglov eller anmälan. I Sävast är det Bodens kommun som handlägger ärendet, och ansökan görs i kommunens e-tjänst på boden.se. Vi hjälper dig att reda ut vad som gäller för din tomt och tar fram underlag i samband med offerten. Ligger tomten nära älven kan strandskyddet påverka vad som får byggas, så det är värt att fråga kommunen tidigt.",
+          "Grunden ska klara tjälen och taket inlandets snölast, både på ett garage och på en tillbyggnad. Markarbeten och gjutning planerar vi helst mellan maj och oktober. Ska bygget stå klart till hösten är vintern rätt tid att höra av sig.",
+        ],
+      },
+      {
+        heading: "ROT-avdrag, hembesök och offert",
+        paragraphs: [
+          "Som privatperson får du ROT-avdrag på arbetskostnaden när du renoverar, bygger om eller bygger till: 30 procent, upp till 50 000 kronor per person och år enligt nuvarande regler. Vi drar av det direkt på fakturan. Ett nybyggt fristående garage ger däremot inte ROT. Kontrollera aktuella villkor på skatteverket.se.",
+          "Hembesöket och offerten är kostnadsfria och utan förpliktelser. Efter besöket får du en skriftlig offert där det står vad som ingår och hur arbetet är tänkt att gå till. Skicka gärna med bilder när du begär offert, så kan vi förbereda oss inför besöket.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: "Hur snabbt kan ni komma ut till Sävast?",
+        answer:
+          "Vi svarar på förfrågningar inom 1–2 vardagar och bokar då in ett hembesök på en tid som passar dig. Sävast ligger nära Boden, så restiden är kort.",
+      },
+      {
+        question: "Kostar det något att ni kommer ut och tittar?",
+        answer:
+          "Nej. Hembesöket och offerten är kostnadsfria och utan förpliktelser. Du får en skriftlig offert efter besöket och bestämmer dig i lugn och ro.",
+      },
+      {
+        question: "Gör ni totalrenoveringar av hus i Sävast?",
+        answer:
+          "Ja. Vi tar hela huset eller ett plan i taget och samordnar rörmokare och elektriker. Innan vi börjar går vi igenom ordningen på arbetet, så att du vet när rummen går att använda.",
+      },
+      {
+        question: "Behöver jag bygglov för ett garage i Sävast?",
+        answer:
+          "Det beror på storlek, placering och vad detaljplanen säger. Bodens kommun svarar på vad som gäller för din tomt, och vi hjälper dig att ta fram underlag till bygglovsansökan eller anmälan.",
+      },
+    ],
     updated: "2026-11-26",
   },
 ];

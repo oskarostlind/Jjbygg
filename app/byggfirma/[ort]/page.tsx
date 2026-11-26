@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LOCATIONS, LOCATION_PAGES, getLocationPage, locationHref } from "@/lib/locations-content";
+import { LOCATIONS, LOCATION_PAGES, areaServedLd, getLocationPage, locationHref } from "@/lib/locations-content";
 import { SERVICE_PAGES } from "@/lib/services-content";
 import { serviceLocationPagesIn } from "@/lib/service-location-content";
 import { SITE_URL, defaultMetadata } from "@/lib/seo";
@@ -71,6 +71,12 @@ export default function LocationPage({ params }: Props) {
     const service = SERVICE_PAGES.find((s) => s.slug === p.service);
     return { href: `/tjanster/${p.service}/${p.location}`, label: service?.name ?? p.h1, iconKey: service?.iconKey };
   });
+  // Orter utan tjänst×ort-sidor (Sävast): tjänstesidorna som texten tar upp i serviceLinks.
+  const featuredServiceLinks = page.sections
+    .flatMap((section) => section.serviceLinks ?? [])
+    .map((link) => SERVICE_PAGES.find((s) => s.slug === link.slug))
+    .filter((service): service is (typeof SERVICE_PAGES)[number] => Boolean(service))
+    .map((service) => ({ href: `/tjanster/${service.slug}`, label: service.name, iconKey: service.iconKey }));
   const otherLocations = LOCATIONS.filter((p) => p.slug !== page.slug).map((p) => ({
     href: locationHref(p.slug),
     label: `Byggföretag ${p.inPhrase}`,
@@ -85,7 +91,7 @@ export default function LocationPage({ params }: Props) {
       serviceType: "Bygg- och entreprenadtjänster",
       description: page.metaDescription,
       url,
-      areaServed: { "@type": page.areaType, name: page.name },
+      areaServed: areaServedLd(page),
       provider: {
         "@type": "GeneralContractor",
         "@id": `${SITE_URL}/#foretag`,
@@ -106,7 +112,11 @@ export default function LocationPage({ params }: Props) {
       <ArticleLayout
         aside={
           <>
-            <SidebarLinks id="local-services-heading" heading={`Våra tjänster ${page.inPhrase}`} links={localServiceLinks} />
+            {localServiceLinks.length > 0 ? (
+              <SidebarLinks id="local-services-heading" heading={`Våra tjänster ${page.inPhrase}`} links={localServiceLinks} />
+            ) : (
+              <SidebarLinks id="local-services-heading" heading="Läs mer om tjänsterna" links={featuredServiceLinks} />
+            )}
             <SidebarLinks id="other-locations-heading" heading="Andra orter" links={otherLocations} />
           </>
         }

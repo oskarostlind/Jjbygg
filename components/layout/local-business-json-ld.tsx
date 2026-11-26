@@ -2,7 +2,7 @@ import { siteContent } from "@/lib/site-content";
 import { resolveContactPhoneFromEnv } from "@/lib/contact";
 import { SEO_DESCRIPTION, SITE_URL, ogImageUrl } from "@/lib/seo";
 import { SERVICE_PAGES } from "@/lib/services-content";
-import { LOCATIONS } from "@/lib/locations-content";
+import { LOCATIONS, areaServedLd } from "@/lib/locations-content";
 
 /** Internationellt format (+46…) om CONTACT_NUMBER saknas vid build (strukturerad data ska inte bli tomt). */
 const TELEPHONE_FALLBACK = siteContent.contact.phoneTelDigits;
@@ -71,7 +71,7 @@ type LocalBusinessLd = {
   foundingDate: string;
   address: PostalAddressLd;
   geo: typeof ADDRESS_GEO;
-  areaServed: { "@type": "City" | "AdministrativeArea"; name: string }[];
+  areaServed: ReturnType<typeof areaServedLd>[];
   sameAs?: string[];
   founder?: { "@type": "Person"; name: string };
   hasOfferCatalog: {
@@ -106,7 +106,7 @@ export function LocalBusinessJsonLd() {
     foundingDate: siteContent.company.foundingYear,
     address: postalAddressFromFooterLine(siteContent.footer.address),
     geo: ADDRESS_GEO,
-    areaServed: LOCATIONS.map((location) => ({ "@type": location.areaType, name: location.name })),
+    areaServed: LOCATIONS.map(areaServedLd),
     ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
     founder: { "@type": "Person", name: siteContent.contact.personName },
     hasOfferCatalog: {

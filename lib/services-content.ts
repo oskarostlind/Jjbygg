@@ -21,7 +21,7 @@ export type ServiceSection = {
   /**
    * Länkar till andra tjänstesidor, sist i sektionen. Med `note` på raderna blir
    * det en punktlista ("Tjänst – note"), annars en rad "Läs mer: A · B".
-   * Renderas bara på tjänstesidorna (app/tjanster/[slug]/page.tsx).
+   * Renderas på tjänstesidorna och, som punktlista, på ortsidorna (components/seo-article.tsx).
    */
   serviceLinks?: ServiceSectionLink[];
   /** Stycken efter listan/länkarna (bara tjänstesidorna). */

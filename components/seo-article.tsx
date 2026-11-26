@@ -48,6 +48,10 @@ export const LOCATION_IMAGES: Record<LocationSlug, { src: string; alt: string }>
     src: "/hero/quilia-j86QX1TMNaw-unsplash.jpg",
     alt: "Bjälklag och stomme under uppförande",
   },
+  savast: {
+    src: "/hero/scandinavian home renovation.jpg",
+    alt: "Kakel sätts upp på en vägg vid en invändig renovering",
+  },
 };
 
 export function ArticleHero({
@@ -107,7 +111,8 @@ const LOCATION_LIST_HREFS = [locationHref("boden"), locationHref("lulea")];
 /**
  * Listrader i ett avsnitt med `links: "services"` länkas till SERVICE_PAGES i samma
  * ordning (eller till tjänst×ort-sidan om `serviceHrefs` anger en), `links: "locations"`
- * till Boden (startsidan) och Luleå.
+ * till Boden (startsidan) och Luleå. `serviceLinks` blir en punktlista med länkar
+ * till tjänstesidorna ("Tjänst – note"), för orter utan tjänst×ort-sidor (Sävast).
  */
 export function ArticleSections({
   sections,
@@ -148,6 +153,22 @@ export function ArticleSections({
                       ) : (
                         item
                       )}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+            {section.serviceLinks ? (
+              <ul className="mt-5 space-y-2.5 pl-5 text-[1.0625rem] leading-relaxed text-graphite marker:text-brand">
+                {section.serviceLinks.map((link) => {
+                  const service = SERVICE_PAGES.find((page) => page.slug === link.slug);
+                  if (!service) return null;
+                  return (
+                    <li key={link.slug} className="list-disc pl-1">
+                      <Link href={`/tjanster/${service.slug}`} className="link">
+                        {service.name}
+                      </Link>
+                      {link.note ? ` – ${link.note}` : null}
                     </li>
                   );
                 })}
