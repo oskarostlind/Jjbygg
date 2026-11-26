@@ -50,8 +50,8 @@ const STOCK = {
  * Foto per tjänst (ur public/hero) – används som bakgrund i tjänstesidornas
  * sidhuvud. Samma bild får återkomma: en per sida. Bildbanken har bara fem
  * foton, så de nyare tjänsterna delar på dem tills egna bilder i full
- * upplösning finns (se docs/SEO.md). På /tjanster visas stockfoton bara för
- * de sex ursprungliga tjänsterna – övriga får egen bild eller ikonruta.
+ * upplösning finns (se docs/SEO.md). Bilderna i public/tjanster är stockfoton
+ * (Unsplash) tills egna bilder finns. Varje kort på /tjanster har en bild.
  */
 export const SERVICE_IMAGES: Record<ServiceIconKey, { src: string; alt: string }> = {
   nybyggnation: {
@@ -78,22 +78,22 @@ export const SERVICE_IMAGES: Record<ServiceIconKey, { src: string; alt: string }
     src: "/hero/callum-hill-NGGkGzslIaM-unsplash.jpg",
     alt: "Hantverkare mäter och planerar",
   },
-  kok: STOCK.verktyg,
-  totalrenovering: STOCK.verktyg,
+  kok: { src: "/tjanster/koksrenovering.jpg", alt: "Nytt kök med vita luckor och köksö" },
+  totalrenovering: { src: "/tjanster/totalrenovering.jpg", alt: "Rum under totalrenovering med stämp och rivet golv" },
   golv: STOCK.matning,
   bastu: STOCK.matning,
-  garage: STOCK.takstolar,
+  garage: { src: "/tjanster/garage-carport.jpg", alt: "Carport i trä med plats för bil" },
   grund: STOCK.stomme,
-  fonster: STOCK.matning,
-  fasad: STOCK.matning,
-  attefall: STOCK.stomme,
-  snickare: STOCK.matning,
+  fonster: { src: "/tjanster/fonster-dorrar.jpg", alt: "Nya fönster under montering" },
+  fasad: { src: "/tjanster/fasad.jpg", alt: "Rött trähus med vita knutar och ny panel" },
+  attefall: { src: "/tjanster/attefallshus.jpg", alt: "Liten stuga i trä med veranda" },
+  snickare: { src: "/tjanster/snickare.jpg", alt: "Snickare märker upp en bräda" },
 };
 
 /**
  * Stockfoto till tjänstekorten på /tjanster när tjänsten saknar egen bild.
- * Bara de sex ursprungliga tjänsterna – bildbanken räcker inte till fler utan
- * att samma foto upprepas, så övriga kort visar ikonen i en ruta i stället.
+ * Golv, bastu och grund har egna bilder (lib/referenser-content.ts) och behöver
+ * inget stockfoto här.
  */
 export const SERVICE_CARD_PHOTOS: Partial<Record<ServiceIconKey, { src: string; alt: string }>> = {
   nybyggnation: SERVICE_IMAGES.nybyggnation,
@@ -102,6 +102,13 @@ export const SERVICE_CARD_PHOTOS: Partial<Record<ServiceIconKey, { src: string; 
   altan: SERVICE_IMAGES.altan,
   tak: SERVICE_IMAGES.tak,
   entreprenad: SERVICE_IMAGES.entreprenad,
+  kok: SERVICE_IMAGES.kok,
+  totalrenovering: SERVICE_IMAGES.totalrenovering,
+  garage: SERVICE_IMAGES.garage,
+  fonster: SERVICE_IMAGES.fonster,
+  fasad: SERVICE_IMAGES.fasad,
+  attefall: SERVICE_IMAGES.attefall,
+  snickare: SERVICE_IMAGES.snickare,
 };
 
 type ServiceIconProps = {
