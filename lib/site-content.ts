@@ -30,12 +30,31 @@ export const siteContent = {
     phoneTelDigits: "+46705357194",
     email: "info@jjbyggboden.se",
     address: "Kallkällvägen 16 c, 961 96 Boden",
+    /** Öppettider enligt Google-företagsprofilen. Ändras de där – ändra här också. */
+    openingHours: [
+      { days: "Måndag–fredag", hours: "07–17" },
+      { days: "Lördag–söndag", hours: "Stängt" },
+    ],
+    /** Svarstid på förfrågningar (samma löfte som i FAQ:n). */
+    responseTime: "Vi svarar på förfrågningar inom 1–2 vardagar.",
+  },
+  /** Google-företagsprofilen. Visa aldrig betyg eller antal omdömen på sajten. */
+  google: {
+    /** Sökningen som visar profilen med omdömena. */
+    reviewsUrl: "https://www.google.com/search?q=JJ+Bygg+%26+Entreprenad+AB+Boden",
+    /** Öppnar dialogen där kunden skriver ett omdöme. */
+    writeReviewUrl: "https://g.page/r/CZf0jOWtak9zEBM/review",
   },
   /** Bolagsuppgifter (belagda: Bolagsverket/Skatteverket). Lägg inte till något här utan underlag. */
   company: {
     foundingYear: "2010",
     taxStatus: "Godkänt för F-skatt",
   },
+  /**
+   * Förtroenderaden (components/trust-bar.tsx) under hero och i sidfoten.
+   * Bara belagda uppgifter – inga betyg, certifikat eller antal jobb.
+   */
+  trustBar: ["Registrerat 2010", "Godkänt för F-skatt", "ROT dras på fakturan", "Kostnadsfritt hembesök"],
   hero: {
     title: "Begär en offert",
     subtitle: "Fyll i formuläret nedan så återkommer vi till dig.",
@@ -43,7 +62,7 @@ export const siteContent = {
     subline:
       "JJ Bygg & Entreprenad AB hjälper dig med allt från nybyggnation och tillbyggnad till altaner och takbyten. Kvalitet, transparens och lokalt engagemang i hela Norrbotten.",
     ctaText: "Begär en offert",
-    /** Förtroendesignaler under knapparna i hero. */
+    /** Punkterna under rubriken på /offert (startsidan har förtroenderaden, se trustBar). */
     badges: ["Kostnadsfri offert", "ROT-avdrag 30 %", "Boden & Luleå"],
   },
   footer: {

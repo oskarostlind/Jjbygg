@@ -7,6 +7,7 @@ import { resolveContactPhoneFromEnv, parseSwedishMobileTenDigits, formatSwedishM
 import { getCmsContent, blockValue, hasPublishedPosts } from "@/lib/cms";
 import { SERVICE_PAGES } from "@/lib/services-content";
 import { LOCATIONS, locationHref } from "@/lib/locations-content";
+import { TrustBar } from "@/components/trust-bar";
 
 const { footer } = siteContent;
 const FALLBACK_CONTACT_NAME = "Jesper Johansson";
@@ -183,7 +184,9 @@ export async function Footer() {
           </p>
         </nav>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-ink-onDark/15 pt-6 text-sm text-ink-onDark/55 sm:flex-row sm:items-center sm:justify-between">
+        <TrustBar variant="footer" className="mt-12 border-t border-ink-onDark/15 pt-8" />
+
+        <div className="mt-8 flex flex-col gap-2 border-t border-ink-onDark/15 pt-6 text-sm text-ink-onDark/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {companyName}
           </p>

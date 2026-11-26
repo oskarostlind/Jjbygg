@@ -21,9 +21,17 @@ const ADDRESS_GEO = {
 const SAME_AS: string[] = ["https://g.page/r/CZf0jOWtak9zEBM"];
 
 /**
- * Öppettider läggs bara till om de finns i site-content/CMS. Finns inte i dag,
- * därför ingen openingHoursSpecification (påhittade tider är värre än inga).
+ * Öppettider enligt Google-företagsprofilen (samma som siteContent.contact.openingHours):
+ * måndag–fredag 07–17, stängt helger. Ändras tiderna i profilen – ändra båda.
  */
+const OPENING_HOURS = [
+  {
+    "@type": "OpeningHoursSpecification" as const,
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "07:00",
+    closes: "17:00",
+  },
+];
 
 type PostalAddressLd = {
   "@type": "PostalAddress";
@@ -74,6 +82,7 @@ type LocalBusinessLd = {
   areaServed: ReturnType<typeof areaServedLd>[];
   sameAs?: string[];
   founder?: { "@type": "Person"; name: string };
+  openingHoursSpecification: typeof OPENING_HOURS;
   hasOfferCatalog: {
     "@type": "OfferCatalog";
     name: string;
@@ -109,6 +118,7 @@ export function LocalBusinessJsonLd() {
     areaServed: LOCATIONS.map(areaServedLd),
     ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
     founder: { "@type": "Person", name: siteContent.contact.personName },
+    openingHoursSpecification: OPENING_HOURS,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Bygg- och entreprenadtjänster",
