@@ -52,7 +52,7 @@ export type ServicePage = {
   updated: string;
 };
 
-const ROT_NOTE =
+export const ROT_NOTE =
   "Som privatperson kan du få ROT-avdrag på arbetskostnaden – 30 % enligt nuvarande regler, upp till 50 000 kr per person och år. Vi drar av det direkt på fakturan. Kontrollera alltid aktuella villkor på skatteverket.se.";
 
 export const SERVICE_PAGES: ServicePage[] = [
