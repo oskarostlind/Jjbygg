@@ -135,6 +135,7 @@ export async function Footer() {
                   Kontakt
                 </Link>
               </li>
+              <li><Link href="/guider" className={footerLink}>Guider</Link></li>
               {showNews ? (
                 <li>
                   <Link href="/nyheter" className={footerLink}>

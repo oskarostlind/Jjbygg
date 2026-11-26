@@ -1,4 +1,5 @@
 import { SERVICE_PAGES } from "@/lib/services-content";
+import { GUIDES } from "@/lib/guider-content";
 import { SITE_URL } from "@/lib/seo";
 import { siteContent } from "@/lib/site-content";
 
@@ -14,6 +15,7 @@ export function GET() {
   const services = SERVICE_PAGES.map(
     (page) => `- [${page.name}](${SITE_URL}/tjanster/${page.slug}): ${page.metaDescription}`
   ).join("\n");
+  const guides = GUIDES.map((guide) => `- [${guide.h1}](${SITE_URL}/guider/${guide.slug}): ${guide.shortAnswer}`).join("\n");
 
   const body = `# ${footer.companyName}
 
@@ -37,6 +39,12 @@ export function GET() {
 ## Tjänster
 
 ${services}
+
+## Guider: vad påverkar priset?
+
+Företaget publicerar inga priser. Guiderna förklarar vad som avgör priset och hur man får en rättvisande offert.
+
+${guides}
 
 ## Mer
 

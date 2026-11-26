@@ -41,6 +41,11 @@ Alla sidor är statiska (SSG/ISR) och ligger i `app/sitemap.ts`. Innehållet är
 | `/tjanster/altan-uteplats/lulea` | bygga altan luleå | uterum luleå, altan strandskydd | `lib/service-location-content.ts` |
 | `/tjanster/takbyte-platarbeten/lulea` | takbyte luleå | takläggare luleå, plåtslagare luleå, plåttak luleå | `lib/service-location-content.ts` |
 | `/tjanster/totalentreprenad/lulea` | totalentreprenad luleå | byggentreprenör luleå | `lib/service-location-content.ts` |
+| `/guider` | vad kostar renovering/bygge (översikt) | prisguider badrum, tak, altan, tillbyggnad | `lib/guider-content.ts` (`GUIDES`), `app/guider/page.tsx` |
+| `/guider/vad-kostar-badrumsrenovering` | vad kostar en badrumsrenovering | renovera badrum kostnad, badrum pris per kvm | `lib/guider-content.ts` |
+| `/guider/vad-kostar-takbyte` | vad kostar ett takbyte | takbyte kostnad per kvm, byta tak pris | `lib/guider-content.ts` |
+| `/guider/vad-kostar-altan` | vad kostar det att bygga altan | bygga altan pris per kvm, altan kostnad | `lib/guider-content.ts` |
+| `/guider/vad-kostar-tillbyggnad` | vad kostar en tillbyggnad | tillbyggnad pris per kvm, bygga till hus kostnad | `lib/guider-content.ts` |
 | `/referenser` | utförda arbeten byggfirma boden | altan, badrum, bastu, betongplatta – bilder från egna jobb | `lib/referenser-content.ts` + `public/referenser/` |
 | `/offert` | offert byggfirma boden | (konvertering, inte ranking) | `app/offert` |
 | `/om-oss` | jj bygg boden, om jj bygg & entreprenad | byggföretag boden sedan 2010 (förtroende, inte ranking) | `app/om-oss/page.tsx` |
@@ -67,6 +72,17 @@ Search Console visade visningar på sökningar utan egen sida (köksrenovering, 
 - `/om-oss` och `/kontakt` är statiska sidor med `AboutPage` respektive `ContactPage` som pekar på företagsnoden `${SITE_URL}/#foretag`. Faktarutan, öppettiderna och svarstiden kommer ur `siteContent` (`company`, `contact.openingHours`, `contact.responseTime`). Inget porträtt – lägg in ett när Jesper skickar ett.
 - **Förtroenderaden** (`components/trust-bar.tsx`, punkterna i `siteContent.trustBar`) ligger i underkanten av startsidans hero (ersatte de tre badges som nu bara visas på `/offert`) och i sidfoten. Länken "Omdömen på Google" går till en Google-sökning som visar profilen (`siteContent.google.reviewsUrl`); `/kontakt` länkar till skriv-omdöme-länken (`writeReviewUrl`). Visa aldrig betyg eller antal omdömen på sajten.
 - Huvudmenyn har "Kontakt" från 1024 px (lg); "Om oss" finns bara i mobilmenyn och footerns Genvägar.
+
+### Prisguiderna (`/guider`, 2026-11-26)
+
+Prisfrågor ("vad kostar det att renovera ett badrum", "takbyte kostnad per kvm") är de sökningar där AI-svar och Google AI Overviews oftast visas. Fyra guider svarar på dem utan att ange priser. Regler:
+
+- **Inga belopp, prisintervall, timpriser eller kvadratmeterpriser** – samma beslut som för tjänstesidorna. Enda beloppet är ROT-taket i `ROT_NOTE` (exporteras från `lib/services-content.ts` och återanvänds). `tests/guider-content.test.ts` vaktar belopp, mått, utropstecken, title ≤ 60/description ≤ 155 tecken, 900–1300 ord och 4–5 frågor.
+- Varje guide har samma delar: **Kort svar** överst (2–3 citerbara meningar), "Det här avgör priset" (faktor → varför → vad du kan göra), Norrbotten, bygglov där det är relevant, ROT, "Så får du ett rättvisande pris", "Vanliga fallgropar", "Läs mer" (tjänstesidan + dess Boden/Luleå-sidor + `/referenser`) och FAQ.
+- Schema: `Article` (författare/utgivare = `#foretag`, `datePublished`/`dateModified`, `sv-SE`), `BreadcrumbList`, `FAQPage`. Översikten har `CollectionPage` med `ItemList`.
+- En guide hör till en tjänst (`service`). Tjänstesidan visar rutan "Guide" (`components/guide-link.tsx`) när tjänsten har en guide. Guiderna finns i sitemapen (`guideSitemapEntries`), footerns Genvägar och `/llms.txt`.
+- Bygglovstexterna följer reglerna från 1 december 2025 (Boverkets vägledning "Vad får jag bygga utan bygglov?") utan kvadratmeter- eller metergränser. ROT-texterna följer skatteverket.se (30 procent från 2026, bara arbetskostnad, altan och tillbyggnad bara när de sitter ihop med huset). Kontrollera båda vid regeländringar och uppdatera `updated`.
+- Ny guide = en post i `GUIDES` med egen handskriven text. Routen, sitemapen, översikten, llms.txt och länken från tjänstesidan följer med automatiskt.
 
 ### Boden ligger på startsidan (2026-11-26)
 
@@ -95,6 +111,7 @@ Kontrollera också att `faq.a2` (offertfrågan) säger "utan förpliktelser" och
 - `/om-oss` → Boden, Sävast, Luleå, Norrbotten, alla tjänstesidor (i de fyra grupperna), `/referenser`.
 - `/tjanster` → varje tjänst, grupperade under fyra rubriker (`SERVICE_GROUPS`), och Boden-/Luleå-varianten för de sex som har sådana.
 - Tjänstesida → sina tjänst×ort-varianter + `/byggfirma/norrbotten` ("… där du bor"); tjänster utan ortvarianter → Boden (`/#boden`), Luleå och Norrbotten ("Här arbetar vi"). Dessutom `related` och `serviceLinks` till närliggande tjänster – `/tjanster/snickare` länkar till alla övriga.
+- Guide (`/guider/[slug]`) → sin tjänstesida och dess Boden/Luleå-sidor, `/referenser`, `/offert` och de andra guiderna; tjänstesidan → sin guide (rutan "Guide"). Footern → `/guider`.
 - `/referenser` → den mest specifika tjänsten per bild (bastu, golvläggning, grund & betongplatta …).
 - Ortsida → tjänstelistan (länkar till tjänst×ort där sådan finns, annars tjänstesidan), "Våra tjänster i …" (kort; för Sävast "Läs mer om tjänsterna" med tjänstesidorna ur `serviceLinks`), andra orter.
 - Tjänst×ort → tjänstesidan, ortsidan, samma tjänst på andra orter, andra tjänster på samma ort.
@@ -135,7 +152,7 @@ De sex första bilderna är bara 1170 px breda (beskurna ur skärmdumpar). De vi
    - **DNS TXT (rekommenderas, domänegendom):** kopiera TXT-posten Google visar. Logga in på Strato → Domäner → jjbyggboden.se → DNS-inställningar → lägg till TXT-post på `@` med värdet `google-site-verification=…`. Vänta några minuter–timmar och klicka Verifiera.
    - **HTML-tagg (URL-prefix-egendom `https://www.jjbyggboden.se`):** kopiera värdet i `content="…"` ur metataggen Google ger. Sätt miljövariabeln `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` i Vercel (Production) till det värdet och deploya om. `app/layout.tsx` skriver då ut `<meta name="google-site-verification">`. Klicka Verifiera.
 3. **Skicka in sitemap:** Search Console → Webbplatskartor → ange `https://www.jjbyggboden.se/sitemap.xml` → Skicka.
-4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 38 adresser i sitemapen indexeras (`/referenser`, de tio tjänstesidorna, `/byggfirma/savast`, `/om-oss` och `/kontakt` från 2026-11-26 är nya; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
+4. Under första veckorna: kontrollera **Sidor** (indexering) att alla 43 adresser i sitemapen indexeras (`/referenser`, de tio tjänstesidorna, `/byggfirma/savast`, `/om-oss` och `/kontakt` från 2026-11-26 är nya; `/byggfirma/boden` är borttagen och ska med tiden visas som "Sida med omdirigering"), och **Förbättringar** (FAQ, Brödsmulor) att strukturerad data godkänns.
 5. Begär indexering manuellt för de nya landningssidorna via URL-granskning om de inte plockats upp inom två veckor.
 
 ## Google Business Profile
