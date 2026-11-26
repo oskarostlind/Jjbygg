@@ -125,6 +125,16 @@ export async function Footer() {
                   Utförda arbeten
                 </Link>
               </li>
+              <li>
+                <Link href="/om-oss" className={footerLink}>
+                  Om oss
+                </Link>
+              </li>
+              <li>
+                <Link href="/kontakt" className={footerLink}>
+                  Kontakt
+                </Link>
+              </li>
               {showNews ? (
                 <li>
                   <Link href="/nyheter" className={footerLink}>

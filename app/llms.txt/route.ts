@@ -26,6 +26,8 @@ export function GET() {
 - Telefon: ${contact.phoneDisplay}
 - E-post: ${contact.email}
 - Adress: ${contact.address}
+- Öppettider: ${contact.openingHours.map((row, i) => `${i > 0 ? row.days.toLowerCase() : row.days} ${row.hours.toLowerCase()}`).join(", ")}
+- Svarstid: förfrågningar besvaras inom 1–2 vardagar
 - Arbetsområde: Boden, Luleå, Sävast, Älvsbyn, Piteå, Kalix, Jokkmokk och övriga Norrbotten
 - Kunder: privatpersoner, företag och föreningar
 - ROT-avdrag: dras direkt på fakturan för privatpersoner när arbetet ger rätt till det
@@ -38,8 +40,11 @@ ${services}
 
 ## Mer
 
+- [Om oss](${SITE_URL}/om-oss): vilka vi är, hur vi arbetar och fakta om företaget
+- [Kontakt](${SITE_URL}/kontakt): telefon, e-post, adress och öppettider
 - [Utförda arbeten](${SITE_URL}/referenser): bilder från egna jobb
 - [Byggföretag i Luleå](${SITE_URL}/byggfirma/lulea)
+- [Byggföretag i Sävast](${SITE_URL}/byggfirma/savast)
 - [Byggföretag i Norrbotten](${SITE_URL}/byggfirma/norrbotten)
 - [Begär offert](${SITE_URL}/offert)
 `;
