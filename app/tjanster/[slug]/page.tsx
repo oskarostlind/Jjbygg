@@ -20,6 +20,7 @@ import { OfferCard } from "@/components/offer-card";
 import { SidebarLinks } from "@/components/sidebar-links";
 import { SERVICE_IMAGES } from "@/components/service-icon";
 import { ServiceReferenser } from "@/components/referenser/service-referenser";
+import { GuideLink } from "@/components/guide-link";
 
 type Props = { params: { slug: string } };
 
@@ -226,6 +227,8 @@ export default function ServicePage({ params }: Props) {
                 <SectionServiceLinks section={section} />
               </section>
             ))}
+
+            <GuideLink serviceSlug={page.slug} />
 
             <ServiceReferenser slug={page.slug} />
 

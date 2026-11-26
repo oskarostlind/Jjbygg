@@ -4,6 +4,7 @@ import { SERVICE_PAGES } from "@/lib/services-content";
 import { BODEN_SECTION, LOCATION_PAGES } from "@/lib/locations-content";
 import { SERVICE_LOCATION_PAGES } from "@/lib/service-location-content";
 import { REFERENSER_UPDATED } from "@/lib/referenser-content";
+import { guideSitemapEntries } from "@/lib/guider-content";
 
 import { SITE_URL } from "@/lib/seo";
 
@@ -75,6 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    ...guideSitemapEntries(SITE_URL),
     {
       url: `${SITE_URL}/integritet`,
       changeFrequency: "yearly" as const,
